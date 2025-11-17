@@ -48,7 +48,7 @@ export default function SiegeBattleTab({
   // ❗ 기본 속성: 불 (전체 보기 옵션 없음)
   const [elementFilter, setElementFilter] = useState("fire");
   const [leaderEffectFilter, setLeaderEffectFilter] = useState("all");
-  const [sortKey, setSortKey] = useState("name");       // "name" | "element"
+  const [sortKey, setSortKey] = useState("sequence");       // "name" | "sequence"
 
   // 4성 방덱 토글 상태 : true면 grade < 5 만 보여줌
   const [fourStarDefenseOnly, setFourStarDefenseOnly] = useState(false);
@@ -66,8 +66,17 @@ export default function SiegeBattleTab({
     // 이름 검색
     if (search.trim()) {
       const q = search.trim().toLowerCase();
-      list = list.filter((m) => m.name.toLowerCase().includes(q));
-    }
+
+      list = list.filter((m) => {
+        const inName = m.name.toLowerCase().includes(q);
+
+        const nicknames = m.nicknames || []; // 없으면 빈 배열
+        const inNickname = nicknames.some((nn) =>
+        nn.toLowerCase().includes(q)
+      );
+    return inName || inNickname;
+    });
+  }
 
     // 속성 필터 (항상 필터됨, 전체 없음)
     list = list.filter((m) => m.element === elementFilter);
@@ -85,13 +94,13 @@ export default function SiegeBattleTab({
     }
     // 정렬
     list.sort((a, b) => {
-      if (sortKey === "name") {
-        return a.name.localeCompare(b.name, "ko");
+      // 인덱스(sequence) 정렬
+      if (sortKey === "sequence") {
+        const ao = a.order ?? 99999;
+        const bo = b.order ?? 99999;
+        return bo - ao;
       }
-      if (sortKey === "element") {
-        const ai = ELEMENT_ORDER.indexOf(a.element || "dark");
-        const bi = ELEMENT_ORDER.indexOf(b.element || "dark");
-        if (ai !== bi) return ai - bi;
+      if (sortKey === "name") {
         return a.name.localeCompare(b.name, "ko");
       }
       return 0;
@@ -172,8 +181,8 @@ export default function SiegeBattleTab({
                 value={sortKey}
                 onChange={(e) => setSortKey(e.target.value)}
               >
+                <option value="sequence">기본</option>
                 <option value="name">이름순</option>
-                <option value="element">속성 → 이름순</option>
               </select>
             </div>
           </div>

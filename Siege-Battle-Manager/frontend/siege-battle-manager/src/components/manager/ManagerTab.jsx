@@ -89,11 +89,19 @@ export default function ManagerTab({
       // 4) 이름/몬스터 검색 필터
       if (nameQuery.trim()) {
         const q = nameQuery.trim().toLowerCase();
-        const name = (t.name || "").toLowerCase();
-        const monsterNames = t.monsterIds
-          .map((id) => (monsterMap.get(id)?.name || "").toLowerCase())
+        const trioName = (t.name || "").toLowerCase();
+
+        const monsterTexts = t.monsterIds
+          .map((id) => {
+            const m = monsterMap.get(id);
+            if (!m) return "";
+            const nicknames = m.nicknames || [];
+            // [이름, 별명1, 별명2 ...]를 하나의 문자열로
+            const parts = [m.name, ...nicknames].map((s) => s.toLowerCase());
+            return parts.join(" ");
+          })
           .join(" ");
-        if (!name.includes(q) && !monsterNames.includes(q)) return false;
+        if (!trioName.includes(q) && !monsterTexts.includes(q)) return false;
       }
 
       return true;
