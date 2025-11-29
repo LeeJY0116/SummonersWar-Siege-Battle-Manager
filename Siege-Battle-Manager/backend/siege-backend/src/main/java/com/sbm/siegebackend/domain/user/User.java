@@ -2,6 +2,7 @@ package com.sbm.siegebackend.domain.user;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.sbm.siegebackend.domain.guild.Guild;
 
 @Entity
 @Table(name = "users")  // user는 예약어일 수 있음
@@ -23,6 +24,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role = UserRole.USER;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "guild_id")
+    private Guild guild;   // 가입한 길드 (없으면 null)
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -89,5 +94,13 @@ public class User {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public Guild getGuild() {
+        return guild;
+    }
+
+    public void setGuild(Guild guild) {
+        this.guild = guild;
     }
 }
