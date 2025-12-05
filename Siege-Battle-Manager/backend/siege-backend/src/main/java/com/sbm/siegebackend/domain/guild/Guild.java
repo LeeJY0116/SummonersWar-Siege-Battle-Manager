@@ -33,7 +33,7 @@ public class Guild {
 
     // 길드 멤버들 (양방향: User.guild)
     @OneToMany(mappedBy = "guild")
-    private List<User> members = new ArrayList<>();
+    private List<GuildMember> members = new ArrayList<>();
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -62,9 +62,8 @@ public class Guild {
     }
 
     // 연관관계 편의 메서드
-    public void addMember(User user) {
-        members.add(user);
-        user.setGuild(this);
+    public void addMember(GuildMember member) {
+        members.add(member);
     }
 
     // --- getter ---
@@ -85,7 +84,7 @@ public class Guild {
         return master;
     }
 
-    public List<User> getMembers() {
+    public List<GuildMember> getMembers() {
         return members;
     }
 

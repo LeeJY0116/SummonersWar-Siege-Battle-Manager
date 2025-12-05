@@ -14,11 +14,14 @@ import java.util.List;
 public class GuildService {
 
     private final GuildRepository guildRepository;
+    private final GuildMemberRepository guildMemberRepository;
     private final UserService userService;
 
     public GuildService(GuildRepository guildRepository,
+                        GuildMemberRepository guildMemberRepository,
                         UserService userService) {
         this.guildRepository = guildRepository;
+        this.guildMemberRepository = guildMemberRepository;
         this.userService = userService;
     }
 
@@ -28,31 +31,42 @@ public class GuildService {
     public GuildResponse createGuild(String email, GuildCreateRequest request) {
         User user = userService.findByEmailOrThrow(email);
 
-        if (user.getGuild() != null) {
+        // ✅ 이미 어떤 길드에 가입되어 있는지 검사
+        if (guildMemberRepository.existsByUser(user)) {
             throw new IllegalStateException("이미 길드에 가입되어 있습니다.");
         }
 
+        // 길드 이름 중복 검사
         if (guildRepository.existsByName(request.getName())) {
             throw new IllegalArgumentException("이미 존재하는 길드 이름입니다.");
         }
 
+        // 길드 생성
         Guild guild = new Guild(
                 request.getName(),
                 request.getDescription(),
                 user
         );
 
-        // 마스터도 멤버 목록에 포함
-        guild.addMember(user);
+        // 길드 저장
+        Guild savedGuild = guildRepository.save(guild);
 
-        Guild saved = guildRepository.save(guild);
+        // 길드 멤버 생성 (실제 유저 + MASTER 역할)
+        GuildMember masterMember = GuildMember.createReal(
+                savedGuild,
+                user,
+                GuildMemberRole.MASTER
+        );
+
+        guildMemberRepository.save(masterMember);   // 길드 멤버 저장
+        savedGuild.addMember(masterMember);         // 길드 멤버 추가
 
         return new GuildResponse(
-                saved.getId(),
-                saved.getName(),
-                saved.getDescription(),
-                saved.getMaster().getNickname(),
-                saved.getMembers().size()
+                savedGuild.getId(),
+                savedGuild.getName(),
+                savedGuild.getDescription(),
+                savedGuild.getMaster().getNickname(),
+                savedGuild.getMembers().size()
         );
     }
 
@@ -79,7 +93,11 @@ public class GuildService {
     public GuildResponse getMyGuild(String email) {
         User user = userService.findByEmailOrThrow(email);
 
-        Guild guild = user.getGuild();
+        // REAL 멤버 중 user_id 가 같은 길드원 찾기
+        GuildMember member = guildMemberRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalStateException("가입된 길드가 없습니다."));
+
+        Guild guild = member.getGuild();
         if (guild == null) {
             throw new IllegalStateException("가입된 길드가 없습니다.");
         }
