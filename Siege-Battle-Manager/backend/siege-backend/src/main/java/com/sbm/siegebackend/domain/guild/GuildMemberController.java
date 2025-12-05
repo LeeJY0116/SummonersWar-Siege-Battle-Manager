@@ -4,6 +4,8 @@ import com.sbm.siegebackend.domain.guild.dto.GuildMemberCreateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.sbm.siegebackend.domain.guild.dto.GuildMemberResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/guild-members")
@@ -40,5 +42,18 @@ public class GuildMemberController {
         String email = (String) auth.getPrincipal();
         guildMemberService.deleteVirtualMember(guildMemberId, email);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 내가 속한 길드의 멤버 목록 조회 (REAL + VIRTUAL 전부)
+     * GET /api/guild-members/me
+     */
+    @GetMapping("/me")
+    public ResponseEntity<List<GuildMemberResponse>> getMyGuildMembers(
+            Authentication auth
+    ) {
+        String email = (String) auth.getPrincipal();
+        List<GuildMemberResponse> members = guildMemberService.getMembersOfMyGuild(email);
+        return ResponseEntity.ok(members);
     }
 }

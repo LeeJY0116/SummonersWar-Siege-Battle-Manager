@@ -5,6 +5,8 @@ import com.sbm.siegebackend.domain.user.User;
 import com.sbm.siegebackend.domain.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.sbm.siegebackend.domain.guild.dto.GuildMemberResponse;
+import java.util.List;
 
 @Service
 @Transactional
@@ -87,5 +89,32 @@ public class GuildMemberService {
         }
 
         guildMemberRepository.delete(target);
+    }
+
+    @Transactional(readOnly = true)
+    public List<GuildMemberResponse> getMembersOfMyGuild(String email) {
+        User user = userService.findByEmailOrThrow(email);
+
+        GuildMember me = guildMemberRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+
+        Guild guild = me.getGuild();
+
+        List<GuildMember> members = guildMemberRepository.findByGuild(guild);
+
+        return members.stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    private GuildMemberResponse toResponse(GuildMember member) {
+        boolean realUser = member.getType() == GuildMemberType.REAL;
+        return new GuildMemberResponse(
+                member.getId(),
+                member.getDisplayName(),
+                member.getRole(),
+                member.getType(),
+                realUser
+        );
     }
 }
