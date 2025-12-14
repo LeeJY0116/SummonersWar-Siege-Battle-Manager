@@ -1,9 +1,11 @@
 package com.sbm.siegebackend.domain.research;
 
 import com.sbm.siegebackend.domain.research.dto.*;
+import com.sbm.siegebackend.global.api.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -20,82 +22,86 @@ public class BattleResearchController {
     // ===== Posts =====
 
     @PostMapping("/posts")
-    public ResponseEntity<Long> createPost(
+    public ResponseEntity<ApiResponse<Long>> createPost(
             @RequestBody BattleResearchPostCreateRequest request,
             Authentication auth
     ) {
         String email = (String) auth.getPrincipal();
-        return ResponseEntity.ok(service.createPost(email, request));
+        Long postId = service.createPost(email, request);
+        return ResponseEntity.ok(ApiResponse.success(postId));
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<List<BattleResearchPostListItemResponse>> listPosts(
+    public ResponseEntity<ApiResponse<List<BattleResearchPostListItemResponse>>> listPosts(
             Authentication auth
     ) {
         String email = (String) auth.getPrincipal();
-        return ResponseEntity.ok(service.listPosts(email));
+        List<BattleResearchPostListItemResponse> posts = service.listPosts(email);
+        return ResponseEntity.ok(ApiResponse.success(posts));
     }
 
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<BattleResearchPostDetailResponse> detail(
+    public ResponseEntity<ApiResponse<BattleResearchPostDetailResponse>> detail(
             @PathVariable Long postId,
             Authentication auth
     ) {
         String email = (String) auth.getPrincipal();
-        return ResponseEntity.ok(service.getPostDetail(email, postId));
+        BattleResearchPostDetailResponse detail = service.getPostDetail(email, postId);
+        return ResponseEntity.ok(ApiResponse.success(detail));
     }
 
     @PutMapping("/posts/{postId}")
-    public ResponseEntity<Void> updatePost(
+    public ResponseEntity<ApiResponse<Void>> updatePost(
             @PathVariable Long postId,
             @RequestBody BattleResearchPostUpdateRequest request,
             Authentication auth
     ) {
         String email = (String) auth.getPrincipal();
         service.updatePost(email, postId, request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<Void> deletePost(
+    public ResponseEntity<ApiResponse<Void>> deletePost(
             @PathVariable Long postId,
             Authentication auth
     ) {
         String email = (String) auth.getPrincipal();
         service.deletePost(email, postId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     // ===== Comments =====
 
     @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<Long> createComment(
+    public ResponseEntity<ApiResponse<Long>> createComment(
             @PathVariable Long postId,
             @RequestBody BattleResearchCommentCreateRequest request,
             Authentication auth
     ) {
         String email = (String) auth.getPrincipal();
-        return ResponseEntity.ok(service.createComment(email, postId, request));
+        Long commentId = service.createComment(email, postId, request);
+        return ResponseEntity.ok(ApiResponse.success(commentId));
     }
 
     @PutMapping("/comments/{commentId}")
-    public ResponseEntity<Void> updateComment(
+    public ResponseEntity<ApiResponse<Void>> updateComment(
             @PathVariable Long commentId,
             @RequestBody BattleResearchCommentUpdateRequest request,
             Authentication auth
     ) {
         String email = (String) auth.getPrincipal();
         service.updateComment(email, commentId, request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<Void> deleteComment(
+    public ResponseEntity<ApiResponse<Void>> deleteComment(
             @PathVariable Long commentId,
             Authentication auth
     ) {
         String email = (String) auth.getPrincipal();
         service.deleteComment(email, commentId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiResponse.success());
     }
 }

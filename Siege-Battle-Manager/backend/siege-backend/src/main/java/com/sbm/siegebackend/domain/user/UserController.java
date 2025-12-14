@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.sbm.siegebackend.domain.user.dto.UserMeResponse;
 import org.springframework.security.core.Authentication;
+import com.sbm.siegebackend.global.api.ApiResponse;
+
 
 /**
  * User 관련 REST API 컨트롤러
@@ -28,9 +30,9 @@ public class UserController {
      * POST /api/users/signup
      */
     @PostMapping("/signup")
-    public ResponseEntity<UserSignUpResponse> signUp(@RequestBody UserSignUpRequest request) {
+    public ResponseEntity<ApiResponse<UserSignUpResponse>> signUp(@RequestBody UserSignUpRequest request) {
         UserSignUpResponse response = userService.signUp(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     /**
@@ -38,9 +40,9 @@ public class UserController {
      * POST /api/users/login
      */
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponse> login(@RequestBody UserLoginRequest request) {
+    public ResponseEntity<ApiResponse<UserLoginResponse>> login(@RequestBody UserLoginRequest request) {
         UserLoginResponse response = userService.login(request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
 
@@ -49,7 +51,7 @@ public class UserController {
      * GET /api/users/me
      */
     @GetMapping("/me")
-    public ResponseEntity<UserMeResponse> me(Authentication authentication) {
+    public ResponseEntity<ApiResponse<UserMeResponse>> me(Authentication authentication) {
         // JwtAuthenticationFilter에서 principal에 email을 넣어줬음
         String email = (String) authentication.getPrincipal();
 
@@ -62,6 +64,6 @@ public class UserController {
                 user.getRole().name()
         );
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

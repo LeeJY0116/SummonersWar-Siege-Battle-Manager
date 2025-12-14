@@ -2,6 +2,7 @@ package com.sbm.siegebackend.domain.guild;
 
 import com.sbm.siegebackend.domain.guild.dto.GuildCreateRequest;
 import com.sbm.siegebackend.domain.guild.dto.GuildResponse;
+import com.sbm.siegebackend.global.api.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +24,13 @@ public class GuildController {
      * POST /api/guilds
      */
     @PostMapping
-    public ResponseEntity<GuildResponse> createGuild(
+    public ResponseEntity<ApiResponse<GuildResponse>> createGuild(
             Authentication authentication,
             @RequestBody GuildCreateRequest request
     ) {
         String email = (String) authentication.getPrincipal();
         GuildResponse response = guildService.createGuild(email, request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     /**
@@ -37,9 +38,9 @@ public class GuildController {
      * GET /api/guilds
      */
     @GetMapping
-    public ResponseEntity<List<GuildResponse>> getGuilds() {
+    public ResponseEntity<ApiResponse<List<GuildResponse>>> getGuilds() {
         List<GuildResponse> guilds = guildService.getAllGuilds();
-        return ResponseEntity.ok(guilds);
+        return ResponseEntity.ok(ApiResponse.success(guilds));
     }
 
     /**
@@ -47,9 +48,9 @@ public class GuildController {
      * GET /api/guilds/me
      */
     @GetMapping("/me")
-    public ResponseEntity<GuildResponse> getMyGuild(Authentication authentication) {
+    public ResponseEntity<ApiResponse<GuildResponse>> getMyGuild(Authentication authentication) {
         String email = (String) authentication.getPrincipal();
         GuildResponse response = guildService.getMyGuild(email);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

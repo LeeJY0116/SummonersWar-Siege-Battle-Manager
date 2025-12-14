@@ -5,6 +5,8 @@ import com.sbm.siegebackend.domain.deck.dto.OwnerlessDefenseDeckDetailResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.sbm.siegebackend.global.api.ApiResponse;
+
 
 @RestController
 @RequestMapping("/api/ownerless-defense-decks")
@@ -17,31 +19,32 @@ public class OwnerlessDefenseDeckController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> create(
+    public ResponseEntity<ApiResponse<Long>> create(
             @RequestBody OwnerlessDefenseDeckCreateRequest request,
             Authentication auth
     ) {
         String email = (String) auth.getPrincipal();
         Long id = service.create(email, request);
-        return ResponseEntity.ok(id);
+        return ResponseEntity.ok(ApiResponse.success(id));
     }
 
     @GetMapping("/{deckId}")
-    public ResponseEntity<OwnerlessDefenseDeckDetailResponse> detail(
+    public ResponseEntity<ApiResponse<OwnerlessDefenseDeckDetailResponse>> detail(
             @PathVariable Long deckId,
             Authentication auth
     ) {
         String email = (String) auth.getPrincipal();
-        return ResponseEntity.ok(service.getDetail(email, deckId));
+        var res = service.getDetail(email,deckId);
+        return ResponseEntity.ok(ApiResponse.success(res));
     }
 
     @DeleteMapping("/{deckId}")
-    public ResponseEntity<Void> delete(
+    public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable Long deckId,
             Authentication auth
     ) {
         String email = (String) auth.getPrincipal();
         service.delete(email, deckId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiResponse.success());
     }
 }

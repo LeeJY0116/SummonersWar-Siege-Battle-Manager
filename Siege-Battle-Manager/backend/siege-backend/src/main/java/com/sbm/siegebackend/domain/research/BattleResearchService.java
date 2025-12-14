@@ -6,6 +6,7 @@ import com.sbm.siegebackend.domain.monster.MonsterRepository;
 import com.sbm.siegebackend.domain.research.dto.*;
 import com.sbm.siegebackend.domain.user.User;
 import com.sbm.siegebackend.domain.user.UserService;
+import com.sbm.siegebackend.global.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -111,7 +112,7 @@ public class BattleResearchService {
         GuildMember actor = getActor(email);
 
         BattleResearchPost post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("게시글이 존재하지 않습니다."));
 
         if (!post.getGuild().getId().equals(actor.getGuild().getId())) {
             throw new IllegalStateException("다른 길드의 게시글은 조회할 수 없습니다.");
@@ -151,7 +152,7 @@ public class BattleResearchService {
         Long actorUserId = getActorUserId(email);
 
         BattleResearchPost post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("게시글이 존재하지 않습니다."));
 
         if (!post.getGuild().getId().equals(actor.getGuild().getId())) {
             throw new IllegalStateException("다른 길드의 게시글은 수정할 수 없습니다.");
@@ -168,7 +169,7 @@ public class BattleResearchService {
 
         List<Monster> defense = request.getDefenseMonsterIds().stream()
                 .map(id -> monsterRepository.findById(id)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 몬스터 ID: " + id)))
+                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
                 .toList();
 
         post.changeTitle(request.getTitle());
@@ -180,7 +181,7 @@ public class BattleResearchService {
         Long actorUserId = getActorUserId(email);
 
         BattleResearchPost post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("게시글이 존재하지 않습니다."));
 
         if (!post.getGuild().getId().equals(actor.getGuild().getId())) {
             throw new IllegalStateException("다른 길드의 게시글은 삭제할 수 없습니다.");
@@ -209,7 +210,7 @@ public class BattleResearchService {
         GuildMember actor = getActor(email);
 
         BattleResearchPost post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("게시글이 존재하지 않습니다."));
 
         if (!post.getGuild().getId().equals(actor.getGuild().getId())) {
             throw new IllegalStateException("다른 길드의 게시글에는 댓글을 달 수 없습니다.");
@@ -222,7 +223,7 @@ public class BattleResearchService {
 
         List<Monster> attack = ids.stream()
                 .map(id -> monsterRepository.findById(id)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 몬스터 ID: " + id)))
+                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
                 .toList();
 
         Long authorUserId = getActorUserId(email);
@@ -245,7 +246,7 @@ public class BattleResearchService {
         Long actorUserId = getActorUserId(email);
 
         BattleResearchComment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("댓글이 존재하지 않습니다."));
 
         // 같은 길드인지 확인
         if (!comment.getPost().getGuild().getId().equals(actor.getGuild().getId())) {
@@ -264,7 +265,7 @@ public class BattleResearchService {
 
         List<Monster> attack = ids.stream()
                 .map(id -> monsterRepository.findById(id)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 몬스터 ID: " + id)))
+                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
                 .toList();
 
         comment.changeAttackMonsters(attack);
@@ -276,7 +277,7 @@ public class BattleResearchService {
         Long actorUserId = getActorUserId(email);
 
         BattleResearchComment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("댓글이 존재하지 않습니다."));
 
         if (!comment.getPost().getGuild().getId().equals(actor.getGuild().getId())) {
             throw new IllegalStateException("다른 길드의 댓글은 삭제할 수 없습니다.");
