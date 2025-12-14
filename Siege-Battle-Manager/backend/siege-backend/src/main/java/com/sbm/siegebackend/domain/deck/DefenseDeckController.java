@@ -4,6 +4,8 @@ import com.sbm.siegebackend.domain.deck.dto.DefenseDeckCreateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.sbm.siegebackend.domain.deck.dto.DefenseDeckResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/defense-decks")
@@ -40,5 +42,26 @@ public class DefenseDeckController {
         String email = (String) auth.getPrincipal();
         defenseDeckService.deleteDeck(deckId, email);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 길드 방덱 목록 조회 + 필터
+     *
+     * GET /api/defense-decks
+     * ?monsterId=
+     * &leaderEffect=
+     * &ownerMemberId=
+     */
+    @GetMapping
+    public ResponseEntity<List<DefenseDeckResponse>> getDecks(
+            @RequestParam(required = false) Long monsterId,
+            @RequestParam(required = false) String leaderEffect,
+            @RequestParam(required = false) Long ownerMemberId,
+            Authentication auth
+    ) {
+        String email = (String) auth.getPrincipal();
+        List<DefenseDeckResponse> decks =
+                defenseDeckService.getGuildDecks(email, monsterId, leaderEffect, ownerMemberId);
+        return ResponseEntity.ok(decks);
     }
 }

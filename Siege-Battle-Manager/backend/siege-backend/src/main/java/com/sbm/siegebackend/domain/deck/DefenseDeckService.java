@@ -8,6 +8,9 @@ import com.sbm.siegebackend.domain.user.User;
 import com.sbm.siegebackend.domain.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.sbm.siegebackend.domain.deck.dto.DefenseDeckResponse;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 import java.util.List;
 
@@ -129,5 +132,78 @@ public class DefenseDeckService {
         }
 
         defenseDeckRepository.delete(deck);
+    }
+
+    @Transactional(readOnly = true)
+    public List<DefenseDeckResponse> getGuildDecks(
+            String email,
+            Long monsterFilterId,
+            String leaderEffectFilter,
+            Long ownerMemberFilterId
+    ) {
+        User user = userService.findByEmailOrThrow(email);
+
+        GuildMember me = guildMemberRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+
+        Long guildId = me.getGuild().getId();
+
+        List<DefenseDeck> decks = defenseDeckRepository.findByOwner_Guild_Id(guildId);
+
+        Stream<DefenseDeck> stream = decks.stream();
+
+        // 1️⃣ 길드원 필터
+        if (ownerMemberFilterId != null) {
+            stream = stream.filter(d ->
+                    d.getOwner().getId().equals(ownerMemberFilterId));
+        }
+
+        // 2️⃣ 몬스터 포함 필터
+        if (monsterFilterId != null) {
+            stream = stream.filter(d ->
+                    d.getMonsters().stream()
+                            .anyMatch(m -> m.getId().equals(monsterFilterId))
+            );
+        }
+
+        // 3️⃣ 리더 효과 필터
+        if (leaderEffectFilter != null && !leaderEffectFilter.isBlank()) {
+            stream = stream.filter(d ->
+                    d.getLeader().getLeaderEffectType() != null &&
+                            d.getLeader().getLeaderEffectType().equals(leaderEffectFilter)
+            );
+        }
+
+        List<DefenseDeck> filtered = stream.toList();
+
+        // 4️⃣ 정렬: 선택 몬스터가 리더인 덱 우선
+        if (monsterFilterId != null) {
+            filtered = filtered.stream()
+                    .sorted(Comparator.comparing(
+                            (DefenseDeck d) -> !d.getLeader().getId().equals(monsterFilterId)
+                    ))
+                    .toList();
+        }
+
+        return filtered.stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    private DefenseDeckResponse toResponse(DefenseDeck deck) {
+        return new DefenseDeckResponse(
+                deck.getId(),
+                deck.getOwner().getId(),
+                deck.getOwner().getDisplayName(),
+                deck.getLeader().getId(),
+                deck.getLeader().getName(),
+                deck.getLeader().getLeaderEffectType(),
+                deck.getMonsters().stream()
+                        .map(m -> new DefenseDeckResponse.MonsterItem(
+                                m.getId(),
+                                m.getName()
+                        ))
+                        .toList()
+        );
     }
 }
