@@ -166,6 +166,7 @@ JDBC URL은 application.yml 설정에 맞춰 입력합니다.
 ---
 
 ### 3) Monster 초기 데이터(예시)
+```sql
 INSERT INTO monsters (name, attribute, leader_effect_type)
 VALUES ('암 네오스톤 에이전트', 'DARK', 'ATTACK_SPEED');
 
@@ -174,7 +175,7 @@ VALUES ('암 마카롱 친위대', 'DARK', 'DEFENSE');
 
 INSERT INTO monsters (name, attribute, leader_effect_type)
 VALUES ('풍 젠이츠', 'WIND', 'ATTACK_SPEED');
-
+```
 ---
 
 ## 주요 엔드포인트(요약)
