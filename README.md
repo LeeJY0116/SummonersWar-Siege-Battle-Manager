@@ -138,25 +138,26 @@ Siege-Battle-Manager는
   "data": {},
   "message": null
 }
-
----
+```
 
 ### Error
+```json
 {
   "success": false,
   "data": null,
   "message": "에러 메시지"
 }
+```
 
 ---
 
-### Run (Local)
-1) 실행
+## Run (Local)
+### 1) 실행
 ./gradlew bootRun
 
 ---
 
-2) H2 Console
+### 2) H2 Console
 
 http://localhost:8080/h2-console
 
@@ -164,7 +165,7 @@ JDBC URL은 application.yml 설정에 맞춰 입력합니다.
 
 ---
 
-3) Monster 초기 데이터(예시)
+### 3) Monster 초기 데이터(예시)
 INSERT INTO monsters (name, attribute, leader_effect_type)
 VALUES ('암 네오스톤 에이전트', 'DARK', 'ATTACK_SPEED');
 
@@ -176,7 +177,7 @@ VALUES ('풍 젠이츠', 'WIND', 'ATTACK_SPEED');
 
 ---
 
-### 주요 엔드포인트(요약)
+## 주요 엔드포인트(요약)
 
 Auth/User
 
@@ -220,7 +221,7 @@ DELETE /api/research/comments/{commentId}
 
 ---
 
-### Roadmap
+## Roadmap
 
  JWT 인증/회원 시스템
 
@@ -243,7 +244,7 @@ DELETE /api/research/comments/{commentId}
 ---
 
 
-💻 프로젝트의 철학
+## 💻 프로젝트의 철학
 
 이 프로젝트는 단순히 방덱을 저장하는 도구가 아니다.
 
