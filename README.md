@@ -153,8 +153,9 @@ Siege-Battle-Manager는
 
 ## Run (Local)
 ### 1) 실행
+```bash
 ./gradlew bootRun
-
+```
 ---
 
 ### 2) H2 Console
@@ -180,81 +181,81 @@ VALUES ('풍 젠이츠', 'WIND', 'ATTACK_SPEED');
 
 ## 주요 엔드포인트(요약)
 
-Auth/User
+- Auth/User
 
-POST /api/users/signup
+- POST /api/users/signup
 
-POST /api/users/login
+- POST /api/users/login
 
-Defense Deck
+- Defense Deck
 
-POST /api/defense-decks/{guildMemberId}
+- POST /api/defense-decks/{guildMemberId}
 
-DELETE /api/defense-decks/{deckId}
+- DELETE /api/defense-decks/{deckId}
 
-GET /api/defense-decks?monsterId=&leaderEffect=&ownerMemberId=
+- GET /api/defense-decks?monsterId=&leaderEffect=&ownerMemberId=
 
-Ownerless Defense Deck (Template)
+- Ownerless Defense Deck (Template)
 
-POST /api/ownerless-defense-decks
+- POST /api/ownerless-defense-decks
 
-GET /api/ownerless-defense-decks/{deckId}
+- GET /api/ownerless-defense-decks/{deckId}
 
-DELETE /api/ownerless-defense-decks/{deckId}
+- DELETE /api/ownerless-defense-decks/{deckId}
 
-Battle Research
+- Battle Research
 
-POST /api/research/posts
+- POST /api/research/posts
 
-GET /api/research/posts
+- GET /api/research/posts
 
-GET /api/research/posts/{postId}
+- GET /api/research/posts/{postId}
 
-PUT /api/research/posts/{postId}
+- PUT /api/research/posts/{postId}
 
-DELETE /api/research/posts/{postId}
+- DELETE /api/research/posts/{postId}
 
-POST /api/research/posts/{postId}/comments
+- POST /api/research/posts/{postId}/comments
 
-PUT /api/research/comments/{commentId}
+- PUT /api/research/comments/{commentId}
 
-DELETE /api/research/comments/{commentId}
+- DELETE /api/research/comments/{commentId}
 
 ---
 
 ## Roadmap
 
- JWT 인증/회원 시스템
+- JWT 인증/회원 시스템
 
- 길드/길드원(REAL/VIRTUAL) + 권한 체계
+- 길드/길드원(REAL/VIRTUAL) + 권한 체계
 
- 몬스터/인벤토리(수량)
+- 몬스터/인벤토리(수량)
 
- 방덱 생성/삭제(인벤 차감/복구) + 필터링
+- 방덱 생성/삭제(인벤 차감/복구) + 필터링
 
- 주인 없는 방덱(템플릿) + 가능 인원 자동 계산
+- 주인 없는 방덱(템플릿) + 가능 인원 자동 계산
 
- 전투 연구(게시글/댓글) + 데이터 유지 정책
+- 전투 연구(게시글/댓글) + 데이터 유지 정책
 
- 성능 최적화(N+1 개선, count 쿼리 최적화)
+- 성능 최적화(N+1 개선, count 쿼리 최적화)
 
- 프론트 연동(API 문서 상세화)
+- 프론트 연동(API 문서 상세화)
 
- 배포(MySQL 전환, 계정/스토리지 확장)
+- 배포(MySQL 전환, 계정/스토리지 확장)
 
 ---
 
 
 ## 💻 프로젝트의 철학
 
-이 프로젝트는 단순히 방덱을 저장하는 도구가 아니다.
+> 이 프로젝트는 단순히 방덱을 저장하는 도구가 아니다.
 
-길드 전체 방덱 전력을 계산하고
+> 길드 전체 방덱 전력을 계산하고
 
-모든 길드원이 같은 목표를 향해 효율적으로 운영될 수 있게 하며
+> 모든 길드원이 같은 목표를 향해 효율적으로 운영될 수 있게 하며
 
-전략 연구 자료를 축적하는 데이터베이스 역할을 한다
+> 전략 연구 자료를 축적하는 데이터베이스 역할을 한다
 
-즉, 점령전 운영을 시스템화한 길드 매니지먼트 플랫폼이다.
+> 즉, 점령전 운영을 시스템화한 길드 매니지먼트 플랫폼이다.
 
 ---
