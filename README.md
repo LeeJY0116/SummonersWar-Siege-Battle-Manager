@@ -139,6 +139,8 @@ Siege-Battle-Manager는
   "message": null
 }
 
+---
+
 ### Error
 {
   "success": false,
@@ -146,15 +148,21 @@ Siege-Battle-Manager는
   "message": "에러 메시지"
 }
 
+---
+
 ### Run (Local)
 1) 실행
 ./gradlew bootRun
+
+---
 
 2) H2 Console
 
 http://localhost:8080/h2-console
 
 JDBC URL은 application.yml 설정에 맞춰 입력합니다.
+
+---
 
 3) Monster 초기 데이터(예시)
 INSERT INTO monsters (name, attribute, leader_effect_type)
@@ -165,6 +173,8 @@ VALUES ('암 마카롱 친위대', 'DARK', 'DEFENSE');
 
 INSERT INTO monsters (name, attribute, leader_effect_type)
 VALUES ('풍 젠이츠', 'WIND', 'ATTACK_SPEED');
+
+---
 
 ### 주요 엔드포인트(요약)
 
@@ -208,6 +218,8 @@ PUT /api/research/comments/{commentId}
 
 DELETE /api/research/comments/{commentId}
 
+---
+
 ### Roadmap
 
  JWT 인증/회원 시스템
@@ -228,7 +240,7 @@ DELETE /api/research/comments/{commentId}
 
  배포(MySQL 전환, 계정/스토리지 확장)
 
-
+---
 
 
 💻 프로젝트의 철학
@@ -242,3 +254,5 @@ DELETE /api/research/comments/{commentId}
 전략 연구 자료를 축적하는 데이터베이스 역할을 한다
 
 즉, 점령전 운영을 시스템화한 길드 매니지먼트 플랫폼이다.
+
+---
