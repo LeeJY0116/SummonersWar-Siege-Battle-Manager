@@ -5,6 +5,7 @@ import com.sbm.siegebackend.domain.user.dto.UserLoginRequest;
 import com.sbm.siegebackend.domain.user.dto.UserLoginResponse;
 import com.sbm.siegebackend.domain.user.dto.UserSignUpRequest;
 import com.sbm.siegebackend.domain.user.dto.UserSignUpResponse;
+import com.sbm.siegebackend.global.exception.NotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,6 +97,6 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findByEmailOrThrow(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다: " + email));
     }
 }

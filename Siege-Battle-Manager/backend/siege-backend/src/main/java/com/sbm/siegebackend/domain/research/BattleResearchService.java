@@ -41,7 +41,7 @@ public class BattleResearchService {
     private GuildMember getActor(String email) {
         User user = userService.findByEmailOrThrow(email);
         return guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+                .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
     }
 
     private boolean isManager(GuildMember actor) {
@@ -67,7 +67,7 @@ public class BattleResearchService {
 
         List<Monster> defense = request.getDefenseMonsterIds().stream()
                 .map(id -> monsterRepository.findById(id)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 몬스터 ID: " + id)))
+                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
                 .toList();
 
         Long authorUserId = getActorUserId(email);

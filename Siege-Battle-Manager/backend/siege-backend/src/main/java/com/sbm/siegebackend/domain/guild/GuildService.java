@@ -4,6 +4,7 @@ import com.sbm.siegebackend.domain.guild.dto.GuildCreateRequest;
 import com.sbm.siegebackend.domain.guild.dto.GuildResponse;
 import com.sbm.siegebackend.domain.user.User;
 import com.sbm.siegebackend.domain.user.UserService;
+import com.sbm.siegebackend.global.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,7 +96,7 @@ public class GuildService {
 
         // REAL 멤버 중 user_id 가 같은 길드원 찾기
         GuildMember member = guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("가입된 길드가 없습니다."));
+                .orElseThrow(() -> new NotFoundException("가입된 길드가 없습니다."));
 
         Guild guild = member.getGuild();
         if (guild == null) {

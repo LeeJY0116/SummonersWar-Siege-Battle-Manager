@@ -3,6 +3,7 @@ package com.sbm.siegebackend.domain.guild;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberCreateRequest;
 import com.sbm.siegebackend.domain.user.User;
 import com.sbm.siegebackend.domain.user.UserService;
+import com.sbm.siegebackend.global.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberResponse;
@@ -31,11 +32,11 @@ public class GuildMemberService {
         User user = userService.findByEmailOrThrow(email);
 
         Guild guild = guildRepository.findById(guildId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 길드입니다."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 길드입니다."));
 
         // 현재 로그인 유저가 이 길드의 MASTER 또는 SUB_MASTER인지 확인
         GuildMember actor = guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+                .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         if (actor.getGuild().getId() != guildId) {
             throw new IllegalStateException("해당 길드의 멤버가 아니므로 접근할 수 없습니다.");
@@ -68,10 +69,10 @@ public class GuildMemberService {
         User user = userService.findByEmailOrThrow(email);
 
         GuildMember actor = guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+                .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         GuildMember target = guildMemberRepository.findById(guildMemberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 길드원이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("해당 길드원이 존재하지 않습니다."));
 
         // 자기 길드인지 확인
         if (!actor.getGuild().getId().equals(target.getGuild().getId())) {
@@ -96,7 +97,7 @@ public class GuildMemberService {
         User user = userService.findByEmailOrThrow(email);
 
         GuildMember me = guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+                .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         Guild guild = me.getGuild();
 

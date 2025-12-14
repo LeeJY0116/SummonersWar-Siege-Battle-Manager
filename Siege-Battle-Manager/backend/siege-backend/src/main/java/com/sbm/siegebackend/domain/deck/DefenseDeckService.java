@@ -6,6 +6,7 @@ import com.sbm.siegebackend.domain.monster.Monster;
 import com.sbm.siegebackend.domain.monster.MonsterRepository;
 import com.sbm.siegebackend.domain.user.User;
 import com.sbm.siegebackend.domain.user.UserService;
+import com.sbm.siegebackend.global.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.sbm.siegebackend.domain.deck.dto.DefenseDeckResponse;
@@ -43,10 +44,10 @@ public class DefenseDeckService {
         User user = userService.findByEmailOrThrow(email);
 
         GuildMember actor = guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+                .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         GuildMember owner = guildMemberRepository.findById(ownerMemberId)
-                .orElseThrow(() -> new IllegalArgumentException("대상 길드원이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("대상 길드원이 존재하지 않습니다."));
 
         // 같은 길드인지 확인
         if (!actor.getGuild().getId().equals(owner.getGuild().getId())) {
@@ -70,14 +71,14 @@ public class DefenseDeckService {
         // 몬스터 조회
         List<Monster> monsters = request.getMonsterIds().stream()
                 .map(id -> monsterRepository.findById(id)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 몬스터 ID: " + id)))
+                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
                 .toList();
 
         // 🔥 인벤토리 수량 체크 + 차감
         for (Monster monster : monsters) {
             GuildMemberInventory inv = inventoryRepository
                     .findByGuildMemberAndMonster(owner, monster)
-                    .orElseThrow(() -> new IllegalStateException(
+                    .orElseThrow(() -> new NotFoundException(
                             monster.getName() + " 보유 수량이 부족합니다."
                     ));
 
@@ -101,10 +102,10 @@ public class DefenseDeckService {
         User user = userService.findByEmailOrThrow(email);
 
         GuildMember actor = guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+                .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         DefenseDeck deck = defenseDeckRepository.findById(deckId)
-                .orElseThrow(() -> new IllegalArgumentException("방덱이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("방덱이 존재하지 않습니다."));
 
         GuildMember owner = deck.getOwner();
 
@@ -144,7 +145,7 @@ public class DefenseDeckService {
         User user = userService.findByEmailOrThrow(email);
 
         GuildMember me = guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+                .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         Long guildId = me.getGuild().getId();
 

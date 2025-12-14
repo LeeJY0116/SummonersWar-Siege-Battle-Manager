@@ -7,6 +7,7 @@ import com.sbm.siegebackend.domain.monster.Monster;
 import com.sbm.siegebackend.domain.monster.MonsterRepository;
 import com.sbm.siegebackend.domain.user.User;
 import com.sbm.siegebackend.domain.user.UserService;
+import com.sbm.siegebackend.global.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +39,7 @@ public class OwnerlessDefenseDeckService {
         User user = userService.findByEmailOrThrow(email);
 
         GuildMember actor = guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+                .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         // 권한: 마스터/부마스터만
         if (actor.getRole() == GuildMemberRole.MEMBER) {
@@ -51,7 +52,7 @@ public class OwnerlessDefenseDeckService {
 
         List<Monster> monsters = request.getMonsterIds().stream()
                 .map(id -> monsterRepository.findById(id)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 몬스터 ID: " + id)))
+                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
                 .toList();
 
         OwnerlessDefenseDeck deck = new OwnerlessDefenseDeck(
@@ -69,10 +70,10 @@ public class OwnerlessDefenseDeckService {
         User user = userService.findByEmailOrThrow(email);
 
         GuildMember actor = guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+                .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         OwnerlessDefenseDeck deck = ownerlessRepo.findById(deckId)
-                .orElseThrow(() -> new IllegalArgumentException("주인 없는 방덱이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("주인 없는 방덱이 존재하지 않습니다."));
 
         if (!deck.getGuild().getId().equals(actor.getGuild().getId())) {
             throw new IllegalStateException("다른 길드의 방덱은 조회할 수 없습니다.");
@@ -119,7 +120,7 @@ public class OwnerlessDefenseDeckService {
         User user = userService.findByEmailOrThrow(email);
 
         GuildMember actor = guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+                .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         // 권한: 마스터/부마스터만
         if (actor.getRole() == GuildMemberRole.MEMBER) {
@@ -127,7 +128,7 @@ public class OwnerlessDefenseDeckService {
         }
 
         OwnerlessDefenseDeck deck = ownerlessRepo.findById(deckId)
-                .orElseThrow(() -> new IllegalArgumentException("주인 없는 방덱이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("주인 없는 방덱이 존재하지 않습니다."));
 
         if (!deck.getGuild().getId().equals(actor.getGuild().getId())) {
             throw new IllegalStateException("다른 길드의 방덱은 삭제할 수 없습니다.");

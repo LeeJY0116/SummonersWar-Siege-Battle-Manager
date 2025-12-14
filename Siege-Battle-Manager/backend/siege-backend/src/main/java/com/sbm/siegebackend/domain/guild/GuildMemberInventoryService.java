@@ -6,6 +6,7 @@ import com.sbm.siegebackend.domain.monster.Monster;
 import com.sbm.siegebackend.domain.monster.MonsterRepository;
 import com.sbm.siegebackend.domain.user.User;
 import com.sbm.siegebackend.domain.user.UserService;
+import com.sbm.siegebackend.global.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,10 +39,10 @@ public class GuildMemberInventoryService {
         User user = userService.findByEmailOrThrow(email);
 
         GuildMember actor = guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+                .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         GuildMember target = guildMemberRepository.findById(guildMemberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 길드원이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("해당 길드원이 존재하지 않습니다."));
 
         // 같은 길드인지 확인
         if (!actor.getGuild().getId().equals(target.getGuild().getId())) {
@@ -70,10 +71,10 @@ public class GuildMemberInventoryService {
         User user = userService.findByEmailOrThrow(email);
 
         GuildMember actor = guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalStateException("길드에 가입되지 않은 유저입니다."));
+                .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         GuildMember target = guildMemberRepository.findById(guildMemberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 길드원이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException("해당 길드원이 존재하지 않습니다."));
 
         // 같은 길드인지 확인
         if (!actor.getGuild().getId().equals(target.getGuild().getId())) {
@@ -103,7 +104,7 @@ public class GuildMemberInventoryService {
             }
 
             Monster monster = monsterRepository.findById(item.getMonsterId())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 몬스터 ID: " + item.getMonsterId()));
+                    .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + item.getMonsterId()));
 
             GuildMemberInventory inv = new GuildMemberInventory(
                     target,
