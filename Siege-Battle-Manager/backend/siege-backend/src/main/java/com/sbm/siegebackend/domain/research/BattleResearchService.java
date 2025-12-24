@@ -92,6 +92,19 @@ public class BattleResearchService {
 
         List<BattleResearchPost> posts = postRepository.findByGuild_IdOrderByCreatedAtDesc(guildId);
 
+        // ✅ 댓글 개수 한 번에 조회
+        List<Long> postIds = posts.stream().map(BattleResearchPost::getId).toList();
+
+        var countRows = postIds.isEmpty()
+                ? List.<BattleResearchCommentRepository.PostCommentCount>of()
+                : commentRepository.countByPostIds(postIds);
+
+        java.util.Map<Long, Long> countMap = countRows.stream()
+                .collect(java.util.stream.Collectors.toMap(
+                        BattleResearchCommentRepository.PostCommentCount::getPostId,
+                        BattleResearchCommentRepository.PostCommentCount::getCnt
+                ));
+
         return posts.stream()
                 .map(p -> new BattleResearchPostListItemResponse(
                         p.getId(),
@@ -111,15 +124,18 @@ public class BattleResearchService {
     public BattleResearchPostDetailResponse getPostDetail(String email, Long postId) {
         GuildMember actor = getActor(email);
 
-        BattleResearchPost post = postRepository.findById(postId)
+        BattleResearchPost post = postRepository.findDetailWithDefense(postId)
                 .orElseThrow(() -> new NotFoundException("게시글이 존재하지 않습니다."));
 
         if (!post.getGuild().getId().equals(actor.getGuild().getId())) {
             throw new IllegalStateException("다른 길드의 게시글은 조회할 수 없습니다.");
         }
 
-        List<BattleResearchCommentResponse> comments = commentRepository.findByPost_IdOrderByCreatedAtAsc(postId)
-                .stream()
+        List<BattleResearchComment> comments =
+                commentRepository.findByPostIdWithMonsters(postId);
+
+        List<BattleResearchCommentResponse> commentResponses =
+                comments.stream()
                 .map(c -> new BattleResearchCommentResponse(
                         c.getId(),
                         c.getAuthorName(),
@@ -143,7 +159,7 @@ public class BattleResearchService {
                         .toList(),
                 post.getCreatedAt(),
                 post.getUpdatedAt(),
-                comments
+                commentResponses
         );
     }
 
@@ -180,7 +196,7 @@ public class BattleResearchService {
         GuildMember actor = getActor(email);
         Long actorUserId = getActorUserId(email);
 
-        BattleResearchPost post = postRepository.findById(postId)
+        BattleResearchPost post = postRepository.findDetailWithDefense(postId)
                 .orElseThrow(() -> new NotFoundException("게시글이 존재하지 않습니다."));
 
         if (!post.getGuild().getId().equals(actor.getGuild().getId())) {
