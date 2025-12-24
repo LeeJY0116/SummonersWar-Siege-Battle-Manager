@@ -149,7 +149,7 @@ public class DefenseDeckService {
 
         Long guildId = me.getGuild().getId();
 
-        List<DefenseDeck> decks = defenseDeckRepository.findByOwner_Guild_Id(guildId);
+        List<DefenseDeck> decks = defenseDeckRepository.findByGuildIdWithOwnerAndMonsters(guildId);
 
         Stream<DefenseDeck> stream = decks.stream();
 
