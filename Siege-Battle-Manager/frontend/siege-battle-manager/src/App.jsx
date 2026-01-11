@@ -19,9 +19,13 @@ function uid() {
   return Math.random().toString(36).slice(2, 10);
 }
 
+function loadInitialMonsters() {
+  return ALL_DEFAULT_MONSTERS;
+}
+
 export default function SiegeBattleManager() {
   const [activeTab, setActiveTab] = useState("manager");
-  const [monsters, setMonsters] = useState([]);
+  const [monsters, setMonsters] = useState(loadInitialMonsters());
   const [trios, setTrios] = useState([]);
   const importRef = useRef(null);
 
@@ -35,14 +39,15 @@ export default function SiegeBattleManager() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
     // 🆕 처음 실행하는 사용자 → 기본 몬스터 자동 등록
-    setMonsters(ALL_DEFAULT_MONSTERS);
-    setTrios([]);
+    loadMonsters().then((ms) => {
+      setMonsters(ms);
+      setTrios([]);
+    });
     return;
     } 
 
     try {
       const parsed = JSON.parse(raw);
-
       const loadedMonsters =
       parsed.monsters && parsed.monsters.length > 0
         ? parsed.monsters
@@ -62,6 +67,26 @@ export default function SiegeBattleManager() {
     const payload = JSON.stringify({ monsters, trios });
     localStorage.setItem(STORAGE_KEY, payload);
   }, [monsters, trios]);
+
+  // 백엔드 연동할 때 사용
+  const USE_BACKEND = false; // 나중에 true로 바꾸면 API 사용
+
+async function fetchMonstersFromBackend() {
+  const res = await fetch("http://localhost:8080/api/monsters");
+  const body = await res.json();
+  return body.data; // ApiResponse라면
+}
+
+async function loadMonsters() {
+  if (!USE_BACKEND) return ALL_DEFAULT_MONSTERS;
+  try {
+    return await fetchMonstersFromBackend();
+  } catch (e) {
+    console.warn("API failed, fallback to default JSON", e);
+    return ALL_DEFAULT_MONSTERS;
+  }
+}
+
 
   // ------- 몬스터 / 조합 CRUD 로직 -------
 
