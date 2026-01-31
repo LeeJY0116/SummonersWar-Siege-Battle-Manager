@@ -4,6 +4,9 @@ import FooterBar from "./components/layout/FooterBar.jsx";
 import ManagerTab from "./components/manager/ManagerTab.jsx";
 import SiegeBattleTab from "./components/siege/SiegeBattleTab.jsx";
 import defaultMonsters from "./data/defaultMonsters.json";
+import { fetchMyGuild } from "./lib/guild.js";
+import LoginPage from "./pages/LoginPage.jsx";
+
 
 const ALL_DEFAULT_MONSTERS = [
   ...defaultMonsters.fire,
@@ -12,6 +15,8 @@ const ALL_DEFAULT_MONSTERS = [
   ...defaultMonsters.light,
   ...defaultMonsters.dark,
 ];
+
+
 
 const STORAGE_KEY = "siege-battle-manager@v1";
 
@@ -28,10 +33,29 @@ export default function SiegeBattleManager() {
   const [monsters, setMonsters] = useState(loadInitialMonsters());
   const [trios, setTrios] = useState([]);
   const importRef = useRef(null);
+  const [guild, setGuild] = useState(null);
 
   useEffect(() => {
     document.title = "Siege-Battle-Manager";
   }, []);
+
+
+  // 로그인
+  const token = localStorage.getItem("accessToken");
+  if (!token) return <LoginPage />;
+
+  useEffect(() => {
+    if (!token) return;
+  
+  // if (!token) {
+    // window.location.href = "/login"; 라우터 만들 때 주석 해제
+  // }
+
+  fetchMyGuild()
+  .then(setGuild)
+  .catch(() => setGuild(null));
+}, [token]);
+
 
   // 로컬 스토리지 로드
 
