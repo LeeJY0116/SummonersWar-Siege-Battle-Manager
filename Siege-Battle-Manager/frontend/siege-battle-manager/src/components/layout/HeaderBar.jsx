@@ -7,7 +7,9 @@ export default function HeaderBar({
   onClickExport,
   importInputRef,
   onImportFile,
+  guild
 }) {
+  console.log("HeaderBar guild prop =", guild);
   return (
     <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
       <div>
@@ -18,6 +20,7 @@ export default function HeaderBar({
           점령전 조합 · 전투 기록 보조 도구
         </p>
       </div>
+
 
       <div className="flex flex-col items-end gap-2">
         {/* 탭 */}
@@ -46,6 +49,11 @@ export default function HeaderBar({
 
         {/* Import / Export */}
         <div className="flex items-center gap-2">
+          {guild && (
+            <div className="text-xs text-gray-400">
+              {guild ? `길드 : ${guild.name} (${guild.role})` : "길드 없음"}
+            </div>
+          )}
           <button
             onClick={onClickImport}
             className="px-4 py-2 rounded-2xl bg-white border border-gray-200 shadow-sm hover:bg-gray-100"
@@ -69,6 +77,18 @@ export default function HeaderBar({
           >
             설정 내보내기 (Export)
           </button>
+          <button
+          className="text-xs px-2 py-1 rounded bg-gray-200"
+          onClick={async () => {
+            const name = prompt("길드 이름?");
+            if (!name) return;
+            await createGuild(name);
+            const g = await fetchMyGuild();
+            setGuild(g);
+          }}
+        >
+          길드 만들기
+        </button>
         </div>
       </div>
     </header>
