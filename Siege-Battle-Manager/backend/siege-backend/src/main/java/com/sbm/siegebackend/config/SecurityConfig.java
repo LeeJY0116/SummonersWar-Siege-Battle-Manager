@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 회원가입, 로그인, H2 콘솔은 모두 허용
                         .requestMatchers("/api/users/signup", "/api/users/login", "/h2-console/**", "/api/monsters/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         // 나머지는 인증 필요
                         .anyRequest().authenticated()
                 )
@@ -45,6 +46,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 // UsernamePasswordAuthenticationFilter 전에 JWT 필터 추가
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
