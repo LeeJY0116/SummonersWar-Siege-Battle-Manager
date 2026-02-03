@@ -232,6 +232,7 @@ async function loadMonsters() {
     <div className="min-h-screen w-full bg-gray-50 text-gray-900">
       <div className="max-w-6xl mx-auto p-6 md:p-8">
         <HeaderBar
+          guild={guild}
           activeTab={activeTab}
           onChangeTab={setActiveTab}
           onClickImport={handleClickImport}
