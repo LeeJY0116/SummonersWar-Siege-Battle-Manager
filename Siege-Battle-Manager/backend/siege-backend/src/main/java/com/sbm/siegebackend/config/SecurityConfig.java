@@ -3,6 +3,7 @@ package com.sbm.siegebackend.config;
 import com.sbm.siegebackend.auth.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -38,7 +39,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 회원가입, 로그인, H2 콘솔은 모두 허용
                         .requestMatchers("/api/users/signup", "/api/users/login", "/h2-console/**", "/api/monsters/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // ✅ 길드 생성/내길드/내멤버는 로그인 필요
+                        .requestMatchers(HttpMethod.POST, "/api/guilds").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/guilds/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/guilds/me/members").authenticated()
+
+                        // 길드 목록은 필요하면 permitAll (선택)
+                        .requestMatchers(HttpMethod.GET, "/api/guilds").permitAll()
+
                         // 나머지는 인증 필요
                         .anyRequest().authenticated()
                 )
@@ -46,7 +56,6 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 // UsernamePasswordAuthenticationFilter 전에 JWT 필터 추가
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
 
         return http.build();
     }
@@ -59,6 +68,7 @@ public class SecurityConfig {
         config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
+        config.setExposedHeaders(List.of("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

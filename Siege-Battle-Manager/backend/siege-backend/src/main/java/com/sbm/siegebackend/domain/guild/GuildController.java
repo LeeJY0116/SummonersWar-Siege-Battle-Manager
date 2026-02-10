@@ -1,6 +1,7 @@
 package com.sbm.siegebackend.domain.guild;
 
 import com.sbm.siegebackend.domain.guild.dto.GuildCreateRequest;
+import com.sbm.siegebackend.domain.guild.dto.GuildMemberResponse;
 import com.sbm.siegebackend.domain.guild.dto.GuildResponse;
 import com.sbm.siegebackend.global.api.ApiResponse;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ public class GuildController {
 
     public GuildController(GuildService guildService) {
         this.guildService = guildService;
+
+
     }
 
     /**
@@ -29,6 +32,7 @@ public class GuildController {
             @RequestBody GuildCreateRequest request
     ) {
         String email = (String) authentication.getPrincipal();
+
         GuildResponse response = guildService.createGuild(email, request);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
@@ -53,4 +57,14 @@ public class GuildController {
         GuildResponse response = guildService.getMyGuild(email);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
+
+    @GetMapping("/me/members")
+    public ResponseEntity<ApiResponse<List<GuildMemberResponse>>> getMyGuildMembers(
+            Authentication authentication
+    ) {
+        String email = (String) authentication.getPrincipal();
+        List<GuildMemberResponse> members = guildService.getMyGuildMembers(email);
+        return ResponseEntity.ok(ApiResponse.success(members));
+    }
+
 }

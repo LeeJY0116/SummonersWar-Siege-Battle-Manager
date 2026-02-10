@@ -44,6 +44,7 @@ public class GuildMember {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+
     protected GuildMember() {}
 
     private GuildMember(Guild guild,
@@ -106,6 +107,8 @@ public class GuildMember {
     public LocalDateTime getCreatedAt() { return createdAt; }
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+
+    public boolean isRealUser() { return this.type == GuildMemberType.REAL; }
 
     // --- business methods ---
 

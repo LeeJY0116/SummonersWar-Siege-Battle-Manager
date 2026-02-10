@@ -56,6 +56,7 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
+
             // 서명 불일치, 만료, 형식 오류 등
             return false;
         }

@@ -1,6 +1,7 @@
 package com.sbm.siegebackend.domain.guild;
 
 import com.sbm.siegebackend.domain.guild.dto.GuildCreateRequest;
+import com.sbm.siegebackend.domain.guild.dto.GuildMemberResponse;
 import com.sbm.siegebackend.domain.guild.dto.GuildResponse;
 import com.sbm.siegebackend.domain.user.User;
 import com.sbm.siegebackend.domain.user.UserService;
@@ -30,6 +31,8 @@ public class GuildService {
      * 길드 생성: 현재 로그인 유저를 길드 마스터 + 첫 멤버로 등록
      */
     public GuildResponse createGuild(String email, GuildCreateRequest request) {
+
+        // 유저 조회
         User user = userService.findByEmailOrThrow(email);
 
         // ✅ 이미 어떤 길드에 가입되어 있는지 검사
@@ -111,4 +114,28 @@ public class GuildService {
                 guild.getMembers().size()
         );
     }
+
+    @Transactional(readOnly = true)
+    public List<GuildMemberResponse> getMyGuildMembers(String email) {
+        User user = userService.findByEmailOrThrow(email);
+
+        GuildMember myMember = guildMemberRepository.findByUser(user)
+                .orElseThrow(() -> new NotFoundException("가입된 길드가 없습니다."));
+
+        Guild guild = myMember.getGuild();
+
+        return guildMemberRepository.findAllByGuild(guild)
+                .stream()
+                .map(m -> new GuildMemberResponse(
+                        m.getId(),
+                        m.getDisplayName(),
+                        m.getRole(),
+                        m.getType(),
+                        m.isRealUser() // 네 필드에 맞게
+                ))
+                .toList();
+    }
+
+
+
 }

@@ -45,12 +45,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authHeader.substring(7); // "Bearer " 이후부터
+        String token = authHeader.substring(7).trim(); // "Bearer " 이후부터
+
+
+        // ✅ 따옴표로 감싸진 토큰이면 제거
+        if (token.startsWith("\"") && token.endsWith("\"") && token.length() >= 2) {
+            token = token.substring(1, token.length() - 1);
+        }
 
         if (!jwtTokenProvider.validateToken(token)) {
             filterChain.doFilter(request, response);
             return;
         }
+
+        // 토큰 만료시 401 에러 출력
+        if (!jwtTokenProvider.validateToken(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json; charset=UTF-8");
+            response.getWriter().write("{\"success\":false,\"data\":null,\"message\":\"토큰이 만료되었거나 유효하지 않습니다.\"}");
+            return;
+        }
+
 
         String email = jwtTokenProvider.getEmail(token);
         String role = jwtTokenProvider.getRole(token);

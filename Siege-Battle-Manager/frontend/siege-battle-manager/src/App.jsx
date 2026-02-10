@@ -4,7 +4,7 @@ import FooterBar from "./components/layout/FooterBar.jsx";
 import ManagerTab from "./components/manager/ManagerTab.jsx";
 import SiegeBattleTab from "./components/siege/SiegeBattleTab.jsx";
 import defaultMonsters from "./data/defaultMonsters.json";
-import { fetchMyGuild } from "./lib/guild.js";
+import { fetchMyGuild, createGuild, fetchMyGuildMembers } from "./lib/guild.js";
 import LoginPage from "./pages/LoginPage.jsx";
 
 
@@ -34,6 +34,7 @@ export default function SiegeBattleManager() {
   const [trios, setTrios] = useState([]);
   const importRef = useRef(null);
   const [guild, setGuild] = useState(null);
+  const [members, setMembers] = useState([]);
 
   useEffect(() => {
     document.title = "Siege-Battle-Manager";
@@ -55,6 +56,17 @@ export default function SiegeBattleManager() {
   .then(setGuild)
   .catch(() => setGuild(null));
 }, [token]);
+
+
+  // 길드 멤버 로드
+
+  useEffect(() => {
+  if (!guild) return;
+
+  fetchMyGuildMembers()
+  .then(setMembers)
+  .catch(() => setMembers([]));
+}, [guild]);
 
 
   // 로컬 스토리지 로드
@@ -192,6 +204,32 @@ async function loadMonsters() {
     );
   }
 
+  // 길드 생성 로직
+
+  async function handleCreateGuild() {
+  const name = prompt("길드 이름을 입력하세요");
+  if (!name || !name.trim()) return;
+
+  // 생성 후 다시 내 길드 조회해서 화면 반영
+  try {
+    const created = await createGuild(name.trim(), "");
+    console.log("createGuild response data:", created);
+
+    // ✅ 1) 생성 응답에 길드 정보가 오면 그걸로 바로 setGuild
+    // (네 백엔드는 GuildResponse를 바로 반환하니까 이게 가장 간단)
+    setGuild(created);
+
+    // ✅ 2) 멤버는 API 구현 후에 로드
+    // const ms = await fetchMyGuildMembers();
+    // setMembers(ms);
+  } catch (e) {
+    console.error("create guild failed:", e);
+    alert(e.message || "길드 생성 실패");
+    setGuild(null);
+  }
+}
+
+
   // ------- Import / Export -------
 
   function handleExport() {
@@ -233,6 +271,8 @@ async function loadMonsters() {
       <div className="max-w-6xl mx-auto p-6 md:p-8">
         <HeaderBar
           guild={guild}
+          members={members}
+          onCreateGuild={handleCreateGuild}
           activeTab={activeTab}
           onChangeTab={setActiveTab}
           onClickImport={handleClickImport}

@@ -3,6 +3,7 @@ package com.sbm.siegebackend.domain.guild;
 import com.sbm.siegebackend.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,5 +22,7 @@ public interface GuildMemberRepository extends JpaRepository<GuildMember, Long> 
     List<GuildMember> findByGuild(Guild guild);
 
     Optional<GuildMember> findByUser(User user);
+
+    List<GuildMember> findAllByGuild(Guild guild);
 }
 

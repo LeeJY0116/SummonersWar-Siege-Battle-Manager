@@ -1,11 +1,14 @@
 export const API_BASE = "http://localhost:8080/api";
 
 export async function apiFetch(url, options = {}) {
-  const token = localStorage.getItem("accessToken");
+  const rawToken = localStorage.getItem("accessToken");
+  const token = rawToken?.trim()?.replace(/^"(.+)"$/, "$1");
 
     const headers = {
     "Content-Type": "application/json",
-    ...(token && token !== "undefined" ? { Authorization: `Bearer ${token}` } : {}),
+    ...(token && token !== "undefined"
+      ? { Authorization: `Bearer ${token}` }
+      : {}),
     ...(options.headers || {}),
   };
 
@@ -29,6 +32,7 @@ export async function apiFetch(url, options = {}) {
 
   if (res.status === 401) {
     localStorage.removeItem("accessToken");
+    throw new Error("인증이 만료되었습니다. 다시 로그인 해주세요.");
     window.location.href = "/login";
     return;
   }
