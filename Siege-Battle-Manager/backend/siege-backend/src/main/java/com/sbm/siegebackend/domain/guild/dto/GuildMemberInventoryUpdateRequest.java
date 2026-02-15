@@ -17,21 +17,21 @@ public class GuildMemberInventoryUpdateRequest {
     }
 
     public static class Item {
-        private Long monsterId;
+        private String monsterCode;
         private int quantity;
 
         public Item() {}
 
-        public Long getMonsterId() {
-            return monsterId;
+        public String getMonsterCode() {
+            return monsterCode;
         }
 
         public int getQuantity() {
             return quantity;
         }
 
-        public void setMonsterId(Long monsterId) {
-            this.monsterId = monsterId;
+        public void setMonsterCode(String monsterCode) {
+            this.monsterCode = monsterCode;
         }
 
         public void setQuantity(int quantity) {

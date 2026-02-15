@@ -20,6 +20,7 @@ public class MonsterService {
         return monsterRepository.findAll().stream()
                 .map(m -> new MonsterResponse(
                         m.getId(),
+                        m.getCode(),
                         m.getName(),
                         m.getAttribute().name(),
                         m.getLeaderEffectType()
@@ -28,12 +29,19 @@ public class MonsterService {
     }
 
     public Long create(MonsterCreateRequest req) {
-        monsterRepository.findByName(req.name()).ifPresent(m -> {
-            throw new IllegalArgumentException("이미 존재하는 몬스터 이름입니다.");
+        monsterRepository.findByCode(req.code()).ifPresent(m -> {
+            throw new IllegalArgumentException("이미 존재하는 몬스터 코드입니다.");
         });
 
-        MonsterAttribute attr = MonsterAttribute.valueOf(req.attribute());
-        Monster saved = monsterRepository.save(new Monster(req.name(), attr, req.leaderEffectType()));
+        MonsterAttribute attr = MonsterAttribute.valueOf(req.attribute().toUpperCase());
+        Monster saved = monsterRepository.save(
+                Monster.builder()
+                        .code(req.code())
+                        .name(req.name())
+                        .attribute(attr)
+                        .leaderEffectType(req.leaderEffectType())
+                        .build()
+        );
         return saved.getId();
     }
 }

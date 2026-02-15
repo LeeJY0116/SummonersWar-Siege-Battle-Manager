@@ -6,6 +6,7 @@ import SiegeBattleTab from "./components/siege/SiegeBattleTab.jsx";
 import defaultMonsters from "./data/defaultMonsters.json";
 import { fetchMyGuild, createGuild, fetchMyGuildMembers } from "./lib/guild.js";
 import LoginPage from "./pages/LoginPage.jsx";
+import GuildTab from "./components/guild/GuildTab.jsx";
 
 
 const ALL_DEFAULT_MONSTERS = [
@@ -291,12 +292,14 @@ async function loadMonsters() {
             onChangeCount={handleChangeCount}
             onReorderLeader={handleReorderLeader}
           />
-        ) : (
+        ) : activeTab === "siege" ?(
           <SiegeBattleTab
             monsters={monsters}
             onSaveTrio={handleCreateTrioFromSiege}
             onDeleteMonster={handleDeleteMonster}
           />
+        ) : (
+          <GuildTab guild={guild} members={members} monsters={monsters} />
         )}
 
         <FooterBar />

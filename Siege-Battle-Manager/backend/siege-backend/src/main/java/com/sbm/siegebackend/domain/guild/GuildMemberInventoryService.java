@@ -103,8 +103,8 @@ public class GuildMemberInventoryService {
                 continue; // 0 이하인 경우는 저장하지 않음
             }
 
-            Monster monster = monsterRepository.findById(item.getMonsterId())
-                    .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + item.getMonsterId()));
+            Monster monster = monsterRepository.findByCode(item.getMonsterCode())
+                    .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 CODE: " + item.getMonsterCode()));
 
             GuildMemberInventory inv = new GuildMemberInventory(
                     target,

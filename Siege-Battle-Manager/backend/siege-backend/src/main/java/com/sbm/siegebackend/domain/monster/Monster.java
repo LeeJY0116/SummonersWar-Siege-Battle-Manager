@@ -1,9 +1,13 @@
 package com.sbm.siegebackend.domain.monster;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Setter;
 
 @Entity
 @Table(name = "monsters")
+
+
 public class Monster {
 
     @Id
@@ -11,6 +15,9 @@ public class Monster {
     private Long id;
 
     // 몬스터 이름 (예: '암 네오스톤 에이전트')
+    @Column(nullable = false, unique = true, length = 100)
+    private String code;    // json파일 monster id값
+
     @Column(nullable = false, unique = true, length = 100)
     private String name;
 
@@ -24,11 +31,15 @@ public class Monster {
 
     protected Monster() {}
 
-    public Monster(String name, MonsterAttribute attribute, String leaderEffectType) {
+    @Builder
+    public Monster(String code, String name, MonsterAttribute attribute, String leaderEffectType) {
+        this.code = code;
         this.name = name;
         this.attribute = attribute;
         this.leaderEffectType = leaderEffectType;
     }
+
+    public String getCode() { return code; }
 
     public Long getId() { return id; }
 

@@ -48,6 +48,17 @@ export default function HeaderBar({
           >
             점령전
           </button>
+
+          <button
+            onClick={() => onChangeTab("guild")}
+            className={`px-3 py-1 rounded-xl text-sm ${
+              activeTab === "guild"
+                ? "bg-white shadow font-semibold"
+                : "text-gray-500"
+            }`}
+          >
+            길드
+          </button>
         </div>
 
         {/* Import / Export */}
