@@ -41,6 +41,19 @@ public class GuildMemberInventory {
         this.quantity = quantity;
     }
 
+    public void decrease(int amount) {
+        if (amount <= 0) return;
+        if (this.quantity < amount) {
+            throw new IllegalStateException("보유 수량이 부족합니다.");
+        }
+        this.quantity -= amount;
+    }
+
+    public void increase(int amount) {
+        if (amount <= 0) return;
+        this.quantity += amount;
+    }
+
     public Long getId() { return id; }
 
     public GuildMember getGuildMember() { return guildMember; }

@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface GuildMemberRepository extends JpaRepository<GuildMember, Long> {
 
+
     // 특정 유저가 어떤 길드든 이미 가입되어 있는지
     boolean existsByUser(User user);
 

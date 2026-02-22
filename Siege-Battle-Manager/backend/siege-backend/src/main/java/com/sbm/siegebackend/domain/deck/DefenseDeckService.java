@@ -67,6 +67,11 @@ public class DefenseDeckService {
         if (request.getMonsterIds() == null || request.getMonsterIds().size() != 3) {
             throw new IllegalArgumentException("방덱은 반드시 3마리 몬스터로 구성되어야 합니다.");
         }
+        
+        // 몬스터 중복 체크
+        if (request.getMonsterIds().stream().distinct().count() != 3) {
+            throw new IllegalStateException("같은 몬스터를 중복해서 넣을 수 없습니다.");
+        }
 
         // 몬스터 조회
         List<Monster> monsters = request.getMonsterIds().stream()
@@ -77,16 +82,12 @@ public class DefenseDeckService {
         // 🔥 인벤토리 수량 체크 + 차감
         for (Monster monster : monsters) {
             GuildMemberInventory inv = inventoryRepository
-                    .findByGuildMemberAndMonster(owner, monster)
+                    .findForUpdate(owner, monster)
                     .orElseThrow(() -> new NotFoundException(
-                            monster.getName() + " 보유 수량이 부족합니다."
+                            owner.getDisplayName() + " 인벤에 없는 몬스터." + monster.getName()
                     ));
 
-            if (inv.getQuantity() <= 0) {
-                throw new IllegalStateException(monster.getName() + " 보유 수량이 부족합니다.");
-            }
-
-            inv.setQuantity(inv.getQuantity() - 1);
+            inv.decrease(1);
         }
 
         DefenseDeck deck = new DefenseDeck(owner, monsters);
@@ -126,10 +127,10 @@ public class DefenseDeckService {
         // 🔥 인벤토리 복구
         for (Monster monster : deck.getMonsters()) {
             GuildMemberInventory inv = inventoryRepository
-                    .findByGuildMemberAndMonster(owner, monster)
-                    .orElseThrow();
+                    .findForUpdate(owner, monster)
+                    .orElseThrow(() -> new NotFoundException("인벤 데이터가 없어 복구할 수 없습니다: " + monster.getName()));
 
-            inv.setQuantity(inv.getQuantity() + 1);
+            inv.increase(1);
         }
 
         defenseDeckRepository.delete(deck);

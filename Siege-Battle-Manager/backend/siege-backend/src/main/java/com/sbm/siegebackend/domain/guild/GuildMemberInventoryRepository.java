@@ -1,12 +1,27 @@
 package com.sbm.siegebackend.domain.guild;
 
 import com.sbm.siegebackend.domain.monster.Monster;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface GuildMemberInventoryRepository extends JpaRepository<GuildMemberInventory, Long> {
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+        select i from GuildMemberInventory i
+        join fetch i.monster m
+        where i.guildMember = :member and i.monster = :monster
+    """)
+    Optional<GuildMemberInventory> findForUpdate(
+            @Param("member") GuildMember member,
+            @Param("monster") Monster monster
+    );
 
     List<GuildMemberInventory> findByGuildMember(GuildMember member);
 
