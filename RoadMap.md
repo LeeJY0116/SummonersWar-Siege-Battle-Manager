@@ -161,9 +161,9 @@
 - 게시글 CRUD
 - 댓글 CRUD
 - 권한 정책
-- - 작성자
-- - MASTER
-- - SUB_MASTER 삭제 가능
+  - 작성자
+  - MASTER
+  - SUB_MASTER 삭제 가능
 - 길드 탈퇴와 독립 유지 정책 설계
 
 ## 남은 작업
@@ -190,9 +190,9 @@
 ## 진행 예정
 
 - 방덱 필터 UI
-- - 길드원 필터
-- - 리더효과 필터
-- - 몬스터 필터
+  - 길드원 필터
+  - 리더효과 필터
+  - 몬스터 필터
 - Ownerless 방덱 UI
 - Battle Research UI
 - 상세 화면 구조 개선
@@ -220,7 +220,7 @@
 
 - dev/prod 환경 분리
 - DB 전환
-- - H2 → MySQL/PostgreSQL
+  - H2 → MySQL/PostgreSQL
 - 환경변수 정리
 - Docker 여부 결정
 - 배포 스크립트
