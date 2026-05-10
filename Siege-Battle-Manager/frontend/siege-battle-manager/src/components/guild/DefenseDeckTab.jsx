@@ -4,13 +4,47 @@ import {
   fetchDefenseDecks,
   deleteDefenseDeck,
 } from "../../lib/defenseDeck.js";
+import DefenseDeckCard from "./DefenseDeckCard.jsx";
+import DeckMonsterSlot from "./DeckMonsterSlot.jsx";
+import { fetchMemberInventory } from "../../lib/inventory.js";
 
 export default function DefenseDeckTab({ members = [], monsters = [] }) {
   const [ownerMemberId, setOwnerMemberId] = useState("");
   const [selectedMonsterCodes, setSelectedMonsterCodes] = useState(["", "", ""]);
   const [decks, setDecks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [ownerInventoryMap, setOwnerInventoryMap] = useState({});
 
+
+  const selectedMonsters = selectedMonsterCodes.map((code) =>
+  monsters.find((m) => m.id === code)
+);
+
+const [activeSlotIndex, setActiveSlotIndex] = useState(0);
+const [monsterSearch, setMonsterSearch] = useState("");
+
+function selectMonster(code) {
+  if (selectedMonsterCodes.includes(code)) {
+    alert("이미 선택된 몬스터입니다.");
+    return;
+  }
+
+  // 선택 후 다음 빈 슬롯으로 이동
+  setSelectedMonsterCodes((prev) => {
+    const next = [...prev];
+    next[activeSlotIndex] = code;
+
+    const nextEmptyIndex = next.findIndex((v) => !v);
+
+    if(nextEmptyIndex !== -1) {
+        setActiveSlotIndex(nextEmptyIndex);
+    } else {
+        setActiveSlotIndex(2);
+    }
+
+    return next;
+  });
+}
   const selectedOwner = useMemo(
     () => members.find((m) => String(m.id) === String(ownerMemberId)),
     [members, ownerMemberId]
@@ -21,6 +55,66 @@ export default function DefenseDeckTab({ members = [], monsters = [] }) {
       setOwnerMemberId(String(members[0].id));
     }
   }, [members, ownerMemberId]);
+
+  // 길드원 인벤토리 로드
+  useEffect(() => {
+    if (!ownerMemberId) return;
+
+    fetchMemberInventory(ownerMemberId)
+        .then((data) => {
+        const map = {};
+
+        for (const item of data || []) {
+            if (!item.monsterCode) continue;
+            map[item.monsterCode] = item.quantity ?? 0;
+        }
+
+        setOwnerInventoryMap(map);
+        })
+        .catch((e) => {
+        console.error(e);
+        setOwnerInventoryMap({});
+        });
+    }, [ownerMemberId]);
+
+    // 방덱 사용 중 개수 계산
+
+    const usedCountMap = useMemo(() => {
+        const map = {};
+
+        for (const deck of decks || []) {
+            if (String(deck.ownerMemberId) !== String(ownerMemberId)) continue;
+
+            for (const monster of deck.monsters || []) {
+            const code = monster.monsterCode;
+            if (!code) continue;
+
+            map[code] = (map[code] || 0) + 1;
+            }
+        }
+
+        return map;
+    }, [decks, ownerMemberId]);
+
+
+const filteredMonsters = monsters.filter((m) => {
+  const owned = ownerInventoryMap[m.id] ?? 0;
+  const used = usedCountMap[m.id] ?? 0;
+  const usable = owned - used;
+
+  // ✅ 보유 중이 아니거나 사용 가능 수량이 없으면 숨김
+  if (usable <= 0) return false;
+
+  const q = monsterSearch.trim().toLowerCase();
+  if (!q) return true;
+
+  return (
+    m.name?.toLowerCase().includes(q) ||
+    m.id?.toLowerCase().includes(q) ||
+    m.nicknames?.join(" ").toLowerCase().includes(q)
+  );
+});
+
 
   async function loadDecks() {
     try {
@@ -70,6 +164,7 @@ export default function DefenseDeckTab({ members = [], monsters = [] }) {
 
       alert("방덱이 생성되었습니다.");
       setSelectedMonsterCodes(["", "", ""]);
+      setActiveSlotIndex(0);
       await loadDecks();
     } catch (e) {
       console.error(e);
@@ -118,27 +213,69 @@ export default function DefenseDeckTab({ members = [], monsters = [] }) {
             </select>
           </div>
 
-          {[0, 1, 2].map((index) => (
-            <div key={index}>
-              <label className="block text-sm font-semibold mb-1">
-                {index === 0 ? "리더 몬스터" : `${index + 1}번 몬스터`}
-              </label>
+          <div>
+  <div className="mb-2 text-sm font-semibold">방덱 몬스터 선택</div>
 
-              <select
-                value={selectedMonsterCodes[index]}
-                onChange={(e) => changeMonster(index, e.target.value)}
-                className="border rounded-xl px-3 py-2 w-full"
-              >
-                <option value="">몬스터 선택</option>
-                {monsters.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.name} ({m.element})
-                  </option>
-                ))}
-              </select>
+    <div className="mb-4 flex gap-3">
+        {[0, 1, 2].map((index) => (
+        <DeckMonsterSlot
+            key={index}
+            monster={selectedMonsters[index]}
+            isLeader={index === 0}
+            isActive={activeSlotIndex === index}
+            onClick={() => setActiveSlotIndex(index)}
+        />
+        ))}
+    </div>
+
+    <div className="mb-2 text-sm text-gray-600">
+        현재 선택 슬롯:{" "}
+        <span className="font-semibold">
+        {activeSlotIndex === 0 ? "리더" : `${activeSlotIndex + 1}번`}
+        </span>
+    </div>
+
+    <input
+        value={monsterSearch}
+        onChange={(e) => setMonsterSearch(e.target.value)}
+        placeholder="몬스터 검색"
+        className="mb-3 w-full rounded-xl border px-3 py-2"
+    />
+
+    <div className="grid max-h-72 grid-cols-4 gap-2 overflow-y-auto rounded-2xl border p-3">
+        {filteredMonsters.map((m) => {
+        const selected = selectedMonsterCodes.includes(m.id);
+
+        return (
+            <button
+            key={m.id}
+            type="button"
+            onClick={() => selectMonster(m.id)}
+            disabled={selected}
+            className={`rounded-xl border p-2 text-center text-xs transition hover:bg-gray-50 disabled:opacity-40 ${
+                selected ? "bg-gray-100" : "bg-white"
+            }`}
+            >
+            {m.iconDataUrl ? (
+                <img
+                src={m.iconDataUrl}
+                alt={m.name}
+                className="mx-auto mb-1 h-12 w-12 rounded-lg object-cover"
+                />
+            ) : (
+                <div className="mx-auto mb-1 h-12 w-12 rounded-lg bg-gray-200" />
+            )}
+
+            <div className="truncate font-semibold">{m.name}</div>
+            <div className="truncate text-[10px] text-gray-400">{m.element}</div>
+            <div className="text-[10px] text-gray-500">
+            가능 {ownerInventoryMap[m.id] - (usedCountMap[m.id] ?? 0)} / 보유 {ownerInventoryMap[m.id]}
             </div>
-          ))}
-
+            </button>
+        );
+        })}
+    </div>
+  </div>
           <button
             onClick={handleCreateDeck}
             disabled={loading}
@@ -166,37 +303,12 @@ export default function DefenseDeckTab({ members = [], monsters = [] }) {
         ) : (
           <div className="space-y-3">
             {decks.map((deck) => (
-              <div key={deck.deckId} className="border rounded-xl p-3">
-                <div className="flex justify-between gap-3">
-                  <div>
-                    <div className="font-semibold">
-                      {deck.ownerName}의 방덱
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      리더: {deck.leaderMonsterName}
-                      {deck.leaderEffectType ? ` · ${deck.leaderEffectType}` : ""}
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => handleDeleteDeck(deck.deckId)}
-                    className="text-sm px-3 py-1 rounded-xl border border-red-300 text-red-600"
-                  >
-                    삭제
-                  </button>
-                </div>
-
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {deck.monsters?.map((m) => (
-                    <span
-                      key={m.monsterCode ?? m.monsterId}
-                      className="text-sm px-2 py-1 rounded-lg bg-gray-100"
-                    >
-                      {m.monsterName}
-                    </span>
-                  ))}
-                </div>
-              </div>
+              <DefenseDeckCard
+              key={deck.deckId}
+              deck={deck}
+              monsters={monsters}
+              onDelete={handleDeleteDeck}
+                />
             ))}
           </div>
         )}
