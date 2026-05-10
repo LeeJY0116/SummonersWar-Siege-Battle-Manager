@@ -4,15 +4,16 @@ import java.util.List;
 
 public class DefenseDeckCreateRequest {
 
-    private List<Long> monsterIds; // 반드시 3개
+    private List<String> monsterCodes;
 
     public DefenseDeckCreateRequest() {}
 
-    public List<Long> getMonsterIds() {
-        return monsterIds;
+    public List<String> getMonsterCodes() {
+        return monsterCodes;
     }
 
-    public void setMonsterIds(List<Long> monsterIds) {
-        this.monsterIds = monsterIds;
+    public void setMonsterCodes(List<String> monsterCodes) {
+        this.monsterCodes = monsterCodes;
     }
+
 }

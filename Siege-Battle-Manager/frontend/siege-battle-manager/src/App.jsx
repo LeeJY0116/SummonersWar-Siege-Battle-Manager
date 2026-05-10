@@ -5,7 +5,8 @@ import ManagerTab from "./components/manager/ManagerTab.jsx";
 import SiegeBattleTab from "./components/siege/SiegeBattleTab.jsx";
 import defaultMonsters from "./data/defaultMonsters.json";
 import { fetchMyGuild, createGuild, fetchMyGuildMembers } from "./lib/guild.js";
-import LoginPage from "./pages/LoginPage.jsx";
+import LoginPage from "./components/auth/LoginPage.jsx";
+import SignupPage from "./components/auth/SignupPage.jsx";
 import GuildTab from "./components/guild/GuildTab.jsx";
 
 
@@ -36,6 +37,7 @@ export default function SiegeBattleManager() {
   const importRef = useRef(null);
   const [guild, setGuild] = useState(null);
   const [members, setMembers] = useState([]);
+  const [authMode, setAuthMode] = useState("login");
 
   useEffect(() => {
     document.title = "Siege-Battle-Manager";
@@ -43,8 +45,24 @@ export default function SiegeBattleManager() {
 
 
   // 로그인
+// 로그인
   const token = localStorage.getItem("accessToken");
-  if (!token) return <LoginPage />;
+
+  if (!token) {
+    if (authMode === "signup") {
+      return (
+        <SignupPage
+          onBackToLogin={() => setAuthMode("login")}
+        />
+      );
+    }
+
+    return (
+      <LoginPage
+        onGoSignup={() => setAuthMode("signup")}
+      />
+    );
+  }
 
   useEffect(() => {
     if (!token) return;

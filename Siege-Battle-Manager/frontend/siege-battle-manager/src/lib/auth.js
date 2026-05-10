@@ -1,5 +1,16 @@
 import { apiFetch } from "./api";
 
+export async function signup({ email, password, nickname }) {
+  const res = await apiFetch("/users/signup", {
+    method: "POST",
+    body: JSON.stringify({
+      email,
+      password,
+      nickname,
+    }),
+  });
+}
+
 export async function login(email, password) {
   const res = await apiFetch("/users/login", {
     method: "POST",

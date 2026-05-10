@@ -2,6 +2,7 @@ package com.sbm.siegebackend.domain.guild;
 
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberInventoryItemResponse;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberInventoryUpdateRequest;
+import com.sbm.siegebackend.domain.deck.DefenseDeckRepository;
 import com.sbm.siegebackend.domain.monster.Monster;
 import com.sbm.siegebackend.domain.monster.MonsterRepository;
 import com.sbm.siegebackend.domain.user.User;
@@ -20,15 +21,18 @@ public class GuildMemberInventoryService {
     private final GuildMemberInventoryRepository inventoryRepository;
     private final MonsterRepository monsterRepository;
     private final UserService userService;
+    private final DefenseDeckRepository defenseDeckRepository;
 
     public GuildMemberInventoryService(GuildMemberRepository guildMemberRepository,
                                        GuildMemberInventoryRepository inventoryRepository,
                                        MonsterRepository monsterRepository,
-                                       UserService userService) {
+                                       UserService userService,
+                                       DefenseDeckRepository defenseDeckRepository) {
         this.guildMemberRepository = guildMemberRepository;
         this.inventoryRepository = inventoryRepository;
         this.monsterRepository = monsterRepository;
         this.userService = userService;
+        this.defenseDeckRepository = defenseDeckRepository;
     }
 
     /**
@@ -54,6 +58,7 @@ public class GuildMemberInventoryService {
         return list.stream()
                 .map(inv -> new GuildMemberInventoryItemResponse(
                         inv.getMonster().getId(),
+                        inv.getMonster().getCode(),
                         inv.getMonster().getName(),
                         inv.getMonster().getAttribute().name(),
                         inv.getQuantity()
@@ -68,6 +73,7 @@ public class GuildMemberInventoryService {
      * - 전달된 목록으로 "전체 교체"하는 방식
      */
     public void updateInventory(Long guildMemberId, String email, GuildMemberInventoryUpdateRequest request) {
+
         User user = userService.findByEmailOrThrow(email);
 
         GuildMember actor = guildMemberRepository.findByUser(user)
@@ -83,34 +89,93 @@ public class GuildMemberInventoryService {
 
         // 권한 체크
         boolean isSelf = actor.getId().equals(target.getId());
-        boolean isManager = actor.getRole() == GuildMemberRole.MASTER
-                || actor.getRole() == GuildMemberRole.SUB_MASTER;
+
+        boolean isManager =
+                actor.getRole() == GuildMemberRole.MASTER
+                        || actor.getRole() == GuildMemberRole.SUB_MASTER;
 
         if (!isSelf && !isManager) {
-            throw new IllegalStateException("본인 또는 길드 마스터/부마스터만 인벤토리를 수정할 수 있습니다.");
+            throw new IllegalStateException(
+                    "본인 또는 길드 마스터/부마스터만 인벤토리를 수정할 수 있습니다."
+            );
         }
 
-        // 기존 인벤 삭제 후 전체 다시 저장 (간단한 방식)
-        List<GuildMemberInventory> existing = inventoryRepository.findByGuildMember(target);
-        inventoryRepository.deleteAll(existing);
+        // 요청 없으면 빈 리스트 처리
+        List<GuildMemberInventoryUpdateRequest.Item> items =
+                request.getItems() == null
+                        ? List.of()
+                        : request.getItems();
 
-        if (request.getItems() == null) {
-            return;
-        }
+        // -----------------------------
+        // 1️⃣ 먼저 전체 검증
+        // -----------------------------
 
-        for (GuildMemberInventoryUpdateRequest.Item item : request.getItems()) {
-            if (item.getQuantity() <= 0) {
-                continue; // 0 이하인 경우는 저장하지 않음
+        for (GuildMemberInventoryUpdateRequest.Item item : items) {
+
+            if (item.getQuantity() < 0) {
+                throw new IllegalArgumentException("수량은 음수가 될 수 없습니다.");
             }
 
             Monster monster = monsterRepository.findByCode(item.getMonsterCode())
-                    .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 CODE: " + item.getMonsterCode()));
+                    .orElseThrow(() ->
+                            new NotFoundException(
+                                    "존재하지 않는 몬스터 CODE: " + item.getMonsterCode()
+                            )
+                    );
+
+            // 현재 방덱에서 사용 중인 개수
+            long usedCount =
+                    defenseDeckRepository.countMonsterUsage(target, monster);
+
+            // 방덱 사용량보다 적게 줄이려는 경우 막기
+            if (item.getQuantity() < usedCount) {
+
+                throw new IllegalStateException(
+                        monster.getName()
+                                + "은 현재 방덱에 "
+                                + usedCount
+                                + "개 사용 중이라 "
+                                + usedCount
+                                + "개 미만으로 줄일 수 없습니다."
+                );
+            }
+        }
+
+        // -----------------------------
+        // 2️⃣ 검증 통과 후 기존 인벤 삭제
+        // -----------------------------
+
+        List<GuildMemberInventory> existing =
+                inventoryRepository.findByGuildMember(target);
+
+        inventoryRepository.deleteAll(existing);
+
+        inventoryRepository.flush();
+
+        // -----------------------------
+        // 3️⃣ 새 인벤 저장
+        // -----------------------------
+
+        for (GuildMemberInventoryUpdateRequest.Item item : items) {
+
+            if (item.getQuantity() <= 0) {
+                continue;
+            }
+
+            Monster monster = monsterRepository.findByCode(item.getMonsterCode())
+                    .orElseThrow(() ->
+                            new NotFoundException(
+                                    "존재하지 않는 몬스터 CODE: "
+                                            + item.getMonsterCode()
+                            )
+                    );
 
             GuildMemberInventory inv = new GuildMemberInventory(
                     target,
                     monster,
                     item.getQuantity()
             );
+
             inventoryRepository.save(inv);
         }
     }

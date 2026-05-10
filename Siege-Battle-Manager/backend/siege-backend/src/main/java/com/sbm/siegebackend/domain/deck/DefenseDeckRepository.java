@@ -1,6 +1,7 @@
 package com.sbm.siegebackend.domain.deck;
 
 import com.sbm.siegebackend.domain.guild.GuildMember;
+import com.sbm.siegebackend.domain.monster.Monster;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,7 +19,20 @@ public interface DefenseDeckRepository extends JpaRepository<DefenseDeck, Long> 
         join fetch d.monsters ms
         where o.guild.id = :guildId
     """)
+
     List<DefenseDeck> findByGuildIdWithOwnerAndMonsters(@Param("guildId") Long guildId);
+
+    @Query("""
+    select count(d)
+    from DefenseDeck d
+    join d.monsters m
+    where d.owner = :owner
+      and m = :monster
+""")
+    long countMonsterUsage(
+            @Param("owner") GuildMember owner,
+            @Param("monster") Monster monster
+    );
 
     List<DefenseDeck> findByOwner(GuildMember owner);
 

@@ -1,6 +1,7 @@
 package com.sbm.siegebackend.domain.deck;
 
 import com.sbm.siegebackend.domain.deck.dto.DefenseDeckCreateRequest;
+import com.sbm.siegebackend.domain.deck.dto.DefenseDeckResponse;
 import com.sbm.siegebackend.domain.guild.*;
 import com.sbm.siegebackend.domain.monster.Monster;
 import com.sbm.siegebackend.domain.monster.MonsterRepository;
@@ -9,11 +10,10 @@ import com.sbm.siegebackend.domain.user.UserService;
 import com.sbm.siegebackend.global.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.sbm.siegebackend.domain.deck.dto.DefenseDeckResponse;
-import java.util.Comparator;
-import java.util.stream.Stream;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -39,6 +39,11 @@ public class DefenseDeckService {
 
     /**
      * 방덱 생성
+     *
+     * 정책:
+     * - 인벤 quantity는 "총 보유 수량"으로 본다.
+     * - 방덱 생성 시 quantity를 직접 차감하지 않는다.
+     * - 사용 가능 수량 = 총 보유 수량 - 현재 방덱에서 사용 중인 수량.
      */
     public Long createDeck(Long ownerMemberId, String email, DefenseDeckCreateRequest request) {
         User user = userService.findByEmailOrThrow(email);
@@ -49,12 +54,10 @@ public class DefenseDeckService {
         GuildMember owner = guildMemberRepository.findById(ownerMemberId)
                 .orElseThrow(() -> new NotFoundException("대상 길드원이 존재하지 않습니다."));
 
-        // 같은 길드인지 확인
         if (!actor.getGuild().getId().equals(owner.getGuild().getId())) {
             throw new IllegalStateException("다른 길드원의 방덱은 생성할 수 없습니다.");
         }
 
-        // 권한 체크
         boolean isSelf = actor.getId().equals(owner.getId());
         boolean isManager = actor.getRole() == GuildMemberRole.MASTER
                 || actor.getRole() == GuildMemberRole.SUB_MASTER;
@@ -63,31 +66,39 @@ public class DefenseDeckService {
             throw new IllegalStateException("본인 또는 마스터/부마스터만 방덱을 생성할 수 있습니다.");
         }
 
-        // 몬스터 3개 체크
-        if (request.getMonsterIds() == null || request.getMonsterIds().size() != 3) {
+        if (request.getMonsterCodes() == null || request.getMonsterCodes().size() != 3) {
             throw new IllegalArgumentException("방덱은 반드시 3마리 몬스터로 구성되어야 합니다.");
         }
-        
-        // 몬스터 중복 체크
-        if (request.getMonsterIds().stream().distinct().count() != 3) {
+
+        if (request.getMonsterCodes().stream().distinct().count() != 3) {
             throw new IllegalStateException("같은 몬스터를 중복해서 넣을 수 없습니다.");
         }
 
-        // 몬스터 조회
-        List<Monster> monsters = request.getMonsterIds().stream()
-                .map(id -> monsterRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
+        List<Monster> monsters = request.getMonsterCodes().stream()
+                .map(code -> monsterRepository.findByCode(code)
+                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 CODE: " + code)))
                 .toList();
 
-        // 🔥 인벤토리 수량 체크 + 차감
+        // 인벤 총 보유 수량과 이미 방덱에 사용 중인 수량을 비교한다.
         for (Monster monster : monsters) {
             GuildMemberInventory inv = inventoryRepository
                     .findForUpdate(owner, monster)
                     .orElseThrow(() -> new NotFoundException(
-                            owner.getDisplayName() + " 인벤에 없는 몬스터." + monster.getName()
+                            owner.getDisplayName() + " 인벤에 없는 몬스터: " + monster.getName()
                     ));
 
-            inv.decrease(1);
+            long usedCount = defenseDeckRepository.countMonsterUsage(owner, monster);
+            long usableQuantity = inv.getQuantity() - usedCount;
+
+            if (usableQuantity <= 0) {
+                throw new IllegalStateException(
+                        monster.getName()
+                                + " 보유 수량이 부족합니다. "
+                                + "(총 보유: " + inv.getQuantity()
+                                + ", 사용 중: " + usedCount
+                                + ", 사용 가능: " + usableQuantity + ")"
+                );
+            }
         }
 
         DefenseDeck deck = new DefenseDeck(owner, monsters);
@@ -98,6 +109,10 @@ public class DefenseDeckService {
 
     /**
      * 방덱 삭제
+     *
+     * 정책:
+     * - 방덱 삭제 시 인벤 quantity를 복구하지 않는다.
+     * - quantity는 총 보유량이고, 사용량은 방덱 개수로 계산하기 때문.
      */
     public void deleteDeck(Long deckId, String email) {
         User user = userService.findByEmailOrThrow(email);
@@ -110,12 +125,10 @@ public class DefenseDeckService {
 
         GuildMember owner = deck.getOwner();
 
-        // 같은 길드인지
         if (!actor.getGuild().getId().equals(owner.getGuild().getId())) {
             throw new IllegalStateException("다른 길드의 방덱은 삭제할 수 없습니다.");
         }
 
-        // 권한
         boolean isSelf = actor.getId().equals(owner.getId());
         boolean isManager = actor.getRole() == GuildMemberRole.MASTER
                 || actor.getRole() == GuildMemberRole.SUB_MASTER;
@@ -124,24 +137,15 @@ public class DefenseDeckService {
             throw new IllegalStateException("방덱을 삭제할 권한이 없습니다.");
         }
 
-        // 🔥 인벤토리 복구
-        for (Monster monster : deck.getMonsters()) {
-            GuildMemberInventory inv = inventoryRepository
-                    .findForUpdate(owner, monster)
-                    .orElseThrow(() -> new NotFoundException("인벤 데이터가 없어 복구할 수 없습니다: " + monster.getName()));
-
-            inv.increase(1);
-        }
-
         defenseDeckRepository.delete(deck);
     }
 
     @Transactional(readOnly = true)
     public List<DefenseDeckResponse> getGuildDecks(
             String email,
-            Long monsterFilterId,
-            String leaderEffectFilter,
-            Long ownerMemberFilterId
+            String monsterFilterCode,
+            String leaderEffect,
+            Long ownerMemberId
     ) {
         User user = userService.findByEmailOrThrow(email);
 
@@ -154,35 +158,31 @@ public class DefenseDeckService {
 
         Stream<DefenseDeck> stream = decks.stream();
 
-        // 1️⃣ 길드원 필터
-        if (ownerMemberFilterId != null) {
+        if (ownerMemberId != null) {
             stream = stream.filter(d ->
-                    d.getOwner().getId().equals(ownerMemberFilterId));
+                    d.getOwner().getId().equals(ownerMemberId));
         }
 
-        // 2️⃣ 몬스터 포함 필터
-        if (monsterFilterId != null) {
+        if (monsterFilterCode != null && !monsterFilterCode.isBlank()) {
             stream = stream.filter(d ->
                     d.getMonsters().stream()
-                            .anyMatch(m -> m.getId().equals(monsterFilterId))
+                            .anyMatch(m -> m.getCode().equals(monsterFilterCode))
             );
         }
 
-        // 3️⃣ 리더 효과 필터
-        if (leaderEffectFilter != null && !leaderEffectFilter.isBlank()) {
+        if (leaderEffect != null && !leaderEffect.isBlank()) {
             stream = stream.filter(d ->
                     d.getLeader().getLeaderEffectType() != null &&
-                            d.getLeader().getLeaderEffectType().equals(leaderEffectFilter)
+                            d.getLeader().getLeaderEffectType().equals(leaderEffect)
             );
         }
 
         List<DefenseDeck> filtered = stream.toList();
 
-        // 4️⃣ 정렬: 선택 몬스터가 리더인 덱 우선
-        if (monsterFilterId != null) {
+        if (monsterFilterCode != null && !monsterFilterCode.isBlank()) {
             filtered = filtered.stream()
                     .sorted(Comparator.comparing(
-                            (DefenseDeck d) -> !d.getLeader().getId().equals(monsterFilterId)
+                            (DefenseDeck d) -> !d.getLeader().getCode().equals(monsterFilterCode)
                     ))
                     .toList();
         }
@@ -198,11 +198,13 @@ public class DefenseDeckService {
                 deck.getOwner().getId(),
                 deck.getOwner().getDisplayName(),
                 deck.getLeader().getId(),
+                deck.getLeader().getCode(),
                 deck.getLeader().getName(),
                 deck.getLeader().getLeaderEffectType(),
                 deck.getMonsters().stream()
                         .map(m -> new DefenseDeckResponse.MonsterItem(
                                 m.getId(),
+                                m.getCode(),
                                 m.getName()
                         ))
                         .toList()

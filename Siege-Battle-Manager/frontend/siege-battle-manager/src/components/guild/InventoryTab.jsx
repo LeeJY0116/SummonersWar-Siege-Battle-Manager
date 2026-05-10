@@ -3,6 +3,7 @@ import {
   fetchMemberInventory,
   upsertMemberInventoryItems,
 } from "../../lib/inventory.js";
+import { fetchDefenseDecks } from "../../lib/defenseDeck.js";
 
 function clampNonNegative(n) {
   const v = Number.isFinite(n) ? n : Number(n);
@@ -16,6 +17,8 @@ export default function InventoryTab({ members, monsters }) {
   const [inventoryMap, setInventoryMap] = useState({}); // { monsterId: count }
   const [query, setQuery] = useState("");
   const [dirty, setDirty] = useState(false);
+  const [decks, setDecks] = useState([]);
+  const [toast, setToast] = useState("");
 
   const selectedMember = useMemo(
     () => members?.find((m) => String(m.id) === String(selectedMemberId)),
@@ -40,8 +43,13 @@ export default function InventoryTab({ members, monsters }) {
       .then((data) => {
         // data 형태를 {monsterId, count}[] 로 가정
         const map = {};
+
         for (const it of data || []) {
-          map[String(it.monsterId)] = it.count ?? it.quantity ?? 0;
+          const code = it.monsterCode;
+
+          if(!code) continue;
+
+          map[String(code)] = it.count ?? it.quantity ?? 0;
         }
         setInventoryMap(map);
       })
@@ -52,6 +60,39 @@ export default function InventoryTab({ members, monsters }) {
       .finally(() => setLoading(false));
   }, [selectedMemberId]);
 
+    // 방덱 로드
+  useEffect(() => {
+  fetchDefenseDecks()
+    .then((data) => setDecks(data || []))
+    .catch((e) => console.error(e));
+  }, []);
+
+  // 사용 중 몬스터 개수 계산
+  const usedCountMap = useMemo(() => {
+  const map = {};
+
+  for (const deck of decks || []) {
+    if (String(deck.ownerMemberId) !== String(selectedMemberId)) continue;
+
+    for (const monster of deck.monsters || []) {
+      const code = monster.monsterCode;
+      if (!code) continue;
+
+      map[code] = (map[code] || 0) + 1;
+    }
+  }
+
+  // 방덱 사용 개수 미만으로 줄일 시 메시지 출력
+  return map;
+  }, [decks, selectedMemberId]);
+
+  function showToast(message) {
+  setToast(message);
+
+  setTimeout(() => {
+    setToast("");
+  }, 1000);
+  }
   const filteredMonsters = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return monsters;
@@ -65,16 +106,31 @@ export default function InventoryTab({ members, monsters }) {
     });
   }, [monsters, query]);
 
-  function changeCount(monsterId, nextCount) {
-    const mid = String(monsterId);
-    setInventoryMap((prev) => ({ ...prev, [mid]: clampNonNegative(nextCount) }));
+  function changeCount(monsterCode, nextCount) {
+    const code = String(monsterCode);
+    const minCount = usedCountMap[code] || 0;
+
+    const next = Math.max(minCount, clampNonNegative(nextCount));
+    const prev = clampNonNegative(inventoryMap[code] ?? 0);
+
+    if (clampNonNegative(nextCount) < minCount) {
+      showToast(`방덱에 사용 중인 ${minCount}개 미만으로 줄일 수 없습니다.`);
+    }
+
+    if (prev === next) return;
+
+    setInventoryMap((prevMap) => ({
+      ...prevMap,
+      [code]: next,
+    }));
+
     setDirty(true);
   }
 
-  function bump(monsterId, delta) {
-    const mid = String(monsterId);
-    const cur = clampNonNegative(inventoryMap[mid] ?? 0);
-    changeCount(mid, cur + delta);
+  function bump(monsterCode, delta) {
+    const code = String(monsterCode);
+    const cur = clampNonNegative(inventoryMap[code] ?? 0);
+    changeCount(code, cur + delta);
   }
 
   async function handleSave() {
@@ -84,7 +140,8 @@ export default function InventoryTab({ members, monsters }) {
     const items = Object.entries(inventoryMap).map(([monsterCode, count]) => ({
       monsterCode,
       quantity: clampNonNegative(count),
-    }));
+    }))
+    .filter((item) => item.monsterCode && item.quantity > 0);
 
     try {
       setLoading(true);
@@ -100,6 +157,12 @@ export default function InventoryTab({ members, monsters }) {
   }
 
   return (
+      <>
+    {toast && (
+      <div className="fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-black px-5 py-3 text-sm font-semibold text-white shadow-lg">
+        {toast}
+      </div>
+    )}
     <div className="space-y-3">
       <div className="flex flex-col md:flex-row md:items-center gap-2">
         <select
@@ -198,5 +261,6 @@ export default function InventoryTab({ members, monsters }) {
         </div>
       )}
     </div>
+    </>
   );
 }

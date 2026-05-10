@@ -100,6 +100,15 @@ export default function HeaderBar({
           >
             설정 내보내기 (Export)
           </button>
+          <button
+          onClick={() => {
+            localStorage.removeItem("accessToken");
+            window.location.reload();
+          }}
+          className="rounded-xl border px-3 py-2 text-sm"
+        >
+          로그아웃
+        </button>
         </div>
       </div>
     </header>

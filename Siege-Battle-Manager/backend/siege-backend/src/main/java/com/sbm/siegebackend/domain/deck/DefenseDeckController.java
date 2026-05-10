@@ -56,14 +56,14 @@ public class DefenseDeckController {
      */
     @GetMapping
     public ResponseEntity<ApiResponse<List<DefenseDeckResponse>>> getDecks(
-            @RequestParam(required = false) Long monsterId,
+            @RequestParam(required = false) String monsterFilterCode,
             @RequestParam(required = false) String leaderEffect,
             @RequestParam(required = false) Long ownerMemberId,
             Authentication auth
     ) {
         String email = (String) auth.getPrincipal();
         var decks =
-                defenseDeckService.getGuildDecks(email, monsterId, leaderEffect, ownerMemberId);
+                defenseDeckService.getGuildDecks(email, monsterFilterCode, leaderEffect, ownerMemberId);
         return ResponseEntity.ok(ApiResponse.success(decks));
     }
 }
