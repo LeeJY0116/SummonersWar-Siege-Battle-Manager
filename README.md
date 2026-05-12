@@ -1,35 +1,128 @@
+![Java](https://img.shields.io/badge/Java-17-orange)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3-green)
+![React](https://img.shields.io/badge/React-19-blue)
+
 # Siege-Battle-Manager
 
 길드 점령전 방덱/공덱 관리 & 길드 운영 플랫폼
 
 📌 소개
 
-Siege-Battle-Manager는 
-점령전(공성/점령 컨텐츠) 운영을 위해 **길드원별 보유 몬스터(수량)**를 기반으로  
-- 길드 방어 덱(방덱) 생성/관리  
-- “주인 없는 방덱(템플릿)”의 **가능 인원 수 자동 계산**  
-- 전투 연구 게시판(방덱 연구 글/공덱 댓글) 공유  
-를 지원하는 웹 애플리케이션입니다.
+Siege-Battle-Manager는 게임의 점령전(공성/점령 콘텐츠) 운영을 위해  
+**길드원별 보유 몬스터(수량)** 기반으로 방어 덱을 관리하고 연구할 수 있도록 제작한 웹 애플리케이션입니다.
+
+단순한 몬스터 저장 기능이 아니라:
+
+- 길드 단위 인벤토리 관리
+- 실제 보유 수량 기반 방덱 생성
+- 권한 기반 길드 운영
+- 방덱 연구 및 공덱 공유
+- 특정 방덱 세트 구성 가능 여부 분석
+
+등 실제 길드 운영에서 필요한 기능들을 서비스 형태로 구현하는 것을 목표로 개발하고 있습니다.
 
 > 목표: “특정 방덱이 길드에서 몇 세트나 가능한지”를 빠르게 파악하고,  
 > 길드 운영진이 길드원 인벤토리를 기반으로 방덱을 효율적으로 편성할 수 있게 합니다.
 
 ---
 
+## 🚀 주요 기능
 
-## Tech Stack
+### 🔐 인증 / 사용자
 
-### Backend
-- Java 17
-- Spring Boot 3.x
-- Spring Web / Validation
-- Spring Security + JWT
-- Spring Data JPA
-- H2 (dev) / (추후 MySQL 예정)
+- JWT 기반 로그인 인증
+- Spring Security 기반 인증 처리
+- Authorization Header 자동 처리
+- 사용자 회원가입 / 로그인 / 내 정보 조회
+
+---
+
+### 🏰 길드 시스템
+
+- 길드 생성
+- 내 길드 조회
+- 길드원 조회
+- 길드 권한 관리
+
+권한 구조:
+
+| 권한 | 설명 |
+|---|---|
+| MASTER | 길드 전체 관리 |
+| SUB_MASTER | 일부 운영 권한 |
+| MEMBER | 일반 길드원 |
+
+---
+
+### 👾 몬스터 인벤토리 시스템
+
+길드원별 몬스터 보유 수량 관리
+
+- 몬스터 수량 등록/수정
+- 보유 수량 기반 방덱 생성 가능 여부 계산
+- 방덱 생성 시 몬스터 수량 차감
+- 방덱 삭제 시 수량 복구
+
+---
+
+### 🛡️ 방어 덱(방덱) 시스템
+
+3마리 몬스터 기반 방어 덱 생성
+
+- 리더 몬스터 개념 지원
+- 리더 효과 기반 필터링
+- 몬스터 포함 여부 필터
+- 최대 3개 몬스터 동시 필터
+- 4성 방덱 필터
+- 길드원별 방덱 조회
+
+---
+
+### 🔍 방덱 검색 및 필터링
+
+- 속성별 필터
+- 몬스터 이름 검색
+- 닉네임 검색
+- 리더 효과 필터
+- 몬스터 포함 필터
+- 리더 우선 정렬
+
+---
+
+### 📚 방덱 연구 시스템
+
+- 연구용 방덱 등록
+- 공덱 댓글 공유
+- 전략 메모
+- 길드 내 전술 공유
+
+---
+
+## 🛠️ 기술 스택
 
 ### Frontend
-- React + Vite + Tailwind (진행 중)
-- (추후) Java Spring 서버 + 계정/저장소 연동
+
+- React
+- Vite
+- Tailwind CSS
+- Bootstrap Icons
+
+---
+
+### Backend
+
+- Java 17
+- Spring Boot 3
+- Spring Security
+- JPA (Hibernate)
+- JWT Authentication
+- Gradle
+
+---
+
+### Database
+
+- H2 Database
 
 ---
 
@@ -115,7 +208,7 @@ Siege-Battle-Manager는
 - 댓글 수정: **작성자만**
 - 작성자가 게시글 삭제 시: 해당 게시글의 댓글도 함께 삭제됩니다.
 
-### 데이터 유지 정책 (매우 중요)
+### 데이터 유지 정책
 전투 연구 탭은 길드 운영 기록 보존을 위해 다음 정책을 가집니다.
 
 - 길드원이 탈퇴하거나 VIRTUAL 길드원이 삭제되어도:
@@ -132,7 +225,7 @@ Siege-Battle-Manager는
 모든 API는 공통 응답 포맷을 사용합니다.
 
 ### Success
-```json
+```json id="abc123d"
 {
   "success": true,
   "data": {},
@@ -141,7 +234,7 @@ Siege-Battle-Manager는
 ```
 
 ### Error
-```json
+```json id="abc123d"
 {
   "success": false,
   "data": null,
@@ -152,17 +245,17 @@ Siege-Battle-Manager는
 ---
 
 ## Run (Local)
-### 1) 실행
+### 1) FrontEnd
 ```bash
-./gradlew bootRun
+npm install
+npm run dev
 ```
 ---
 
-### 2) H2 Console
-
-http://localhost:8080/h2-console
-
-JDBC URL은 application.yml 설정에 맞춰 입력합니다.
+### 2) BackEnd
+```bash
+./gradlew bootRun
+```
 
 ---
 
@@ -248,14 +341,45 @@ VALUES ('풍 젠이츠', 'WIND', 'ATTACK_SPEED');
 
 ## 💻 프로젝트의 철학
 
-> 이 프로젝트는 단순히 방덱을 저장하는 도구가 아니다.
+> 이 프로젝트는 게임을 하다 불편한 점을 개선하기 위해 시작되었다.
 
-> 길드 전체 방덱 전력을 계산하고
+> 주 목적은 길드 전체 방덱 구성을 손쉽게 할 수 있게 하고
 
-> 모든 길드원이 같은 목표를 향해 효율적으로 운영될 수 있게 하며
+> 모든 길드원이 같은 방덱에 효율적인 공덱으로 공격을 할 수 있게 하며
 
-> 전략 연구 자료를 축적하는 데이터베이스 역할을 한다
+> 전략 연구 자료를 축적하는 데이터베이스 역할을 한다.
 
-> 즉, 점령전 운영을 시스템화한 길드 매니지먼트 플랫폼이다.
+> 즉, 점령전 운영을 서포트하는 길드 매니지먼트 플랫폼이다.
 
 ---
+
+## 📂 프로젝트 구조
+
+```text
+frontend/
+ ├─ components/
+ ├─ tabs/
+ ├─ lib/
+ └─ data/
+
+backend/
+ ├─ domain/
+ ├─ repository/
+ ├─ service/
+ ├─ controller/
+ ├─ dto/
+ └─ security/
+
+```
+
+---
+
+## 📄 Documents
+
+ | 문서                                             | 설명          |
+| ---------------------------------------------- | ----------- |
+| [RoadMap](./docs/RoadMap.md)                        | 프로젝트 진행 현황  |
+| [Backend Docs](./docs/BACKEND.md)              | 백엔드 구조 및 설계 |
+| [API Docs](./docs/API.md)                      | API 명세      |
+| [ERD](./docs/ERD.md)                           | 데이터베이스 구조   |
+| [Trouble Shooting](./docs/TROUBLE_SHOOTING.md) | 문제 해결 과정 정리 |
