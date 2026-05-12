@@ -12,11 +12,17 @@ export async function createDefenseDeck(ownerMemberId, monsterCodes) {
 }
 
 export async function fetchDefenseDecks(params = {}) {
-  const qs = new URLSearchParams(params).toString();
+  const cleanParams = {};
 
-  const res = await apiFetch(
-    `/defense-decks${qs ? `?${qs}` : ""}`
-  );
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      cleanParams[key] = value;
+    }
+  });
+
+  const qs = new URLSearchParams(cleanParams).toString();
+
+  const res = await apiFetch(`/defense-decks${qs ? `?${qs}` : ""}`);
 
   return res.data;
 }
