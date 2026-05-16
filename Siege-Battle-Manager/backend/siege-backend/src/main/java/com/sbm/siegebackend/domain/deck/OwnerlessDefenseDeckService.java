@@ -96,12 +96,54 @@ public class OwnerlessDefenseDeckService {
                 deck.getId(),
                 deck.getTitle(),
                 deck.getLeader().getId(),
+                deck.getLeader().getCode(),
                 deck.getLeader().getName(),
+                deck.getLeader().getLeaderEffectType(),
                 deck.getMonsters().stream()
-                        .map(mm -> new OwnerlessDefenseDeckDetailResponse.MonsterItem(mm.getId(), mm.getName()))
+                        .map(mm -> new OwnerlessDefenseDeckDetailResponse.MonsterItem(mm.getId(), mm.getCode(), mm.getName()))
                         .toList(),
                 available.size(),
                 available
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<OwnerlessDefenseDeckDetailResponse> getList(String email) {
+        User user = userService.findByEmailOrThrow(email);
+
+        GuildMember actor = guildMemberRepository.findByUser(user)
+                .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
+
+        List<OwnerlessDefenseDeck> decks =
+                ownerlessRepo.findByGuildIdWithMonsters(actor.getGuild().getId());
+
+        return decks.stream()
+                .map(this::toDetailResponse)
+                .toList();
+    }
+
+    private OwnerlessDefenseDeckDetailResponse toDetailResponse(OwnerlessDefenseDeck deck) {
+        Monster leader = deck.getLeader();
+
+        return new OwnerlessDefenseDeckDetailResponse(
+                deck.getId(),
+                deck.getTitle(),
+
+                leader.getId(),
+                leader.getCode(),
+                leader.getName(),
+                leader.getLeaderEffectType(),
+
+                deck.getMonsters().stream()
+                        .map(m -> new OwnerlessDefenseDeckDetailResponse.MonsterItem(
+                                m.getId(),
+                                m.getCode(),
+                                m.getName()
+                        ))
+                        .toList(),
+
+                0,
+                List.of()
         );
     }
 

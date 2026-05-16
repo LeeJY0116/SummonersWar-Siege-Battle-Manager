@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import InventoryTab from "./InventoryTab.jsx";
 import DefenseDeckTab from "./DefenseDeckTab.jsx";
+import OwnerlessDefenseDeckTab from "./OwnerlessDefenseDeckTab.jsx";
 
 export default function GuildTab({ guild, members, monsters }) {
   const [subTab, setSubTab] = useState("inventory");
@@ -43,6 +44,16 @@ export default function GuildTab({ guild, members, monsters }) {
         >
           방덱
         </button>
+        <button
+        onClick={() => setSubTab("ownerless")}
+        className={`px-3 py-1 rounded-xl text-sm ${
+          subTab === "ownerless"
+            ? "bg-white shadow font-semibold"
+            : "text-gray-500"
+        }`}
+      >
+        추천 방덱
+      </button>
         </div>
       </div>
 
@@ -54,6 +65,8 @@ export default function GuildTab({ guild, members, monsters }) {
         <InventoryTab members={members} monsters={monsters} />
       ) : subTab === "defenseDeck" ? (
         <DefenseDeckTab members={members} monsters={monsters} />
+      ) : subTab === "ownerless" ? (
+        <OwnerlessDefenseDeckTab monsters={monsters} />
       ) : null}
     </div>
   );

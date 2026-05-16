@@ -4,6 +4,8 @@ import {
   upsertMemberInventoryItems,
 } from "../../lib/inventory.js";
 import { fetchDefenseDecks } from "../../lib/defenseDeck.js";
+import Toast from "../common/Toast.jsx";
+import { useToast } from "../../hooks/useToast.js";
 
 function clampNonNegative(n) {
   const v = Number.isFinite(n) ? n : Number(n);
@@ -18,7 +20,7 @@ export default function InventoryTab({ members, monsters }) {
   const [query, setQuery] = useState("");
   const [dirty, setDirty] = useState(false);
   const [decks, setDecks] = useState([]);
-  const [toast, setToast] = useState("");
+  const { toastMessage, showToast } = useToast(1000);
 
   const selectedMember = useMemo(
     () => members?.find((m) => String(m.id) === String(selectedMemberId)),
@@ -86,13 +88,6 @@ export default function InventoryTab({ members, monsters }) {
   return map;
   }, [decks, selectedMemberId]);
 
-  function showToast(message) {
-  setToast(message);
-
-  setTimeout(() => {
-    setToast("");
-  }, 1000);
-  }
   const filteredMonsters = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return monsters;
@@ -158,11 +153,7 @@ export default function InventoryTab({ members, monsters }) {
 
   return (
       <>
-    {toast && (
-      <div className="fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-black px-5 py-3 text-sm font-semibold text-white shadow-lg">
-        {toast}
-      </div>
-    )}
+    <Toast message={toastMessage} />
     <div className="space-y-3">
       <div className="flex flex-col md:flex-row md:items-center gap-2">
         <select

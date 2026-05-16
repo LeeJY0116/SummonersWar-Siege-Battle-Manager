@@ -2,6 +2,16 @@ export default function DefenseDeckCard({ deck, monsters = [], onDelete }) {
   function findMonster(code) {
     return monsters.find((m) => m.id === code);
   }
+  
+
+  const leaderMonster = monsters.find(
+    (m) => m.id === deck.leaderMonsterCode
+  );
+
+  const leaderEffect =
+    deck.leaderEffectType ||
+    leaderMonster?.leaderEffectType ||
+    "없음";
 
   return (
     <div className="rounded-2xl border bg-white p-4 shadow-sm">
@@ -9,7 +19,7 @@ export default function DefenseDeckCard({ deck, monsters = [], onDelete }) {
         <div>
           <div className="font-bold">{deck.ownerName}의 방덱</div>
           <div className="text-sm text-gray-500">
-            리더 효과: {deck.leaderEffectType || "없음"}
+            리더 효과: {leaderEffect}
           </div>
         </div>
 

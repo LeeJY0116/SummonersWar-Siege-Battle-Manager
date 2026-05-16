@@ -7,6 +7,9 @@ import {
 import DefenseDeckCard from "./DefenseDeckCard.jsx";
 import DeckMonsterSlot from "./DeckMonsterSlot.jsx";
 import { fetchMemberInventory } from "../../lib/inventory.js";
+import DefenseDeckFilterBar from "./DefenseDeckFilterBar.jsx";
+import Toast from "../common/Toast.jsx";
+import { useToast } from "../../hooks/useToast.js";
 
 export default function DefenseDeckTab({ members = [], monsters = [] }) {
   const [ownerMemberId, setOwnerMemberId] = useState("");
@@ -18,18 +21,39 @@ export default function DefenseDeckTab({ members = [], monsters = [] }) {
   const [leaderEffectFilter, setLeaderEffectFilter] = useState("");
   const [monsterFilterCodes, setMonsterFilterCodes] = useState([]);
   const [monsterFilterKeyword, setMonsterFilterKeyword] = useState("");
-  const [toastMessage, setToastMessage] = useState("");
+  const { toastMessage, showToast } = useToast(1000);
+  
 
   const visibleDecks = useMemo(() => {
-  if (monsterFilterCodes.length === 0) return decks;
+    return decks.filter((deck) => {
+      if (ownerFilterId && String(deck.ownerMemberId) !== String(ownerFilterId)) {
+        return false;
+      }
 
-  return decks.filter((deck) => {
-    const deckCodes = (deck.monsters || []).map((m) => m.monsterCode);
+    if (leaderEffectFilter) {
 
-    // 선택한 몬스터들이 모두 포함된 방덱만 표시
-    return monsterFilterCodes.every((code) => deckCodes.includes(code));
-  });
-}, [decks, monsterFilterCodes]);
+      const leaderMonster = monsters.find(
+        (m) => m.id === deck.leaderMonsterCode
+      );
+
+      const effect =
+        deck.leaderEffectType ||
+        leaderMonster?.leaderEffectType ||
+        "";
+
+      if (effect !== leaderEffectFilter) {
+        return false;
+      }
+    }
+
+      if (monsterFilterCodes.length > 0) {
+        const deckCodes = (deck.monsters || []).map((m) => m.monsterCode);
+        return monsterFilterCodes.every((code) => deckCodes.includes(code));
+      }
+
+      return true;
+    });
+  }, [decks, ownerFilterId, leaderEffectFilter, monsterFilterCodes]);
 
   const selectedMonsters = selectedMonsterCodes.map((code) =>
   monsters.find((m) => m.id === code)
@@ -48,6 +72,24 @@ const leaderEffectOptions = useMemo(() => {
 }, [monsters]);
 
 
+  // 필터 선택된 길드원 계산 추가
+const selectedOwnerFilter = useMemo(() => {
+  return members.find((m) => String(m.id) === String(ownerFilterId));
+}, [members, ownerFilterId]);
+
+const hasActiveFilters =
+  Boolean(ownerFilterId) ||
+  Boolean(leaderEffectFilter) ||
+  monsterFilterCodes.length > 0;
+
+  // 전체 필터 초기화 함수
+  function clearAllFilters() {
+  setOwnerFilterId("");
+  setLeaderEffectFilter("");
+  setMonsterFilterCodes([]);
+  setMonsterFilterKeyword("");
+}
+
   // 몬스터 이름 검색
 const deckFilterMonsters = useMemo(() => {
   const q = monsterFilterKeyword.trim().toLowerCase();
@@ -62,16 +104,6 @@ const deckFilterMonsters = useMemo(() => {
     );
   });
 }, [monsterFilterKeyword, monsters]);
-
-
-// 토스트 메시지
-function showToast(message) {
-  setToastMessage(message);
-
-  setTimeout(() => {
-    setToastMessage("");
-  }, 1000);
-}
 
 // 몬스터 선택 토글 함수
 function toggleMonsterFilter(code) {
@@ -187,14 +219,12 @@ const filteredMonsters = monsters.filter((m) => {
   async function loadDecks() {
     try {
       setLoading(true);
-      const data = await fetchDefenseDecks({
-        ownerMemberId: ownerFilterId,
-        leaderEffect: leaderEffectFilter,
-      });
-      setDecks(data || []);
+      const data = await fetchDefenseDecks();
+      console.log("방덱 응답:", data);
+        setDecks(data || []);
     } catch (e) {
       console.error(e);
-      alert(e.message || "방덱 목록 조회 실패");
+      alert(e.message || "방덱 목록 조회 실패`");
     } finally {
       setLoading(false);
     }
@@ -202,11 +232,7 @@ const filteredMonsters = monsters.filter((m) => {
 
   useEffect(() => {
     loadDecks();
-  }, [
-    ownerFilterId,
-    leaderEffectFilter,
-    monsterFilterCodes,
-  ]);
+  }, []);
 
   function changeMonster(index, code) {
     setSelectedMonsterCodes((prev) => {
@@ -268,11 +294,7 @@ const filteredMonsters = monsters.filter((m) => {
 
   return (
     <div className="space-y-4">
-      {toastMessage && (
-        <div className="fixed top-6 left-1/2 z-50 -translate-x-1/2 rounded-2xl bg-black/90 px-4 py-2 text-sm text-white shadow-lg">
-          {toastMessage}
-        </div>
-      )}
+      <Toast message={toastMessage} />
       <section className="border rounded-2xl p-4 bg-white">
         <h3 className="font-bold text-lg mb-3">방덱 생성</h3>
 
@@ -376,122 +398,25 @@ const filteredMonsters = monsters.filter((m) => {
           >
             새로고침
           </button>
-          <div className="mb-4 grid grid-cols-1 gap-3 md:grid-cols-3">
-  
-          {/* 길드원 필터 */}
-          <select
-            value={ownerFilterId}
-            onChange={(e) => setOwnerFilterId(e.target.value)}
-            className="rounded-xl border px-3 py-2"
-          >
-            <option value="">전체 길드원</option>
 
-            {members.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.displayName}
-              </option>
-            ))}
-          </select>
+          <DefenseDeckFilterBar
+            members={members}
+            monsters={monsters}
 
-          {/* 리더효과 필터 */}
-          <select
-            value={leaderEffectFilter}
-            onChange={(e) => setLeaderEffectFilter(e.target.value)}
-            className="rounded-xl border px-3 py-2"
-          >
-            <option value="">전체 리더효과</option>
+            ownerFilterId={ownerFilterId}
+            setOwnerFilterId={setOwnerFilterId}
 
-            {leaderEffectOptions.map((effect) => (
-              <option key={effect} value={effect}>
-                {effect}
-              </option>
-            ))}
-          </select>
+            leaderEffectFilter={leaderEffectFilter}
+            setLeaderEffectFilter={setLeaderEffectFilter}
 
-          {/* 몬스터 필터 */}
-          <div className="space-y-2">
-            <input
-              value={monsterFilterKeyword}
-              onChange={(e) => setMonsterFilterKeyword(e.target.value)}
-              placeholder="몬스터 이름 검색"
-              className="w-full rounded-xl border px-3 py-2"
-            />
+            monsterFilterKeyword={monsterFilterKeyword}
+            setMonsterFilterKeyword={setMonsterFilterKeyword}
 
-            {monsterFilterCodes.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2 rounded-xl bg-blue-50 px-3 py-2 text-sm">
-                <span className="font-semibold">필터 적용 중:</span>
-
-                {monsterFilterCodes.map((code) => {
-                  const monster = monsters.find((m) => m.id === code);
-
-                  if (!monster) return null;
-
-                  return (
-                    <button
-                      key={code}
-                      type="button"
-                      onClick={() => toggleMonsterFilter(code)}
-                      className="rounded-full border bg-white px-3 py-1 text-blue-600"
-                    >
-                      {monster.name} ✕
-                    </button>
-                  );
-                })}
-
-                <button
-                  type="button"
-                  onClick={() => setMonsterFilterCodes([])}
-                  className="ml-auto text-blue-600 underline"
-                >
-                  전체 해제
-                </button>
-              </div>
-            )}
-
-            {monsterFilterKeyword.trim() && deckFilterMonsters.length > 0 && (
-              <div className="flex gap-2 overflow-x-auto rounded-2xl border p-2">
-                {deckFilterMonsters.map((m) => {
-                  const selected = monsterFilterCodes.includes(m.id);
-
-                  return (
-                    <button
-                      key={m.id}
-                      type="button"
-                      onClick={() => toggleMonsterFilter(m.id)}
-                      className={`min-w-[72px] rounded-2xl border p-2 text-xs transition ${
-                        selected
-                          ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
-                          : "border-gray-200 bg-white"
-                      }`}
-                    >
-                      {m.iconDataUrl ? (
-                        <img
-                          src={m.iconDataUrl}
-                          alt={m.name}
-                          className="mx-auto mb-1 h-12 w-12 rounded-xl object-cover"
-                        />
-                      ) : (
-                        <div className="mx-auto mb-1 h-12 w-12 rounded-xl bg-gray-200" />
-                      )}
-
-                      <div className="truncate font-semibold">{m.name}</div>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-
-            {monsterFilterKeyword.trim() && deckFilterMonsters.length === 0 && (
-              <div className="rounded-xl border border-dashed px-3 py-2 text-sm text-gray-400">
-                검색된 몬스터가 없습니다.
-              </div>
-            )}
-          </div>
-
-          
-        </div>
-      </div>
-
+            monsterFilterCodes={monsterFilterCodes}
+            setMonsterFilterCodes={setMonsterFilterCodes}
+          />
+            </div>
+            
         {visibleDecks.length === 0 ? (
           <p className="text-sm text-gray-500">등록된 방덱이 없습니다.</p>
         ) : (

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import com.sbm.siegebackend.global.api.ApiResponse;
+import java.util.List;
 
 
 @RestController
@@ -28,14 +29,16 @@ public class OwnerlessDefenseDeckController {
         return ResponseEntity.ok(ApiResponse.success(id));
     }
 
-    @GetMapping("/{deckId}")
-    public ResponseEntity<ApiResponse<OwnerlessDefenseDeckDetailResponse>> detail(
-            @PathVariable Long deckId,
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<OwnerlessDefenseDeckDetailResponse>>> list(
             Authentication auth
     ) {
         String email = (String) auth.getPrincipal();
-        var res = service.getDetail(email,deckId);
-        return ResponseEntity.ok(ApiResponse.success(res));
+
+        List<OwnerlessDefenseDeckDetailResponse> decks =
+                service.getList(email);
+
+        return ResponseEntity.ok(ApiResponse.success(decks));
     }
 
     @DeleteMapping("/{deckId}")

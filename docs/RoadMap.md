@@ -1,5 +1,5 @@
 #  SummonersWar Siege Battle Manager 로드맵 및 개발 기록
-> Last Updated: 2026-05-11
+> Last Updated: 2026-05-13
 
 # 📌 프로젝트 목표
 

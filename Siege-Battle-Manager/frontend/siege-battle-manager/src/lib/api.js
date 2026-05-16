@@ -15,6 +15,10 @@ export async function apiFetch(url, options = {}) {
   const authHeader =
   token && token !== "undefined" ? { Authorization: `Bearer ${token}` } : {};
 
+    if (token) {
+    headers.Authorization = `Bearer ${token}`;
+    }
+
   const res = await fetch(API_BASE + url, { ...options, headers });
   const body = await res.json().catch(() => ({}));
 
