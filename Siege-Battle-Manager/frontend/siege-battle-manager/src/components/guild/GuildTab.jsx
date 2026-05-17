@@ -52,7 +52,7 @@ export default function GuildTab({ guild, members, monsters }) {
             : "text-gray-500"
         }`}
       >
-        추천 방덱
+        길드 방덱
       </button>
         </div>
       </div>

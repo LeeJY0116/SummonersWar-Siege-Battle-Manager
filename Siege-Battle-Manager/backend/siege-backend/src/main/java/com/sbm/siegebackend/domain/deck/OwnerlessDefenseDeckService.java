@@ -46,13 +46,17 @@ public class OwnerlessDefenseDeckService {
             throw new IllegalStateException("마스터/부마스터만 주인 없는 방덱을 생성할 수 있습니다.");
         }
 
-        if (request.getMonsterIds() == null || request.getMonsterIds().size() != 3) {
+        if (request.getMonsterCodes() == null || request.getMonsterCodes().size() != 3) {
             throw new IllegalArgumentException("방덱은 3마리 몬스터로 구성되어야 합니다.");
         }
 
-        List<Monster> monsters = request.getMonsterIds().stream()
-                .map(id -> monsterRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
+        if (request.getMonsterCodes().stream().distinct().count() != 3) {
+            throw new IllegalArgumentException("같은 몬스터를 중복해서 넣을 수 없습니다.");
+        }
+
+        List<Monster> monsters = request.getMonsterCodes().stream()
+                .map(code -> monsterRepository.findByCode(code)
+                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 CODE: " + code)))
                 .toList();
 
         OwnerlessDefenseDeck deck = new OwnerlessDefenseDeck(
@@ -122,7 +126,24 @@ public class OwnerlessDefenseDeckService {
                 .toList();
     }
 
-    private OwnerlessDefenseDeckDetailResponse toDetailResponse(OwnerlessDefenseDeck deck) {
+    private OwnerlessDefenseDeckDetailResponse toDetailResponse(
+            OwnerlessDefenseDeck deck
+    ) {
+        List<GuildMember> members =
+                guildMemberRepository.findByGuild(deck.getGuild());
+
+        List<Monster> monsters = deck.getMonsters();
+
+        List<OwnerlessDefenseDeckDetailResponse.AvailableMember> available =
+                members.stream()
+                        .filter(m -> canBuild(m, monsters))
+                        .map(m -> new OwnerlessDefenseDeckDetailResponse.AvailableMember(
+                                m.getId(),
+                                m.getDisplayName(),
+                                m.getType().name()
+                        ))
+                        .toList();
+
         Monster leader = deck.getLeader();
 
         return new OwnerlessDefenseDeckDetailResponse(
@@ -134,7 +155,7 @@ public class OwnerlessDefenseDeckService {
                 leader.getName(),
                 leader.getLeaderEffectType(),
 
-                deck.getMonsters().stream()
+                monsters.stream()
                         .map(m -> new OwnerlessDefenseDeckDetailResponse.MonsterItem(
                                 m.getId(),
                                 m.getCode(),
@@ -142,15 +163,17 @@ public class OwnerlessDefenseDeckService {
                         ))
                         .toList(),
 
-                0,
-                List.of()
+                available.size(),
+                available
         );
     }
 
     private boolean canBuild(GuildMember member, List<Monster> monsters) {
         for (Monster monster : monsters) {
-            GuildMemberInventory inv = inventoryRepository.findByGuildMemberAndMonster(member, monster)
+            GuildMemberInventory inv = inventoryRepository
+                    .findByGuildMemberAndMonsterCode(member, monster.getCode())
                     .orElse(null);
+
             if (inv == null || inv.getQuantity() < 1) {
                 return false;
             }

@@ -220,7 +220,6 @@ const filteredMonsters = monsters.filter((m) => {
     try {
       setLoading(true);
       const data = await fetchDefenseDecks();
-      console.log("방덱 응답:", data);
         setDecks(data || []);
     } catch (e) {
       console.error(e);

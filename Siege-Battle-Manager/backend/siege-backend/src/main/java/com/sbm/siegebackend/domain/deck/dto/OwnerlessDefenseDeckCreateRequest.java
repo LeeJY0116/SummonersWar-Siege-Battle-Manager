@@ -5,15 +5,15 @@ import java.util.List;
 public class OwnerlessDefenseDeckCreateRequest {
 
     private String title;
-    private List<Long> monsterIds; // 3개
+    private List<String> monsterCodes; // 3개
 
     public OwnerlessDefenseDeckCreateRequest() {}
 
     public String getTitle() { return title; }
 
-    public List<Long> getMonsterIds() { return monsterIds; }
+    public List<String> getMonsterCodes() { return monsterCodes; }
 
     public void setTitle(String title) { this.title = title; }
 
-    public void setMonsterIds(List<Long> monsterIds) { this.monsterIds = monsterIds; }
+    public void setMonsterIds(List<Long> monsterIds) { this.monsterCodes = monsterCodes; }
 }

@@ -41,6 +41,16 @@ public class OwnerlessDefenseDeckController {
         return ResponseEntity.ok(ApiResponse.success(decks));
     }
 
+    @GetMapping("/{deckId}")
+    public ResponseEntity<ApiResponse<OwnerlessDefenseDeckDetailResponse>> detail(
+            @PathVariable Long deckId,
+            Authentication auth
+    ) {
+        String email = (String) auth.getPrincipal();
+        OwnerlessDefenseDeckDetailResponse detail = service.getDetail(email, deckId);
+        return ResponseEntity.ok(ApiResponse.success(detail));
+    }
+
     @DeleteMapping("/{deckId}")
     public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable Long deckId,
