@@ -11,6 +11,7 @@ import com.sbm.siegebackend.global.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.List;
 
 @Service
@@ -88,12 +89,21 @@ public class OwnerlessDefenseDeckService {
 
         // ✅ 가능한 길드원 계산
         List<OwnerlessDefenseDeckDetailResponse.AvailableMember> available = members.stream()
-                .filter(m -> canBuild(m, monsters))
-                .map(m -> new OwnerlessDefenseDeckDetailResponse.AvailableMember(
-                        m.getId(),
-                        m.getDisplayName(),
-                        m.getType().name()
-                ))
+                .map(m -> {
+                    int buildableCount = countBuildableSets(m, monsters);
+
+                    if (buildableCount <= 0) {
+                        return null;
+                    }
+
+                    return new OwnerlessDefenseDeckDetailResponse.AvailableMember(
+                            m.getId(),
+                            m.getDisplayName(),
+                            m.getType().name(),
+                            buildableCount
+                    );
+                })
+                .filter(Objects::nonNull)
                 .toList();
 
         return new OwnerlessDefenseDeckDetailResponse(
@@ -136,12 +146,21 @@ public class OwnerlessDefenseDeckService {
 
         List<OwnerlessDefenseDeckDetailResponse.AvailableMember> available =
                 members.stream()
-                        .filter(m -> canBuild(m, monsters))
-                        .map(m -> new OwnerlessDefenseDeckDetailResponse.AvailableMember(
-                                m.getId(),
-                                m.getDisplayName(),
-                                m.getType().name()
-                        ))
+                        .map(m -> {
+                            int buildableCount = countBuildableSets(m, monsters);
+
+                            if (buildableCount <= 0) {
+                                return null;
+                            }
+
+                            return new OwnerlessDefenseDeckDetailResponse.AvailableMember(
+                                    m.getId(),
+                                    m.getDisplayName(),
+                                    m.getType().name(),
+                                    buildableCount
+                            );
+                        })
+                        .filter(Objects::nonNull)
                         .toList();
 
         Monster leader = deck.getLeader();
@@ -179,6 +198,25 @@ public class OwnerlessDefenseDeckService {
             }
         }
         return true;
+    }
+
+    // 몇 세트 나오는지 계산하는 메서드
+    private int countBuildableSets(GuildMember member, List<Monster> monsters) {
+        int minCount = Integer.MAX_VALUE;
+
+        for (Monster monster : monsters) {
+            GuildMemberInventory inv = inventoryRepository
+                    .findByGuildMemberAndMonsterCode(member, monster.getCode())
+                    .orElse(null);
+
+            if (inv == null || inv.getQuantity() <= 0) {
+                return 0;
+            }
+
+            minCount = Math.min(minCount, inv.getQuantity());
+        }
+
+        return minCount == Integer.MAX_VALUE ? 0 : minCount;
     }
 
     public void delete(String email, Long deckId) {

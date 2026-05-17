@@ -306,12 +306,15 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
                     {member.displayName}
                   </div>
 
-                  <div className="text-gray-500">
-                    {member.type}
+                  <div className="text-right">
+                    <div className="text-blue-600 font-semibold">
+                      {member.buildableCount ?? 1}세트 가능
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      {member.type}
+                    </div>
                   </div>
-
                 </div>
-
               ))}
 
             </div>

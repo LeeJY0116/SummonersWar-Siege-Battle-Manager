@@ -57,16 +57,19 @@ public class OwnerlessDefenseDeckDetailResponse {
         private Long guildMemberId;
         private String displayName;
         private String type; // REAL/VIRTUAL
+        private int buildableCount; // 몇 세트 가능
 
-        public AvailableMember(Long guildMemberId, String displayName, String type) {
+        public AvailableMember(Long guildMemberId, String displayName, String type, int buildableCount) {
             this.guildMemberId = guildMemberId;
             this.displayName = displayName;
             this.type = type;
+            this.buildableCount = buildableCount;
         }
 
         public Long getGuildMemberId() { return guildMemberId; }
         public String getDisplayName() { return displayName; }
         public String getType() { return type; }
+        public int getBuildableCount() { return buildableCount; }
     }
 
     public Long getDeckId() { return deckId; }
