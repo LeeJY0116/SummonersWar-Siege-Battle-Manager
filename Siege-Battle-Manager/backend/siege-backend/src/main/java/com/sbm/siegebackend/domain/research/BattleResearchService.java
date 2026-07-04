@@ -61,13 +61,13 @@ public class BattleResearchService {
     public Long createPost(String email, BattleResearchPostCreateRequest request) {
         GuildMember actor = getActor(email);
 
-        if (request.getDefenseMonsterIds() == null || request.getDefenseMonsterIds().size() != 3) {
+        if (request.getMonsterCodes() == null || request.getMonsterCodes().size() != 3) {
             throw new IllegalArgumentException("방덱은 3마리 몬스터로 구성되어야 합니다.");
         }
 
-        List<Monster> defense = request.getDefenseMonsterIds().stream()
-                .map(id -> monsterRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
+        List<Monster> defense = request.getMonsterCodes().stream()
+                .map(code -> monsterRepository.findByCode(code)
+                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 CODE: " + code)))
                 .toList();
 
         Long authorUserId = getActorUserId(email);
@@ -76,6 +76,7 @@ public class BattleResearchService {
         BattleResearchPost post = new BattleResearchPost(
                 actor.getGuild(),
                 request.getTitle(),
+                request.getContent(),
                 defense,
                 authorUserId,
                 authorName
@@ -112,7 +113,11 @@ public class BattleResearchService {
                         p.getAuthorName(),
                         p.getAuthorUserId(),
                         p.getDefenseMonsters().stream()
-                                .map(m -> new BattleResearchPostListItemResponse.MonsterItem(m.getId(), m.getName()))
+                                .map(m -> new BattleResearchPostListItemResponse.MonsterItem(
+                                        m.getId(),
+                                        m.getCode(),
+                                        m.getName()
+                                ))
                                 .toList(),
                         commentRepository.findByPost_IdOrderByCreatedAtAsc(p.getId()).size(),
                         p.getCreatedAt()
@@ -154,8 +159,13 @@ public class BattleResearchService {
                 post.getTitle(),
                 post.getAuthorName(),
                 post.getAuthorUserId(),
+                post.getContent(),
                 post.getDefenseMonsters().stream()
-                        .map(m -> new BattleResearchPostDetailResponse.MonsterItem(m.getId(), m.getName()))
+                        .map(m -> new BattleResearchPostDetailResponse.MonsterItem(
+                                m.getId(),
+                                m.getCode(),
+                                m.getName()
+                                ))
                         .toList(),
                 post.getCreatedAt(),
                 post.getUpdatedAt(),

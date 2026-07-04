@@ -24,6 +24,10 @@ public class BattleResearchPost {
     @Column(nullable = false, length = 100)
     private String title;
 
+    // 내용
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
+
     // 방덱 3마리(0번=리더)
     @ManyToMany
     @JoinTable(
@@ -32,7 +36,7 @@ public class BattleResearchPost {
             inverseJoinColumns = @JoinColumn(name = "monster_id")
     )
     @OrderColumn(name = "position")
-    private List<Monster> defenseMonsters;
+    private List<Monster> selectedMonsters;
 
     // 작성자 정보 (절대 FK로 묶지 않음)
     @Column(nullable = true)
@@ -51,12 +55,14 @@ public class BattleResearchPost {
 
     public BattleResearchPost(Guild guild,
                               String title,
+                              String content,
                               List<Monster> defenseMonsters,
                               Long authorUserId,
                               String authorName) {
         this.guild = guild;
         this.title = title;
-        this.defenseMonsters = defenseMonsters;
+        this.content = content;
+        this.selectedMonsters = defenseMonsters;
         this.authorUserId = authorUserId;
         this.authorName = authorName;
     }
@@ -75,7 +81,8 @@ public class BattleResearchPost {
     public Long getId() { return id; }
     public Guild getGuild() { return guild; }
     public String getTitle() { return title; }
-    public List<Monster> getDefenseMonsters() { return defenseMonsters; }
+    public String getContent() { return content; }
+    public List<Monster> getDefenseMonsters() { return selectedMonsters; }
     public Long getAuthorUserId() { return authorUserId; }
     public String getAuthorName() { return authorName; }
     public LocalDateTime getCreatedAt() { return createdAt; }
@@ -86,6 +93,6 @@ public class BattleResearchPost {
     }
 
     public void changeDefenseMonsters(List<Monster> monsters) {
-        this.defenseMonsters = monsters;
+        this.selectedMonsters = monsters;
     }
 }

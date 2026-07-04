@@ -13,7 +13,7 @@ public interface BattleResearchPostRepository extends JpaRepository<BattleResear
 
     @Query("""
         select p from BattleResearchPost p
-        left join fetch p.defenseMonsters
+        left join fetch p.selectedMonsters
         where p.id = :postId
     """)
     Optional<BattleResearchPost> findDetailWithDefense(@Param("postId") Long postId);

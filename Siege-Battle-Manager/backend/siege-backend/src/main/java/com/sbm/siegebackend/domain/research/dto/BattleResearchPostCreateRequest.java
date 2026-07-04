@@ -5,15 +5,31 @@ import java.util.List;
 public class BattleResearchPostCreateRequest {
 
     private String title;
-    private List<Long> defenseMonsterIds; // 3개
+    private List<String> monsterCodes;
+    private String content;
 
-    public BattleResearchPostCreateRequest() {}
+    public String getTitle() {
+        return title;
+    }
 
-    public String getTitle() { return title; }
-    public List<Long> getDefenseMonsterIds() { return defenseMonsterIds; }
 
-    public void setTitle(String title) { this.title = title; }
-    public void setDefenseMonsterIds(List<Long> defenseMonsterIds) {
-        this.defenseMonsterIds = defenseMonsterIds;
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public List<String> getMonsterCodes() {
+        return monsterCodes;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setMonsterCodes(List<String> monsterCodes) {
+        this.monsterCodes = monsterCodes;
     }
 }

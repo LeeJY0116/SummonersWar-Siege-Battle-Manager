@@ -78,7 +78,7 @@ export default function GuildTab({ guild, members, monsters }) {
       ) : subTab === "ownerless" ? (
         <OwnerlessDefenseDeckTab monsters={monsters} />
         ) : subTab === "battleResearch" ? (
-        <BattleResearchTab />
+        <BattleResearchTab monsters={monsters} />
       ) : null}
     </div>
   );
