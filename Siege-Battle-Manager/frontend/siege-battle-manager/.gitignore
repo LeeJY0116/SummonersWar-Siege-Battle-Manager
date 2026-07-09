@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# Env
+.env
+.env.*
+!.env.example
+
+# Game image assets are loaded from external APIs, not committed.
+public/monsters/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -39,9 +39,13 @@ out/
 ### env ###
 .env
 *.env
+src/main/resources/application-local.yml
+src/main/resources/application-*.local.yml
 
 ### db ###
 data/
 *.db
 *.mv.db
 *.trace.db
+*.sqlite
+*.sqlite3
