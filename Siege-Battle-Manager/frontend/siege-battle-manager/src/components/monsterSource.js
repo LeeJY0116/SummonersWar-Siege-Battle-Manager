@@ -11,6 +11,7 @@ const localMonsters = [
 
 function normalizeMonster(monster) {
   const monsterCode = monster.code ?? monster.monsterCode ?? monster.id;
+  const imageUrl = resolveMonsterImageUrl(monster);
 
   return {
     ...monster,
@@ -18,9 +19,19 @@ function normalizeMonster(monster) {
     monsterCode,
     element: monster.attribute?.toLowerCase?.() ?? monster.element ?? "",
     grade: monster.naturalStars ?? monster.grade ?? null,
-    iconDataUrl: monster.imageUrl ?? monster.iconDataUrl ?? null,
-    imageUrl: monster.imageUrl ?? monster.iconDataUrl ?? null,
+    iconDataUrl: imageUrl,
+    imageUrl,
   };
+}
+
+function resolveMonsterImageUrl(monster) {
+  const imageUrl = monster.imageUrl ?? monster.iconDataUrl ?? null;
+
+  if (imageUrl?.startsWith("/monsters/")) {
+    return null;
+  }
+
+  return imageUrl;
 }
 
 // 🔥 지금은 JSON, 나중엔 API로 교체

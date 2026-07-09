@@ -28,11 +28,22 @@ function uid() {
 }
 
 function loadInitialMonsters() {
-  return ALL_DEFAULT_MONSTERS;
+  return ALL_DEFAULT_MONSTERS.map(normalizeLocalMonster);
+}
+
+function resolveMonsterImageUrl(monster) {
+  const imageUrl = monster.imageUrl ?? monster.iconDataUrl ?? null;
+
+  if (imageUrl?.startsWith("/monsters/")) {
+    return null;
+  }
+
+  return imageUrl;
 }
 
 function normalizeBackendMonster(monster) {
   const monsterCode = monster.code ?? monster.monsterCode ?? String(monster.id);
+  const imageUrl = resolveMonsterImageUrl(monster);
 
   return {
     id: monsterCode,
@@ -43,8 +54,8 @@ function normalizeBackendMonster(monster) {
     attribute: monster.attribute,
     grade: monster.naturalStars ?? monster.grade ?? null,
     naturalStars: monster.naturalStars ?? null,
-    iconDataUrl: monster.imageUrl ?? monster.iconDataUrl ?? null,
-    imageUrl: monster.imageUrl ?? null,
+    iconDataUrl: imageUrl,
+    imageUrl,
     leaderEffectType: monster.leaderEffectType ?? null,
     leaderEffectText: monster.leaderEffectText ?? "",
     nicknames: monster.nicknames ?? [],
@@ -54,13 +65,14 @@ function normalizeBackendMonster(monster) {
 
 function normalizeLocalMonster(monster) {
   const monsterCode = monster.monsterCode ?? monster.code ?? monster.id;
+  const imageUrl = resolveMonsterImageUrl(monster);
 
   return {
     ...monster,
     id: monsterCode,
     monsterCode,
-    imageUrl: monster.imageUrl ?? monster.iconDataUrl ?? null,
-    iconDataUrl: monster.iconDataUrl ?? monster.imageUrl ?? null,
+    imageUrl,
+    iconDataUrl: imageUrl,
   };
 }
 
@@ -184,12 +196,11 @@ async function fetchMonstersFromBackend() {
 }
 
 async function loadMonsters() {
-  if (!USE_BACKEND) return ALL_DEFAULT_MONSTERS;
   try {
     return await fetchMonstersFromBackend();
   } catch (e) {
     console.warn("API failed, fallback to default JSON", e);
-    return ALL_DEFAULT_MONSTERS;
+    return ALL_DEFAULT_MONSTERS.map(normalizeLocalMonster);
   }
 }
 
