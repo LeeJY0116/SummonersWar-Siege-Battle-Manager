@@ -5,7 +5,7 @@ public record MonsterResponse(
         String code,
         String name,
         String attribute,
-        String leaderEffectType
-//        String leaderEffectText,
-//        String imageUrl
+        String leaderEffectType,
+        String imageUrl,
+        Integer naturalStars
 ) {}

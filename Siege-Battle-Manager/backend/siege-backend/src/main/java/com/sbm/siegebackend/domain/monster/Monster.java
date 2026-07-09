@@ -2,21 +2,25 @@ package com.sbm.siegebackend.domain.monster;
 
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Setter;
 
 @Entity
 @Table(name = "monsters")
-
-
 public class Monster {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 몬스터 이름 (예: '암 네오스톤 에이전트')
+    @Column(unique = true)
+    private Integer com2usId;
+
+    @Column(length = 500)
+    private String imageUrl;
+
+    private Integer naturalStars;
+
     @Column(nullable = false, unique = true, length = 100)
-    private String code;    // json파일 monster id값
+    private String code;
 
     @Column(nullable = false, unique = true, length = 100)
     private String name;
@@ -25,7 +29,6 @@ public class Monster {
     @Column(nullable = false)
     private MonsterAttribute attribute;
 
-    // 리더 효과 타입(나중에 Enum으로 빼도 됨, 우선 문자열)
     @Column(nullable = true, length = 50)
     private String leaderEffectType;
 
@@ -39,13 +42,31 @@ public class Monster {
         this.leaderEffectType = leaderEffectType;
     }
 
-    public String getCode() { return code; }
+    public void updateFromSwarfarm(Integer com2usId,
+                                   String name,
+                                   MonsterAttribute attribute,
+                                   Integer naturalStars,
+                                   String imageUrl) {
+        this.com2usId = com2usId;
+        this.name = name;
+        this.attribute = attribute;
+        this.naturalStars = naturalStars;
+        this.imageUrl = imageUrl;
+    }
 
     public Long getId() { return id; }
+
+    public String getCode() { return code; }
 
     public String getName() { return name; }
 
     public MonsterAttribute getAttribute() { return attribute; }
 
     public String getLeaderEffectType() { return leaderEffectType; }
+
+    public Integer getCom2usId() { return com2usId; }
+
+    public String getImageUrl() { return imageUrl; }
+
+    public Integer getNaturalStars() { return naturalStars; }
 }

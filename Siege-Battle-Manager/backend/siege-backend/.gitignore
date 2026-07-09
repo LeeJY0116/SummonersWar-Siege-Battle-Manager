@@ -35,3 +35,13 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### env ###
+.env
+*.env
+
+### db ###
+data/
+*.db
+*.mv.db
+*.trace.db
