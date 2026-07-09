@@ -1,4 +1,7 @@
-export const API_BASE = "http://localhost:8080/api";
+const rawApiBase = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+export const API_BASE = rawApiBase.endsWith("/api")
+  ? rawApiBase
+  : `${rawApiBase.replace(/\/$/, "")}/api`;
 
 export async function apiFetch(url, options = {}) {
   const rawToken = localStorage.getItem("accessToken");

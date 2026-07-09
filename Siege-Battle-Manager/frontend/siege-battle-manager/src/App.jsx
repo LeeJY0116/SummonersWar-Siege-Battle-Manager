@@ -8,6 +8,7 @@ import { fetchMyGuild, createGuild, fetchMyGuildMembers } from "./lib/guild.js";
 import LoginPage from "./components/auth/LoginPage.jsx";
 import SignupPage from "./components/auth/SignupPage.jsx";
 import GuildTab from "./components/guild/GuildTab.jsx";
+import { apiFetch } from "./lib/api.js";
 
 
 const ALL_DEFAULT_MONSTERS = [
@@ -28,6 +29,44 @@ function uid() {
 
 function loadInitialMonsters() {
   return ALL_DEFAULT_MONSTERS;
+}
+
+function normalizeBackendMonster(monster) {
+  const monsterCode = monster.code ?? monster.monsterCode ?? String(monster.id);
+
+  return {
+    id: monsterCode,
+    monsterCode,
+    backendId: monster.id,
+    name: monster.name,
+    element: monster.attribute?.toLowerCase?.() ?? monster.element ?? "",
+    attribute: monster.attribute,
+    grade: monster.naturalStars ?? monster.grade ?? null,
+    naturalStars: monster.naturalStars ?? null,
+    iconDataUrl: monster.imageUrl ?? monster.iconDataUrl ?? null,
+    imageUrl: monster.imageUrl ?? null,
+    leaderEffectType: monster.leaderEffectType ?? null,
+    leaderEffectText: monster.leaderEffectText ?? "",
+    nicknames: monster.nicknames ?? [],
+    isDefault: true,
+  };
+}
+
+function normalizeLocalMonster(monster) {
+  const monsterCode = monster.monsterCode ?? monster.code ?? monster.id;
+
+  return {
+    ...monster,
+    id: monsterCode,
+    monsterCode,
+    imageUrl: monster.imageUrl ?? monster.iconDataUrl ?? null,
+    iconDataUrl: monster.iconDataUrl ?? monster.imageUrl ?? null,
+  };
+}
+
+async function loadBackendMonsters() {
+  const body = await apiFetch("/monsters");
+  return (body.data ?? []).map(normalizeBackendMonster);
 }
 
 export default function SiegeBattleManager() {
@@ -86,6 +125,18 @@ export default function SiegeBattleManager() {
   .then(setMembers)
   .catch(() => setMembers([]));
 }, [guild]);
+
+  useEffect(() => {
+    loadBackendMonsters()
+      .then((loadedMonsters) => {
+        if (loadedMonsters.length > 0) {
+          setMonsters(loadedMonsters);
+        }
+      })
+      .catch((e) => {
+        console.warn("Failed to load backend monsters", e);
+      });
+  }, []);
 
 
   // 로컬 스토리지 로드

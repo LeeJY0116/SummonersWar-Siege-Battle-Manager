@@ -24,11 +24,17 @@ export default function DeckMonsterSlot({
 
       {monster ? (
         <>
-          <img
-            src={monster.iconDataUrl}
-            alt={monster.name}
-            className="h-16 w-16 rounded-xl object-cover"
-          />
+          {monster.iconDataUrl ? (
+            <img
+              src={monster.iconDataUrl}
+              alt={monster.name}
+              className="h-16 w-16 rounded-xl object-cover"
+            />
+          ) : (
+            <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-gray-200 text-xs text-gray-500">
+              No Img
+            </div>
+          )}
 
           <div className="mt-2 text-xs font-semibold">
             {monster.name}
