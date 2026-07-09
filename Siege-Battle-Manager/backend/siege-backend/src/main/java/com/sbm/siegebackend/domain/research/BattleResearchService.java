@@ -119,7 +119,7 @@ public class BattleResearchService {
                                         m.getName()
                                 ))
                                 .toList(),
-                        commentRepository.findByPost_IdOrderByCreatedAtAsc(p.getId()).size(),
+                        countMap.getOrDefault(p.getId(), 0L).intValue(),
                         p.getCreatedAt()
                 ))
                 .toList();
