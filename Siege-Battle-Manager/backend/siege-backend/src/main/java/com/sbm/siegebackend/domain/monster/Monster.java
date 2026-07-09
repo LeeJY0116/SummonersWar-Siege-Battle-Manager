@@ -22,7 +22,7 @@ public class Monster {
     @Column(nullable = false, unique = true, length = 100)
     private String code;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, length = 100)
     private String name;
 
     @Enumerated(EnumType.STRING)
