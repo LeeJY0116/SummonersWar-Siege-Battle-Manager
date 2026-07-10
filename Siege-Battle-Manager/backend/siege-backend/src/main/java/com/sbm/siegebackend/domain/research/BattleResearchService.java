@@ -146,7 +146,11 @@ public class BattleResearchService {
                         c.getAuthorName(),
                         c.getAuthorUserId(),
                         c.getAttackMonsters().stream()
-                                .map(m -> new BattleResearchCommentResponse.MonsterItem(m.getId(), m.getName()))
+                                .map(m -> new BattleResearchCommentResponse.MonsterItem(
+                                        m.getId(),
+                                        m.getCode(),
+                                        m.getName()
+                                ))
                                 .toList(),
                         c.getContent(),
                         c.getCreatedAt(),
@@ -189,14 +193,14 @@ public class BattleResearchService {
             throw new IllegalStateException("작성자만 게시글을 수정할 수 있습니다.");
         }
 
-        if (request.getDefenseMonsterIds() == null || request.getDefenseMonsterIds().size() != 3) {
+        List<Monster> defense = resolveDefenseMonsters(
+                request.getDefenseMonsterCodes(),
+                request.getDefenseMonsterIds()
+        );
+
+        if (defense.size() != 3) {
             throw new IllegalArgumentException("방덱은 3마리 몬스터로 구성되어야 합니다.");
         }
-
-        List<Monster> defense = request.getDefenseMonsterIds().stream()
-                .map(id -> monsterRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
-                .toList();
 
         post.changeTitle(request.getTitle());
         post.changeDefenseMonsters(defense);
@@ -242,15 +246,14 @@ public class BattleResearchService {
             throw new IllegalStateException("다른 길드의 게시글에는 댓글을 달 수 없습니다.");
         }
 
-        List<Long> ids = request.getAttackMonsterIds() == null ? List.of() : request.getAttackMonsterIds();
-        if (ids.size() > 3) {
+        List<Monster> attack = resolveAttackMonsters(
+                request.getAttackMonsterCodes(),
+                request.getAttackMonsterIds()
+        );
+
+        if (attack.size() > 3) {
             throw new IllegalArgumentException("공덱 몬스터는 최대 3마리까지 선택 가능합니다.");
         }
-
-        List<Monster> attack = ids.stream()
-                .map(id -> monsterRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
-                .toList();
 
         Long authorUserId = getActorUserId(email);
         String authorName = actor.getDisplayName();
@@ -284,15 +287,14 @@ public class BattleResearchService {
             throw new IllegalStateException("작성자만 댓글을 수정할 수 있습니다.");
         }
 
-        List<Long> ids = request.getAttackMonsterIds() == null ? List.of() : request.getAttackMonsterIds();
-        if (ids.size() > 3) {
+        List<Monster> attack = resolveAttackMonsters(
+                request.getAttackMonsterCodes(),
+                request.getAttackMonsterIds()
+        );
+
+        if (attack.size() > 3) {
             throw new IllegalArgumentException("공덱 몬스터는 최대 3마리까지 선택 가능합니다.");
         }
-
-        List<Monster> attack = ids.stream()
-                .map(id -> monsterRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
-                .toList();
 
         comment.changeAttackMonsters(attack);
         comment.changeContent(request.getContent());
@@ -317,5 +319,35 @@ public class BattleResearchService {
         }
 
         commentRepository.delete(comment);
+    }
+
+    private List<Monster> resolveDefenseMonsters(List<String> codes, List<Long> ids) {
+        if (codes != null) {
+            return codes.stream()
+                    .map(code -> monsterRepository.findByCode(code)
+                            .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 CODE: " + code)))
+                    .toList();
+        }
+
+        List<Long> safeIds = ids == null ? List.of() : ids;
+        return safeIds.stream()
+                .map(id -> monsterRepository.findById(id)
+                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
+                .toList();
+    }
+
+    private List<Monster> resolveAttackMonsters(List<String> codes, List<Long> ids) {
+        if (codes != null) {
+            return codes.stream()
+                    .map(code -> monsterRepository.findByCode(code)
+                            .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 CODE: " + code)))
+                    .toList();
+        }
+
+        List<Long> safeIds = ids == null ? List.of() : ids;
+        return safeIds.stream()
+                .map(id -> monsterRepository.findById(id)
+                        .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
+                .toList();
     }
 }

@@ -4,14 +4,18 @@ import java.util.List;
 
 public class BattleResearchCommentCreateRequest {
 
+    private List<String> attackMonsterCodes;
+
     private List<Long> attackMonsterIds; // 0~3개 가능
     private String content;
 
     public BattleResearchCommentCreateRequest() {}
 
+    public List<String> getAttackMonsterCodes() { return attackMonsterCodes; }
     public List<Long> getAttackMonsterIds() { return attackMonsterIds; }
     public String getContent() { return content; }
 
+    public void setAttackMonsterCodes(List<String> attackMonsterCodes) { this.attackMonsterCodes = attackMonsterCodes; }
     public void setAttackMonsterIds(List<Long> attackMonsterIds) { this.attackMonsterIds = attackMonsterIds; }
     public void setContent(String content) { this.content = content; }
 }

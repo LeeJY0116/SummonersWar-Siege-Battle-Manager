@@ -33,14 +33,17 @@ public class BattleResearchCommentResponse {
 
     public static class MonsterItem {
         private Long monsterId;
+        private String monsterCode;
         private String monsterName;
 
-        public MonsterItem(Long monsterId, String monsterName) {
+        public MonsterItem(Long monsterId, String monsterCode, String monsterName) {
             this.monsterId = monsterId;
+            this.monsterCode = monsterCode;
             this.monsterName = monsterName;
         }
 
         public Long getMonsterId() { return monsterId; }
+        public String getMonsterCode() { return monsterCode; }
         public String getMonsterName() { return monsterName; }
     }
 
