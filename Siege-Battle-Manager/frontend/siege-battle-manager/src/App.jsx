@@ -9,7 +9,7 @@ import LoginPage from "./components/auth/LoginPage.jsx";
 import SignupPage from "./components/auth/SignupPage.jsx";
 import GuildTab from "./components/guild/GuildTab.jsx";
 import { apiFetch } from "./lib/api.js";
-import { syncSwarfarmMonsters } from "./lib/monsterSync.js";
+import { applyMonsterLocalization, syncSwarfarmMonsters } from "./lib/monsterSync.js";
 
 
 const ALL_DEFAULT_MONSTERS = [
@@ -62,6 +62,7 @@ function normalizeBackendMonster(monster) {
     naturalStars: monster.naturalStars ?? null,
     iconDataUrl: imageUrl,
     imageUrl,
+    enabled: monster.enabled ?? true,
     leaderEffectType: monster.leaderEffectType ?? null,
     leaderEffectText: monster.leaderEffectText ?? "",
     aliases,
@@ -96,7 +97,9 @@ function normalizeMonsterAliases(monster, englishName) {
 
 async function loadBackendMonsters() {
   const body = await apiFetch("/monsters");
-  return (body.data ?? []).map(normalizeBackendMonster);
+  return (body.data ?? [])
+    .filter((monster) => monster.enabled !== false)
+    .map(normalizeBackendMonster);
 }
 
 export default function SiegeBattleManager() {
@@ -108,6 +111,7 @@ export default function SiegeBattleManager() {
   const [members, setMembers] = useState([]);
   const [authMode, setAuthMode] = useState("login");
   const [syncingMonsters, setSyncingMonsters] = useState(false);
+  const [applyingLocalization, setApplyingLocalization] = useState(false);
 
   useEffect(() => {
     document.title = "Siege-Battle-Manager";
@@ -246,6 +250,22 @@ async function fetchMonstersFromBackend() {
       alert(e.message || "Swarfarm sync failed");
     } finally {
       setSyncingMonsters(false);
+    }
+  }
+
+  async function handleApplyMonsterLocalization() {
+    if (applyingLocalization) return;
+
+    try {
+      setApplyingLocalization(true);
+      const appliedCount = await applyMonsterLocalization();
+      const loadedMonsters = await refreshBackendMonsters();
+      alert(`Monster names applied. Updated ${appliedCount} rows, loaded ${loadedMonsters.length} monsters.`);
+    } catch (e) {
+      console.error("Monster localization apply failed:", e);
+      alert(e.message || "Monster localization apply failed");
+    } finally {
+      setApplyingLocalization(false);
     }
   }
 
@@ -407,6 +427,8 @@ async function fetchMonstersFromBackend() {
           onImportFile={handleImportFile}
           onSyncSwarfarmMonsters={handleSyncSwarfarmMonsters}
           syncingMonsters={syncingMonsters}
+          onApplyMonsterLocalization={handleApplyMonsterLocalization}
+          applyingLocalization={applyingLocalization}
         />
 
         {activeTab === "manager" ? (

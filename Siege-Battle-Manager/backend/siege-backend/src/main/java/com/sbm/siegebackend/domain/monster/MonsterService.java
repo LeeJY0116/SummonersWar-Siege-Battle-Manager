@@ -27,7 +27,8 @@ public class MonsterService {
                         m.getAttribute().name(),
                         m.getLeaderEffectType(),
                         m.getImageUrl(),
-                        m.getNaturalStars()
+                        m.getNaturalStars(),
+                        m.getEnabled()
                 ))
                 .toList();
     }

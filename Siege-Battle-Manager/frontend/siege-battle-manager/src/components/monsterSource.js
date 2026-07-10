@@ -29,6 +29,7 @@ function normalizeMonster(monster) {
     nicknames: aliases,
     iconDataUrl: imageUrl,
     imageUrl,
+    enabled: monster.enabled ?? true,
   };
 }
 
@@ -57,7 +58,9 @@ function resolveMonsterImageUrl(monster) {
 export async function getMonsters() {
   try {
     const body = await apiFetch("/monsters");
-    return (body.data ?? []).map(normalizeMonster);
+    return (body.data ?? [])
+      .filter((monster) => monster.enabled !== false)
+      .map(normalizeMonster);
   } catch (e) {
     console.warn("Failed to load monsters from API", e);
     return localMonsters.map(normalizeMonster);

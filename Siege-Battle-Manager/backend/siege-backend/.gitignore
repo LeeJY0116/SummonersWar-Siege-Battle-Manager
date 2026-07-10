@@ -44,6 +44,8 @@ src/main/resources/application-*.local.yml
 
 ### db ###
 data/
+!src/main/resources/data/
+!src/main/resources/data/monster-localization.json
 *.db
 *.mv.db
 *.trace.db

@@ -12,6 +12,8 @@ export default function HeaderBar({
   members,
   onSyncSwarfarmMonsters,
   syncingMonsters = false,
+  onApplyMonsterLocalization,
+  applyingLocalization = false,
 }) {
   console.log("HeaderBar guild prop =", guild);
   console.log("HeaderBar onCreateGuild =", onCreateGuild);
@@ -85,6 +87,13 @@ export default function HeaderBar({
             className="px-4 py-2 rounded-2xl bg-white border border-gray-200 shadow-sm hover:bg-gray-100 disabled:opacity-50"
           >
             {syncingMonsters ? "Syncing..." : "Sync Swarfarm"}
+          </button>
+          <button
+            onClick={onApplyMonsterLocalization}
+            disabled={applyingLocalization}
+            className="px-4 py-2 rounded-2xl bg-white border border-gray-200 shadow-sm hover:bg-gray-100 disabled:opacity-50"
+          >
+            {applyingLocalization ? "Applying..." : "Apply Names"}
           </button>
           <button
             onClick={onClickImport}

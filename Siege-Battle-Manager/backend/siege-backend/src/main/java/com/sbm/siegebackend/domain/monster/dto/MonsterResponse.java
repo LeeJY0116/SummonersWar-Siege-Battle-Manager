@@ -11,5 +11,6 @@ public record MonsterResponse(
         String attribute,
         String leaderEffectType,
         String imageUrl,
-        Integer naturalStars
+        Integer naturalStars,
+        Boolean enabled
 ) {}

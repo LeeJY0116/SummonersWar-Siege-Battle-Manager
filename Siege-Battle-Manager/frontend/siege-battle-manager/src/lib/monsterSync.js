@@ -7,3 +7,11 @@ export async function syncSwarfarmMonsters() {
 
   return res.data;
 }
+
+export async function applyMonsterLocalization() {
+  const res = await apiFetch("/admin/monsters/apply-localization", {
+    method: "POST",
+  });
+
+  return res.data;
+}

@@ -5,6 +5,7 @@ import lombok.Builder;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "monsters")
@@ -33,6 +34,9 @@ public class Monster {
 
     @Column(length = 1000)
     private String aliases;
+
+    @Column(nullable = false)
+    private Boolean enabled = true;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -63,6 +67,15 @@ public class Monster {
         this.imageUrl = imageUrl;
     }
 
+    public void updateLocalization(String koreanName, List<String> aliases, Boolean enabled) {
+        this.koreanName = koreanName == null || koreanName.isBlank() ? null : koreanName.trim();
+        this.aliases = aliases == null ? null : aliases.stream()
+                .map(String::trim)
+                .filter(alias -> !alias.isBlank())
+                .collect(Collectors.joining(","));
+        this.enabled = enabled == null ? true : enabled;
+    }
+
     public Long getId() { return id; }
 
     public String getCode() { return code; }
@@ -72,6 +85,8 @@ public class Monster {
     public String getKoreanName() { return koreanName; }
 
     public String getAliases() { return aliases; }
+
+    public Boolean getEnabled() { return enabled; }
 
     public List<String> getAliasList() {
         if (aliases == null || aliases.isBlank()) {
