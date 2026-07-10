@@ -51,3 +51,6 @@ data/
 *.trace.db
 *.sqlite
 *.sqlite3
+
+### local run logs ###
+bootrun*.log

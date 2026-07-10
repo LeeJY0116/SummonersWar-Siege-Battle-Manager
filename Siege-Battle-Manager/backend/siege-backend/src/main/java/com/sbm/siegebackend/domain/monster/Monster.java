@@ -35,7 +35,7 @@ public class Monster {
     @Column(length = 1000)
     private String aliases;
 
-    @Column(nullable = false)
+    @Column
     private Boolean enabled = true;
 
     @Enumerated(EnumType.STRING)
@@ -86,7 +86,7 @@ public class Monster {
 
     public String getAliases() { return aliases; }
 
-    public Boolean getEnabled() { return enabled; }
+    public Boolean getEnabled() { return enabled == null ? true : enabled; }
 
     public List<String> getAliasList() {
         if (aliases == null || aliases.isBlank()) {
