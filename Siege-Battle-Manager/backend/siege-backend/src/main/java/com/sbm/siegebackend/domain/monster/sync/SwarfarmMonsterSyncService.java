@@ -70,13 +70,7 @@ public class SwarfarmMonsterSyncService {
             String code = buildCode(swarfarmMonster.getCom2usId());
             String imageUrl = buildImageUrl(swarfarmMonster.getImageFilename());
 
-            Monster monster = monsterRepository.findByCom2usId(swarfarmMonster.getCom2usId())
-                    .orElseGet(() -> Monster.builder()
-                            .code(code)
-                            .name(swarfarmMonster.getName())
-                            .attribute(attribute)
-                            .leaderEffectType(null)
-                            .build());
+            Monster monster = findExistingMonster(swarfarmMonster.getCom2usId(), code);
 
             monster.updateFromSwarfarm(
                     swarfarmMonster.getCom2usId(),
@@ -95,6 +89,17 @@ public class SwarfarmMonsterSyncService {
 
     private String buildCode(Integer com2usId) {
         return "sw_" + com2usId;
+    }
+
+    private Monster findExistingMonster(Integer com2usId, String code) {
+        return monsterRepository.findByCom2usId(com2usId)
+                .or(() -> monsterRepository.findByCode(code))
+                .orElseGet(() -> Monster.builder()
+                        .code(code)
+                        .name(code)
+                        .attribute(MonsterAttribute.FIRE)
+                        .leaderEffectType(null)
+                        .build());
     }
 
     private String buildImageUrl(String imageFilename) {
