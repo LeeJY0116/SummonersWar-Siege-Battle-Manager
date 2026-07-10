@@ -9,6 +9,7 @@ import LoginPage from "./components/auth/LoginPage.jsx";
 import SignupPage from "./components/auth/SignupPage.jsx";
 import GuildTab from "./components/guild/GuildTab.jsx";
 import { apiFetch } from "./lib/api.js";
+import { syncSwarfarmMonsters } from "./lib/monsterSync.js";
 
 
 const ALL_DEFAULT_MONSTERS = [
@@ -89,6 +90,7 @@ export default function SiegeBattleManager() {
   const [guild, setGuild] = useState(null);
   const [members, setMembers] = useState([]);
   const [authMode, setAuthMode] = useState("login");
+  const [syncingMonsters, setSyncingMonsters] = useState(false);
 
   useEffect(() => {
     document.title = "Siege-Battle-Manager";
@@ -195,7 +197,7 @@ async function fetchMonstersFromBackend() {
   return body.data; // ApiResponse라면
 }
 
-async function loadMonsters() {
+  async function loadMonsters() {
   try {
     return await fetchMonstersFromBackend();
   } catch (e) {
@@ -203,6 +205,32 @@ async function loadMonsters() {
     return ALL_DEFAULT_MONSTERS.map(normalizeLocalMonster);
   }
 }
+
+  async function refreshBackendMonsters() {
+    const loadedMonsters = await loadBackendMonsters();
+
+    if (loadedMonsters.length > 0) {
+      setMonsters(loadedMonsters);
+    }
+
+    return loadedMonsters;
+  }
+
+  async function handleSyncSwarfarmMonsters() {
+    if (syncingMonsters) return;
+
+    try {
+      setSyncingMonsters(true);
+      const syncedCount = await syncSwarfarmMonsters();
+      const loadedMonsters = await refreshBackendMonsters();
+      alert(`Swarfarm sync complete. Synced ${syncedCount} rows, loaded ${loadedMonsters.length} monsters.`);
+    } catch (e) {
+      console.error("Swarfarm sync failed:", e);
+      alert(e.message || "Swarfarm sync failed");
+    } finally {
+      setSyncingMonsters(false);
+    }
+  }
 
 
   // ------- 몬스터 / 조합 CRUD 로직 -------
@@ -360,6 +388,8 @@ async function loadMonsters() {
           onClickExport={handleExport}
           importInputRef={importRef}
           onImportFile={handleImportFile}
+          onSyncSwarfarmMonsters={handleSyncSwarfarmMonsters}
+          syncingMonsters={syncingMonsters}
         />
 
         {activeTab === "manager" ? (

@@ -9,7 +9,9 @@ export default function HeaderBar({
   onImportFile,
   guild,
   onCreateGuild,
-  members
+  members,
+  onSyncSwarfarmMonsters,
+  syncingMonsters = false,
 }) {
   console.log("HeaderBar guild prop =", guild);
   console.log("HeaderBar onCreateGuild =", onCreateGuild);
@@ -77,6 +79,13 @@ export default function HeaderBar({
             길드 만들기
           </button>
         )}
+          <button
+            onClick={onSyncSwarfarmMonsters}
+            disabled={syncingMonsters}
+            className="px-4 py-2 rounded-2xl bg-white border border-gray-200 shadow-sm hover:bg-gray-100 disabled:opacity-50"
+          >
+            {syncingMonsters ? "Syncing..." : "Sync Swarfarm"}
+          </button>
           <button
             onClick={onClickImport}
             className="px-4 py-2 rounded-2xl bg-white border border-gray-200 shadow-sm hover:bg-gray-100"
