@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -19,6 +22,8 @@ import java.util.Map;
 public class MonsterLocalizationApplyService {
 
     private static final String LOCALIZATION_PATH = "data/monster-localization.json";
+    private static final Path SOURCE_LOCALIZATION_PATH =
+            Path.of("src", "main", "resources", "data", "monster-localization.json");
 
     private final MonsterRepository monsterRepository;
     private final ObjectMapper objectMapper;
@@ -59,14 +64,47 @@ public class MonsterLocalizationApplyService {
         return appliedCount;
     }
 
-    private Map<String, MonsterLocalizationEntry> readEntries() {
-        Path sourcePath = Path.of("src", "main", "resources", "data", "monster-localization.json");
+    public int appendMissingEntries(List<Monster> monsters) {
+        Map<String, MonsterLocalizationEntry> entries = readEntries();
+        List<Monster> missingMonsters = new ArrayList<>();
 
-        if (Files.exists(sourcePath)) {
-            try (InputStream inputStream = Files.newInputStream(sourcePath)) {
-                return objectMapper.readValue(inputStream, new TypeReference<>() {});
+        for (Monster monster : monsters) {
+            if (monster.getCode() == null || entries.containsKey(monster.getCode())) {
+                continue;
+            }
+
+            missingMonsters.add(monster);
+        }
+
+        if (missingMonsters.isEmpty()) {
+            return 0;
+        }
+
+        for (Monster monster : missingMonsters) {
+            entries.put(monster.getCode(), toEntry(monster));
+        }
+
+        writeSourceEntries(entries);
+        return missingMonsters.size();
+    }
+
+    private MonsterLocalizationEntry toEntry(Monster monster) {
+        MonsterLocalizationEntry entry = new MonsterLocalizationEntry();
+        entry.setEnabled(true);
+        entry.setEnglishName(monster.getName());
+        entry.setAttribute(monster.getAttribute() == null ? null : monster.getAttribute().name());
+        entry.setNaturalStars(monster.getNaturalStars());
+        entry.setKoreanName("");
+        entry.setAliases(List.of());
+        return entry;
+    }
+
+    private Map<String, MonsterLocalizationEntry> readEntries() {
+        if (Files.exists(SOURCE_LOCALIZATION_PATH)) {
+            try (InputStream inputStream = Files.newInputStream(SOURCE_LOCALIZATION_PATH)) {
+                return objectMapper.readValue(inputStream, new TypeReference<LinkedHashMap<String, MonsterLocalizationEntry>>() {});
             } catch (IOException e) {
-                throw new IllegalStateException("몬스터 관리 파일을 읽을 수 없습니다: " + sourcePath, e);
+                throw new IllegalStateException("몬스터 관리 파일을 읽을 수 없습니다: " + SOURCE_LOCALIZATION_PATH, e);
             }
         }
 
@@ -77,9 +115,18 @@ public class MonsterLocalizationApplyService {
         }
 
         try (InputStream inputStream = resource.getInputStream()) {
-            return objectMapper.readValue(inputStream, new TypeReference<>() {});
+            return objectMapper.readValue(inputStream, new TypeReference<LinkedHashMap<String, MonsterLocalizationEntry>>() {});
         } catch (IOException e) {
             throw new IllegalStateException("몬스터 관리 파일을 읽을 수 없습니다.", e);
+        }
+    }
+
+    private void writeSourceEntries(Map<String, MonsterLocalizationEntry> entries) {
+        try {
+            Files.createDirectories(SOURCE_LOCALIZATION_PATH.getParent());
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(SOURCE_LOCALIZATION_PATH.toFile(), entries);
+        } catch (IOException e) {
+            throw new IllegalStateException("몬스터 관리 파일에 신규 항목을 추가할 수 없습니다: " + SOURCE_LOCALIZATION_PATH, e);
         }
     }
 }

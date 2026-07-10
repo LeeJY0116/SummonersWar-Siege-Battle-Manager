@@ -3,12 +3,14 @@ package com.sbm.siegebackend.domain.monster.sync;
 import com.sbm.siegebackend.domain.monster.Monster;
 import com.sbm.siegebackend.domain.monster.MonsterAttribute;
 import com.sbm.siegebackend.domain.monster.MonsterRepository;
+import com.sbm.siegebackend.domain.monster.localization.MonsterLocalizationApplyService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,16 +18,19 @@ import java.util.List;
 public class SwarfarmMonsterSyncService {
 
     private final MonsterRepository monsterRepository;
+    private final MonsterLocalizationApplyService localizationApplyService;
     private final RestClient restClient;
     private final String baseUrl;
     private final String imageBaseUrl;
 
     public SwarfarmMonsterSyncService(
             MonsterRepository monsterRepository,
+            MonsterLocalizationApplyService localizationApplyService,
             @Value("${external.swarfarm.base-url}") String baseUrl,
             @Value("${external.swarfarm.image-base-url}") String imageBaseUrl
     ) {
         this.monsterRepository = monsterRepository;
+        this.localizationApplyService = localizationApplyService;
         this.restClient = RestClient.create();
         this.baseUrl = baseUrl;
         this.imageBaseUrl = imageBaseUrl;
@@ -33,6 +38,7 @@ public class SwarfarmMonsterSyncService {
 
     public int syncMonsters() {
         int savedCount = 0;
+        List<Monster> syncedMonsters = new ArrayList<>();
         String nextUrl = baseUrl + "/monsters/?page_size=1000";
 
         while (nextUrl != null) {
@@ -46,14 +52,15 @@ public class SwarfarmMonsterSyncService {
                 break;
             }
 
-            savedCount += savePage(page.getResults());
+            savedCount += savePage(page.getResults(), syncedMonsters);
             nextUrl = page.getNext();
         }
 
+        localizationApplyService.appendMissingEntries(syncedMonsters);
         return savedCount;
     }
 
-    private int savePage(List<SwarfarmMonsterResponse> monsters) {
+    private int savePage(List<SwarfarmMonsterResponse> monsters, List<Monster> syncedMonsters) {
         int count = 0;
 
         for (SwarfarmMonsterResponse swarfarmMonster : monsters) {
@@ -81,6 +88,7 @@ public class SwarfarmMonsterSyncService {
             );
 
             monsterRepository.save(monster);
+            syncedMonsters.add(monster);
             count++;
         }
 
