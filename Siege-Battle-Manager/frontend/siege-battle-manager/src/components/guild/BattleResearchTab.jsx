@@ -185,6 +185,7 @@ async function handleCreateComment(postId) {
 
     await createBattleResearchComment(postId, {
       content,
+      attackMonsterCodes: [],
     });
 
     alert("댓글이 등록되었습니다.");
@@ -395,6 +396,7 @@ async function handleCreateComment(postId) {
                             <div className="mt-1 text-gray-700">
                               {comment.content}
                             </div>
+                            {renderResearchMonsterDeck(comment.attackMonsters ?? [])}
                           </div>
                         ))
                       )}
