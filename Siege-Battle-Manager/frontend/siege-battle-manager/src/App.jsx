@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import HeaderBar from "./components/layout/HeaderBar.jsx";
 import FooterBar from "./components/layout/FooterBar.jsx";
 import ManagerTab from "./components/manager/ManagerTab.jsx";
+import MonsterReviewTab from "./components/monsters/MonsterReviewTab.jsx";
 import SiegeBattleTab from "./components/siege/SiegeBattleTab.jsx";
-import defaultMonsters from "./data/defaultMonsters.json";
 import { fetchMyGuild, createGuild, fetchMyGuildMembers } from "./lib/guild.js";
 import LoginPage from "./components/auth/LoginPage.jsx";
 import SignupPage from "./components/auth/SignupPage.jsx";
@@ -12,24 +12,10 @@ import { apiFetch } from "./lib/api.js";
 import { applyMonsterLocalization, syncSwarfarmMonsters } from "./lib/monsterSync.js";
 
 
-const ALL_DEFAULT_MONSTERS = [
-  ...defaultMonsters.fire,
-  ...defaultMonsters.water,
-  ...defaultMonsters.wind,
-  ...defaultMonsters.light,
-  ...defaultMonsters.dark,
-];
-
-
-
 const STORAGE_KEY = "siege-battle-manager@v1";
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
-}
-
-function loadInitialMonsters() {
-  return ALL_DEFAULT_MONSTERS.map(normalizeLocalMonster);
 }
 
 function resolveMonsterImageUrl(monster) {
@@ -53,6 +39,7 @@ function normalizeBackendMonster(monster) {
     id: monsterCode,
     monsterCode,
     backendId: monster.id,
+    com2usId: monster.com2usId ?? extractCom2usId(monsterCode),
     name: displayName,
     englishName,
     koreanName: monster.koreanName ?? null,
@@ -60,6 +47,7 @@ function normalizeBackendMonster(monster) {
     attribute: monster.attribute,
     grade: monster.naturalStars ?? monster.grade ?? null,
     naturalStars: monster.naturalStars ?? null,
+    awakeningLevel: monster.awakeningLevel ?? getAwakeningLevel(monsterCode),
     iconDataUrl: imageUrl,
     imageUrl,
     enabled: monster.enabled ?? true,
@@ -71,17 +59,33 @@ function normalizeBackendMonster(monster) {
   };
 }
 
-function normalizeLocalMonster(monster) {
-  const monsterCode = monster.monsterCode ?? monster.code ?? monster.id;
-  const imageUrl = resolveMonsterImageUrl(monster);
+function extractCom2usId(monsterCode) {
+  const match = String(monsterCode ?? "").match(/^sw_(\d+)$/);
+  return match ? Number(match[1]) : 0;
+}
 
-  return {
-    ...monster,
-    id: monsterCode,
-    monsterCode,
-    imageUrl,
-    iconDataUrl: imageUrl,
-  };
+function getAwakeningLevel(monsterCode) {
+  const com2usId = extractCom2usId(monsterCode);
+  const suffix = com2usId % 100;
+
+  if (suffix >= 31 && suffix <= 35) return 2;
+  if (suffix >= 11 && suffix <= 15) return 1;
+  if (suffix >= 1 && suffix <= 5) return 0;
+  return null;
+}
+
+function sortMonstersForSelection(monsters) {
+  return [...monsters].sort(compareMonstersForSelection);
+}
+
+function compareMonstersForSelection(a, b) {
+  const awakeningDiff = Number(b.awakeningLevel === 2) - Number(a.awakeningLevel === 2);
+  if (awakeningDiff !== 0) return awakeningDiff;
+
+  const starsDiff = (b.naturalStars ?? b.grade ?? 0) - (a.naturalStars ?? a.grade ?? 0);
+  if (starsDiff !== 0) return starsDiff;
+
+  return (b.com2usId ?? extractCom2usId(b.monsterCode)) - (a.com2usId ?? extractCom2usId(a.monsterCode));
 }
 
 function normalizeMonsterAliases(monster, englishName) {
@@ -97,16 +101,17 @@ function normalizeMonsterAliases(monster, englishName) {
 
 async function loadBackendMonsters() {
   const body = await apiFetch("/monsters");
-  return (body.data ?? [])
+  const loadedMonsters = (body.data ?? [])
     .filter((monster) => monster.enabled !== false)
     .map(normalizeBackendMonster);
+
+  return sortMonstersForSelection(loadedMonsters);
 }
 
 export default function SiegeBattleManager() {
   const [activeTab, setActiveTab] = useState("manager");
-  const [monsters, setMonsters] = useState(loadInitialMonsters());
-  const [trios, setTrios] = useState([]);
-  const importRef = useRef(null);
+  const [monsters, setMonsters] = useState([]);
+  const [trios, setTrios] = useState([]);
   const [guild, setGuild] = useState(null);
   const [members, setMembers] = useState([]);
   const [authMode, setAuthMode] = useState("login");
@@ -174,58 +179,26 @@ export default function SiegeBattleManager() {
   }, []);
 
 
-  // 로컬 스토리지 로드
-
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-    // 🆕 처음 실행하는 사용자 → 기본 몬스터 자동 등록
-    loadMonsters().then((ms) => {
-      setMonsters(ms);
       setTrios([]);
-    });
-    return;
-    } 
+      return;
+    }
 
     try {
       const parsed = JSON.parse(raw);
-      const loadedMonsters =
-      parsed.monsters && parsed.monsters.length > 0
-        ? parsed.monsters
-        : ALL_DEFAULT_MONSTERS;
-
-        setMonsters(loadedMonsters);
-        setTrios(parsed.trios || []);
-      } catch (e) {
-        console.warn("Failed to parse saved data", e);
-        setMonsters(ALL_DEFAULT_MONSTERS);
-        setTrios([]);
-      }
+      setTrios(parsed.trios || []);
+    } catch (e) {
+      console.warn("Failed to parse saved data", e);
+      setTrios([]);
+    }
   }, []);
 
-  // 로컬 스토리지 저장
   useEffect(() => {
-    const payload = JSON.stringify({ monsters, trios });
+    const payload = JSON.stringify({ trios });
     localStorage.setItem(STORAGE_KEY, payload);
-  }, [monsters, trios]);
-
-  // 백엔드 연동할 때 사용
-  const USE_BACKEND = false; // 나중에 true로 바꾸면 API 사용
-
-async function fetchMonstersFromBackend() {
-  const res = await fetch("http://localhost:8080/api/monsters");
-  const body = await res.json();
-  return body.data; // ApiResponse라면
-}
-
-  async function loadMonsters() {
-  try {
-    return await fetchMonstersFromBackend();
-  } catch (e) {
-    console.warn("API failed, fallback to default JSON", e);
-    return ALL_DEFAULT_MONSTERS.map(normalizeLocalMonster);
-  }
-}
+  }, [trios]);
 
   async function refreshBackendMonsters() {
     const loadedMonsters = await loadBackendMonsters();
@@ -271,25 +244,6 @@ async function fetchMonstersFromBackend() {
 
 
   // ------- 몬스터 / 조합 CRUD 로직 -------
-
-  function handleCreateMonster({
-    name,
-    iconDataUrl,
-    leaderEffectType,
-    leaderEffectText,
-}) {
-    setMonsters((prev) => [
-      ...prev,
-      { 
-        id: uid(),
-        name, 
-        iconDataUrl: iconDataUrl || null,
-        leaderEffectType: leaderEffectType || null,
-        leaderEffectText: leaderEffectText || "",
-        isDefault: false, // 사용자가 직접 추가한 몬스터
-      },
-    ]);
-  }
 
   function handleDeleteMonster(id) {
     setMonsters((prev) => {
@@ -376,41 +330,6 @@ async function fetchMonstersFromBackend() {
 }
 
 
-  // ------- Import / Export -------
-
-  function handleExport() {
-    const data = { monsters, trios, exportedAt: new Date().toISOString() };
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `siege_battle_manager_${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  async function handleImportFile(file) {
-    try {
-      const text = await file.text();
-      const data = JSON.parse(text);
-      if (!data || !Array.isArray(data.monsters) || !Array.isArray(data.trios)) {
-        alert("유효한 설정 파일이 아닙니다.");
-        return;
-      }
-      setMonsters(data.monsters);
-      setTrios(data.trios);
-    } catch (e) {
-      console.error(e);
-      alert("설정 파일을 불러오는 중 오류가 발생했습니다.");
-    }
-  }
-
-  function handleClickImport() {
-    importRef.current?.click();
-  }
-
   // ---------------- 렌더 ----------------
   return (
     <div className="min-h-screen w-full bg-gray-50 text-gray-900">
@@ -420,11 +339,7 @@ async function fetchMonstersFromBackend() {
           members={members}
           onCreateGuild={handleCreateGuild}
           activeTab={activeTab}
-          onChangeTab={setActiveTab}
-          onClickImport={handleClickImport}
-          onClickExport={handleExport}
-          importInputRef={importRef}
-          onImportFile={handleImportFile}
+          onChangeTab={setActiveTab}
           onSyncSwarfarmMonsters={handleSyncSwarfarmMonsters}
           syncingMonsters={syncingMonsters}
           onApplyMonsterLocalization={handleApplyMonsterLocalization}
@@ -434,8 +349,7 @@ async function fetchMonstersFromBackend() {
         {activeTab === "manager" ? (
           <ManagerTab
             monsters={monsters}
-            trios={trios}
-            onCreateMonster={handleCreateMonster}
+            trios={trios}
             onCreateTrio={handleCreateTrio}
             onDeleteTrio={handleDeleteTrio}
             onChangeCount={handleChangeCount}
@@ -447,6 +361,8 @@ async function fetchMonstersFromBackend() {
             onSaveTrio={handleCreateTrioFromSiege}
             onDeleteMonster={handleDeleteMonster}
           />
+        ) : activeTab === "review" ? (
+          <MonsterReviewTab />
         ) : (
           <GuildTab guild={guild} members={members} monsters={monsters} />
         )}

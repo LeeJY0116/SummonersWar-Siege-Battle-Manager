@@ -1,132 +1,97 @@
 import React from "react";
 
+const TABS = [
+  { key: "manager", label: "조합 매니저" },
+  { key: "siege", label: "도감" },
+  { key: "guild", label: "길드" },
+  { key: "review", label: "몬스터 검수" },
+];
+
 export default function HeaderBar({
   activeTab,
   onChangeTab,
-  onClickImport,
-  onClickExport,
-  importInputRef,
-  onImportFile,
   guild,
   onCreateGuild,
-  members,
   onSyncSwarfarmMonsters,
   syncingMonsters = false,
   onApplyMonsterLocalization,
   applyingLocalization = false,
 }) {
-  console.log("HeaderBar guild prop =", guild);
-  console.log("HeaderBar onCreateGuild =", onCreateGuild);
   return (
-    <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+    <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
-        <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+        <h1 className="text-2xl font-extrabold tracking-tight md:text-3xl">
           Siege-Battle-Manager
         </h1>
-        <p className="text-sm text-gray-600 mt-1">
-          점령전 조합 · 전투 기록 보조 도구
+        <p className="mt-1 text-sm text-gray-600">
+          점령전 조합과 길드 전투 기록을 관리합니다.
         </p>
       </div>
 
-
       <div className="flex flex-col items-end gap-2">
-        {/* 탭 */}
-        <div className="inline-flex rounded-2xl bg-gray-100 p-1 gap-1 self-end">
-          <button
-            onClick={() => onChangeTab("manager")}
-            className={`px-3 py-1 rounded-xl text-sm ${
-              activeTab === "manager"
-                ? "bg-white shadow font-semibold"
-                : "text-gray-500"
-            }`}
-          >
-            조합 매니저
-          </button>
-          <button
-            onClick={() => onChangeTab("siege")}
-            className={`px-3 py-1 rounded-xl text-sm ${
-              activeTab === "siege"
-                ? "bg-white shadow font-semibold"
-                : "text-gray-500"
-            }`}
-          >
-            점령전
-          </button>
-
-          <button
-            onClick={() => onChangeTab("guild")}
-            className={`px-3 py-1 rounded-xl text-sm ${
-              activeTab === "guild"
-                ? "bg-white shadow font-semibold"
-                : "text-gray-500"
-            }`}
-          >
-            길드
-          </button>
+        <div className="inline-flex gap-1 rounded-2xl bg-gray-100 p-1">
+          {TABS.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => onChangeTab(tab.key)}
+              className={`rounded-xl px-3 py-1 text-sm ${
+                activeTab === tab.key
+                  ? "bg-white font-semibold shadow"
+                  : "text-gray-500"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
-        {/* Import / Export */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <div className="text-xs text-gray-500">
+            길드:{" "}
+            {guild
+              ? `${guild.name} | 마스터: ${guild.masterNickname} | 인원: ${guild.memberCount}`
+              : "없음"}
+          </div>
 
-        {/* 로그인 후 길드 없으면 길드 없음 + 길드 만들기 버튼 활성화 */}
-        <div className="text-xs text-gray-500">
-          길드: {guild ? `${guild.name} | 마스터 : ${guild.masterNickname} | 인원 : ${guild.memberCount}`  : "없음"}
-        </div>
-        {!guild && (
+          {!guild && (
+            <button
+              type="button"
+              className="rounded bg-gray-200 px-2 py-1 text-xs hover:bg-gray-300"
+              onClick={onCreateGuild}
+            >
+              길드 만들기
+            </button>
+          )}
+
           <button
             type="button"
-            className="text-xs px-2 py-1 rounded bg-gray-200 hover:bg-gray-300"
-            onClick={onCreateGuild}
-          >
-            길드 만들기
-          </button>
-        )}
-          <button
             onClick={onSyncSwarfarmMonsters}
             disabled={syncingMonsters}
-            className="px-4 py-2 rounded-2xl bg-white border border-gray-200 shadow-sm hover:bg-gray-100 disabled:opacity-50"
+            className="rounded-2xl border border-gray-200 bg-white px-4 py-2 shadow-sm hover:bg-gray-100 disabled:opacity-50"
           >
             {syncingMonsters ? "Syncing..." : "Sync Swarfarm"}
           </button>
+
           <button
+            type="button"
             onClick={onApplyMonsterLocalization}
             disabled={applyingLocalization}
-            className="px-4 py-2 rounded-2xl bg-white border border-gray-200 shadow-sm hover:bg-gray-100 disabled:opacity-50"
+            className="rounded-2xl border border-gray-200 bg-white px-4 py-2 shadow-sm hover:bg-gray-100 disabled:opacity-50"
           >
             {applyingLocalization ? "Applying..." : "Apply Names"}
           </button>
+
           <button
-            onClick={onClickImport}
-            className="px-4 py-2 rounded-2xl bg-white border border-gray-200 shadow-sm hover:bg-gray-100"
-          >
-            설정 불러오기 (Import)
-          </button>
-          <input
-            ref={importInputRef}
-            type="file"
-            accept="application/json"
-            onChange={async (e) => {
-              const f = e.target.files?.[0];
-              if (f) await onImportFile(f);
-              e.target.value = "";
+            type="button"
+            onClick={() => {
+              localStorage.removeItem("accessToken");
+              window.location.reload();
             }}
-            className="hidden"
-          />
-          <button
-            onClick={onClickExport}
-            className="px-4 py-2 rounded-2xl bg-gray-900 text-white shadow hover:opacity-90"
+            className="rounded-xl border px-3 py-2 text-sm"
           >
-            설정 내보내기 (Export)
+            로그아웃
           </button>
-          <button
-          onClick={() => {
-            localStorage.removeItem("accessToken");
-            window.location.reload();
-          }}
-          className="rounded-xl border px-3 py-2 text-sm"
-        >
-          로그아웃
-        </button>
         </div>
       </div>
     </header>

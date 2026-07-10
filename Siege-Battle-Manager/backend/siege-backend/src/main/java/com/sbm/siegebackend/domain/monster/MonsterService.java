@@ -18,9 +18,11 @@ public class MonsterService {
     @Transactional(readOnly = true)
     public List<MonsterResponse> getAll() {
         return monsterRepository.findAll().stream()
+                .filter(m -> Boolean.TRUE.equals(m.getEnabled()))
                 .map(m -> new MonsterResponse(
                         m.getId(),
                         m.getCode(),
+                        m.getCom2usId(),
                         m.getName(),
                         m.getKoreanName(),
                         m.getAliasList(),

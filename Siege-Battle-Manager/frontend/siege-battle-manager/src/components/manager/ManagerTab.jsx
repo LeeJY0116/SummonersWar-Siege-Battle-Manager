@@ -25,15 +25,12 @@ function fileToDataUrl(file) {
 export default function ManagerTab({
   monsters,
   trios,
-  onCreateMonster,
   onCreateTrio,
   onDeleteTrio,
   onChangeCount,
   onReorderLeader,
 }) {
   // 폼 상태
-  const [newMonsterName, setNewMonsterName] = useState("");
-  const [newMonsterIcon, setNewMonsterIcon] = useState(null);
 
   const [newTrioName, setNewTrioName] = useState("");
   const [newTrioIcon, setNewTrioIcon] = useState(null);
@@ -43,13 +40,10 @@ export default function ManagerTab({
 
   // 필터 상태
   const [leaderFilter, setLeaderFilter] = useState("");
-  const [containsAnyOf, setContainsAnyOf] = useState([]);
-  const [nameQuery, setNameQuery] = useState("");
+  const [containsQuery, setContainsQuery] = useState("");
   const [fourStarDefenseOnly, setFourStarDefenseOnly] = useState(false);
 
   // 리더 상태
-  const [newMonsterLeaderType, setNewMonsterLeaderType] = useState("none");
-  const [newMonsterLeaderText, setNewMonsterLeaderText] = useState("");
 
   const monsterMap = useMemo(() => {
     const m = new Map();
@@ -68,9 +62,19 @@ export default function ManagerTab({
       } 
 
       // 2) 포함 필터
-      if (containsAnyOf.length > 0) {
-        const hasAny = t.monsterIds.some((mid) => containsAnyOf.includes(mid));
-        if (!hasAny) return false;
+      if (containsQuery.trim()) {
+        const q = containsQuery.trim().toLowerCase();
+        const trioName = (t.name || "").toLowerCase();
+        const hasMatchingMonster = t.monsterIds.some((mid) => {
+          const m = monsterMap.get(mid);
+          if (!m) return false;
+          const nicknames = m.nicknames || m.aliases || [];
+          const parts = [m.name, m.koreanName, m.englishName, ...nicknames]
+            .filter(Boolean)
+            .map((value) => String(value).toLowerCase());
+          return parts.some((value) => value.includes(q));
+        });
+        if (!trioName.includes(q) && !hasMatchingMonster) return false;
       }
 
       // 3) 4성 방덱 토글 : 조합에 5성이 하나라도 있으면 제외
@@ -86,63 +90,12 @@ export default function ManagerTab({
         if (!allWithinLimit) return false;
       }
 
-      // 4) 이름/몬스터 검색 필터
-      if (nameQuery.trim()) {
-        const q = nameQuery.trim().toLowerCase();
-        const trioName = (t.name || "").toLowerCase();
-
-        const monsterTexts = t.monsterIds
-          .map((id) => {
-            const m = monsterMap.get(id);
-            if (!m) return "";
-            const nicknames = m.nicknames || [];
-            // [이름, 별명1, 별명2 ...]를 하나의 문자열로
-            const parts = [m.name, ...nicknames].map((s) => s.toLowerCase());
-            return parts.join(" ");
-          })
-          .join(" ");
-        if (!trioName.includes(q) && !monsterTexts.includes(q)) return false;
-      }
 
       return true;
     });
-  }, [trios, leaderFilter, containsAnyOf, nameQuery, monsterMap, fourStarDefenseOnly]);
+  }, [trios, leaderFilter, containsQuery, monsterMap, fourStarDefenseOnly]);
 
-  // 몬스터 추가
-  async function handleAddMonster(e) {
-    e.preventDefault();
-    const name = newMonsterName.trim();
-    if (!name) return;
 
-  // "리더 효과 없음" 이면 타입은 null로 넘김
-  const leaderEffectType =
-    newMonsterLeaderType === "none" ? null : newMonsterLeaderType;
-
-  const leaderEffectText =
-    leaderEffectType && newMonsterLeaderText.trim()
-      ? newMonsterLeaderText.trim()
-      : "";
-
-    onCreateMonster({
-      name,
-      iconDataUrl: newMonsterIcon || null,
-      leaderEffectType,
-      leaderEffectText,
-    });
-
-    // 폼 초기화
-    setNewMonsterName("");
-    setNewMonsterIcon(null);
-    setNewMonsterLeaderType("none");
-    setNewMonsterLeaderText("");
-  }
-
-  async function onPickMonsterIcon(ev) {
-    const f = ev.target.files?.[0];
-    if (!f) return;
-    const dataUrl = await fileToDataUrl(f);
-    setNewMonsterIcon(dataUrl);
-  }
 
   // 3마리 조합 추가(매니저 탭)
   async function handleAddTrio(e) {
@@ -187,81 +140,6 @@ export default function ManagerTab({
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {/* LEFT COLUMN */}
       <div className="md:col-span-1 flex flex-col gap-6">
-        {/* 몬스터 추가 */}
-        <section className="bg-white rounded-2xl shadow p-4 md:p-5">
-          <h2 className="text-lg font-bold mb-3">몬스터 추가</h2>
-          <form className="flex flex-col gap-3" onSubmit={handleAddMonster}>
-            <label className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-gray-700">이름</span>
-              <input
-                className="px-3 py-2 rounded-xl border border-gray-200 shadow-sm"
-                placeholder="예) 예니퍼"
-                value={newMonsterName}
-                onChange={(e) => setNewMonsterName(e.target.value)}
-              />
-            </label>
-
-            <label className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-gray-700">
-                아이콘 (작은 이미지)
-              </span>
-              <input type="file" accept="image/*" onChange={onPickMonsterIcon} />
-              {newMonsterIcon && (
-                <img
-                  src={newMonsterIcon}
-                  alt="미리보기"
-                  className="w-10 h-10 mt-1 rounded"
-                />
-              )}
-            </label>
-
-            {/* 리더 효과 타입 선택 */}
-            <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700">
-                리더 효과 타입 (선택)
-            </span>
-            <select
-                className="px-3 py-2 rounded-xl border border-gray-200 shadow-sm bg-white text-sm"
-                value={newMonsterLeaderType}
-                onChange={(e) => setNewMonsterLeaderType(e.target.value)}
-            >
-                <option value="none">리더 효과 없음</option>
-                {LEADER_EFFECT_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>
-                    {opt}
-                </option>
-                ))}
-            </select>
-            </label>
-
-            {/* 리더 효과 상세 설명 */}
-            <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700">
-                리더 효과 상세 설명 (선택)
-            </span>
-            <textarea
-                className="px-3 py-2 rounded-xl border border-gray-200 shadow-sm text-sm resize-none h-16"
-                placeholder="예) 길드전 아군 몬스터의 방어력 21% 증가"
-                value={newMonsterLeaderText}
-                onChange={(e) => setNewMonsterLeaderText(e.target.value)}
-                disabled={newMonsterLeaderType === "none"}
-            />
-            <span className="text-[11px] text-gray-400">
-                * 리더 효과 타입을 선택하면 카드에 이 문장이 표시됩니다.
-            </span>
-            </label>
-
-            {/* 추가 버튼 */}
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                className="px-4 py-2 rounded-2xl bg-gray-900 text-white shadow hover:opacity-90"
-              >
-                추가
-              </button>
-            </div>
-          </form>
-        </section>
 
         {/* 필터 */}
         <section className="bg-white rounded-2xl shadow p-4 md:p-5">
@@ -290,69 +168,18 @@ export default function ManagerTab({
             {/* 포함 필터 */}
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium text-gray-700">
-                다음 중 하나 이상 포함
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {monsters.map((m) => {
-                  const active = containsAnyOf.includes(m.id);
-                  return (
-                    <button
-                      key={m.id}
-                      type="button"
-                      className={`px-3 py-1 rounded-full border shadow-sm text-sm ${
-                        active ? "bg-gray-900 text-white" : "bg-white border-gray-200"
-                      }`}
-                      onClick={() =>
-                        setContainsAnyOf((prev) =>
-                          prev.includes(m.id)
-                            ? prev.filter((x) => x !== m.id)
-                            : [...prev, m.id]
-                        )
-                      }
-                    >
-                      {m.name}
-                    </button>
-                  );
-                })}
-              </div>
-            </label>
-
-            {/* 검색 */}
-            <label className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-gray-700">
-                이름/몬스터 검색
+                {"\uD3EC\uD568 \uBAAC\uC2A4\uD130 \uAC80\uC0C9"}
               </span>
               <input
                 className="px-3 py-2 rounded-xl border border-gray-200 shadow-sm"
-                placeholder="예) 예니퍼"
-                value={nameQuery}
-                onChange={(e) => setNameQuery(e.target.value)}
+                placeholder={"\uC608) \uD504\uB791\uCF04, \uB9AC\uBE59\uC544\uBA38"}
+                value={containsQuery}
+                onChange={(e) => setContainsQuery(e.target.value)}
               />
             </label>
 
-            <div className="flex flex-wrap gap-2 pt-1">
-              <button
-                type="button"
-                onClick={() => setLeaderFilter("")}
-                className="px-3 py-1 rounded-xl bg-gray-100 hover:bg-gray-200 text-sm"
-              >
-                리더 필터 초기화
-              </button>
-              <button
-                type="button"
-                onClick={() => setContainsAnyOf([])}
-                className="px-3 py-1 rounded-xl bg-gray-100 hover:bg-gray-200 text-sm"
-              >
-                포함 필터 초기화
-              </button>
-              <button
-                type="button"
-                onClick={() => setNameQuery("")}
-                className="px-3 py-1 rounded-xl bg-gray-100 hover:bg-gray-200 text-sm"
-              >
-                검색 초기화
-              </button>
-            </div>
+            {/* 검색 */}
+
           </div>
         </section>
       </div>

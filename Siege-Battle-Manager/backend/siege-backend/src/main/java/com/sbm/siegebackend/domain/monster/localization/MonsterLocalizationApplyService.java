@@ -38,7 +38,7 @@ public class MonsterLocalizationApplyService {
         Map<String, MonsterLocalizationEntry> entries = readEntries();
 
         int appliedCount = 0;
-        hideSwarfarmMonstersMissingFromLocalization(entries);
+        hideManagedMonstersMissingFromLocalization(entries);
 
         for (Map.Entry<String, MonsterLocalizationEntry> entry : entries.entrySet()) {
             String monsterCode = entry.getKey();
@@ -65,14 +65,18 @@ public class MonsterLocalizationApplyService {
         return appliedCount;
     }
 
-    private void hideSwarfarmMonstersMissingFromLocalization(Map<String, MonsterLocalizationEntry> entries) {
+    private void hideManagedMonstersMissingFromLocalization(Map<String, MonsterLocalizationEntry> entries) {
         for (Monster monster : monsterRepository.findAll()) {
             String code = monster.getCode();
 
-            if (code != null && code.startsWith("sw_") && !entries.containsKey(code)) {
+            if (isManagedMonsterCode(code) && !entries.containsKey(code)) {
                 monster.updateLocalization(monster.getKoreanName(), monster.getAliasList(), false);
             }
         }
+    }
+
+    private boolean isManagedMonsterCode(String code) {
+        return code != null && (code.startsWith("sw_") || code.startsWith("def_"));
     }
 
     public int appendMissingEntries(List<Monster> monsters) {

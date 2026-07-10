@@ -1,13 +1,4 @@
-import defaultMonsters from "../data/defaultMonsters.json";
 import { apiFetch } from "../lib/api.js";
-
-const localMonsters = [
-  ...defaultMonsters.fire,
-  ...defaultMonsters.water,
-  ...defaultMonsters.wind,
-  ...defaultMonsters.light,
-  ...defaultMonsters.dark,
-];
 
 function normalizeMonster(monster) {
   const monsterCode = monster.code ?? monster.monsterCode ?? monster.id;
@@ -20,17 +11,47 @@ function normalizeMonster(monster) {
     ...monster,
     id: monsterCode,
     monsterCode,
+    com2usId: monster.com2usId ?? extractCom2usId(monsterCode),
     name: displayName,
     englishName,
     koreanName: monster.koreanName ?? null,
     element: monster.attribute?.toLowerCase?.() ?? monster.element ?? "",
     grade: monster.naturalStars ?? monster.grade ?? null,
+    naturalStars: monster.naturalStars ?? null,
+    awakeningLevel: monster.awakeningLevel ?? getAwakeningLevel(monsterCode),
     aliases,
     nicknames: aliases,
     iconDataUrl: imageUrl,
     imageUrl,
     enabled: monster.enabled ?? true,
   };
+}
+
+function extractCom2usId(monsterCode) {
+  const match = String(monsterCode ?? "").match(/^sw_(\d+)$/);
+  return match ? Number(match[1]) : 0;
+}
+
+function getAwakeningLevel(monsterCode) {
+  const com2usId = extractCom2usId(monsterCode);
+  const suffix = com2usId % 100;
+
+  if (suffix >= 31 && suffix <= 35) return 2;
+  if (suffix >= 11 && suffix <= 15) return 1;
+  if (suffix >= 1 && suffix <= 5) return 0;
+  return null;
+}
+
+function sortMonstersForSelection(monsters) {
+  return [...monsters].sort((a, b) => {
+    const awakeningDiff = Number(b.awakeningLevel === 2) - Number(a.awakeningLevel === 2);
+    if (awakeningDiff !== 0) return awakeningDiff;
+
+    const starsDiff = (b.naturalStars ?? b.grade ?? 0) - (a.naturalStars ?? a.grade ?? 0);
+    if (starsDiff !== 0) return starsDiff;
+
+    return (b.com2usId ?? extractCom2usId(b.monsterCode)) - (a.com2usId ?? extractCom2usId(a.monsterCode));
+  });
 }
 
 function normalizeMonsterAliases(monster, englishName) {
@@ -58,11 +79,13 @@ function resolveMonsterImageUrl(monster) {
 export async function getMonsters() {
   try {
     const body = await apiFetch("/monsters");
-    return (body.data ?? [])
+    const loadedMonsters = (body.data ?? [])
       .filter((monster) => monster.enabled !== false)
       .map(normalizeMonster);
+
+    return sortMonstersForSelection(loadedMonsters);
   } catch (e) {
     console.warn("Failed to load monsters from API", e);
-    return localMonsters.map(normalizeMonster);
+    return [];
   }
 }

@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from "react";
 import TrioSlot from "../trios/TrioSlot.jsx";
 
-// 속성 메타 정보 (아이콘 + 색)
+// Element filter labels
 const ELEMENT_META = {
-  fire:   { label: "불",   emoji: "🔥", badgeClass: "bg-red-500" },
-  water:  { label: "물",   emoji: "💧", badgeClass: "bg-sky-500" },
-  wind:   { label: "바람", emoji: "🌪️", badgeClass: "bg-emerald-500" },
-  light:  { label: "빛",   emoji: "✨", badgeClass: "bg-yellow-400" },
-  dark:   { label: "어둠", emoji: "🌑", badgeClass: "bg-purple-500" },
+  fire: { label: "\uBD88" },
+  water: { label: "\uBB3C" },
+  wind: { label: "\uD48D" },
+  light: { label: "\uBE5B" },
+  dark: { label: "\uC554" },
 };
 
 const ELEMENT_ORDER = ["fire", "water", "wind", "light", "dark"];
@@ -221,7 +221,6 @@ export default function SiegeBattleTab({
               <div className="flex-1">
                 <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-7 gap-2">
                   {catalog.map((m) => {
-                    const elementMeta = ELEMENT_META[m.element] || null;
                     const leaderMeta =
                       m.leaderEffectType &&
                       LEADER_EFFECT_META[m.leaderEffectType]
@@ -253,14 +252,6 @@ export default function SiegeBattleTab({
                         onClick={handleCardClick}
                         className="relative border border-gray-200 rounded-xl p-1 bg-gray-50 hover:bg-gray-100 flex flex-col items-center cursor-pointer"
                       >
-                        {/* 속성 아이콘 뱃지 (좌상단) */}
-                        {elementMeta && (
-                          <div
-                            className={`absolute left-1 top-1 px-1.5 py-[1px] rounded-full text-[9px] text-white flex items-center gap-[2px] ${elementMeta.badgeClass}`}
-                          >
-                            <span>{elementMeta.emoji}</span>
-                          </div>
-                        )}
 
                         {/* 리더 효과 뱃지 (좌하단) */}
                         {leaderMeta && (
@@ -308,16 +299,14 @@ export default function SiegeBattleTab({
                       type="button"
                       onClick={() => setElementFilter(key)}
                       className={
-                        "w-9 h-9 rounded-full flex flex-col items-center justify-center text-[11px] text-white shadow " +
-                        meta.badgeClass +
-                        " " +
+                        "w-9 h-9 rounded-full border bg-white flex items-center justify-center text-[13px] font-bold text-gray-950 shadow-sm transition " +
                         (active
-                          ? "ring-2 ring-offset-2 ring-blue-500 scale-105"
-                          : "opacity-60 hover:opacity-100")
+                          ? "border-blue-500 ring-2 ring-offset-2 ring-blue-500 scale-105"
+                          : "border-gray-300 opacity-70 hover:opacity-100 hover:border-gray-500")
                       }
                       title={meta.label + " 속성"}
                     >
-                      <span>{meta.emoji}</span>
+                      <span>{meta.label}</span>
                     </button>
                   );
                 })}
