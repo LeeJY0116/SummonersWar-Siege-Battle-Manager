@@ -15,6 +15,9 @@ export default function BattleResearchTab({ monsters = []}) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [commentContentMap, setCommentContentMap] = useState({});
+  const [commentAttackMonsterCodesMap, setCommentAttackMonsterCodesMap] = useState({});
+  const [commentActiveSlotMap, setCommentActiveSlotMap] = useState({});
+  const [commentMonsterSearchMap, setCommentMonsterSearchMap] = useState({});
   const [selectedMonsterCodes, setSelectedMonsterCodes] = useState(["", "", ""]);
   const [activeSlotIndex, setActiveSlotIndex] = useState(0);
   const [monsterSearch, setMonsterSearch] = useState("");
@@ -92,6 +95,48 @@ export default function BattleResearchTab({ monsters = []}) {
     });
   }
 
+
+  function getCommentAttackMonsterCodes(postId) {
+    return commentAttackMonsterCodesMap[postId] ?? ["", "", ""];
+  }
+
+  function getCommentFilteredMonsters(postId) {
+    const q = (commentMonsterSearchMap[postId] ?? "").trim().toLowerCase();
+
+    if (!q) return monsters;
+
+    return monsters.filter((m) => (
+      m.name?.toLowerCase().includes(q) ||
+      m.id?.toLowerCase().includes(q) ||
+      m.nicknames?.join(" ").toLowerCase().includes(q)
+    ));
+  }
+
+  function selectCommentAttackMonster(postId, code) {
+    const currentCodes = getCommentAttackMonsterCodes(postId);
+
+    if (currentCodes.includes(code)) {
+      alert("?대? ?좏깮??紐ъ뒪?곗엯?덈떎.");
+      return;
+    }
+
+    setCommentAttackMonsterCodesMap((prev) => {
+      const next = [...(prev[postId] ?? ["", "", ""])];
+      const activeSlotIndex = commentActiveSlotMap[postId] ?? next.findIndex((v) => !v);
+      next[activeSlotIndex === -1 ? 2 : activeSlotIndex] = code;
+
+      const nextEmptyIndex = next.findIndex((v) => !v);
+      setCommentActiveSlotMap((activePrev) => ({
+        ...activePrev,
+        [postId]: nextEmptyIndex !== -1 ? nextEmptyIndex : 2,
+      }));
+
+      return {
+        ...prev,
+        [postId]: next,
+      };
+    });
+  }
 
   async function loadPosts() {
     try {
@@ -174,6 +219,7 @@ export default function BattleResearchTab({ monsters = []}) {
     // 댓글 작성
 async function handleCreateComment(postId) {
   const content = commentContentMap[postId]?.trim();
+  const attackMonsterCodes = getCommentAttackMonsterCodes(postId).filter(Boolean);
 
   if (!content) {
     alert("댓글 내용을 입력해주세요.");
@@ -185,12 +231,27 @@ async function handleCreateComment(postId) {
 
     await createBattleResearchComment(postId, {
       content,
-      attackMonsterCodes: [],
+      attackMonsterCodes,
     });
 
     alert("댓글이 등록되었습니다.");
 
     setCommentContentMap((prev) => ({
+      ...prev,
+      [postId]: "",
+    }));
+
+    setCommentAttackMonsterCodesMap((prev) => ({
+      ...prev,
+      [postId]: ["", "", ""],
+    }));
+
+    setCommentActiveSlotMap((prev) => ({
+      ...prev,
+      [postId]: 0,
+    }));
+
+    setCommentMonsterSearchMap((prev) => ({
       ...prev,
       [postId]: "",
     }));
@@ -327,6 +388,12 @@ async function handleCreateComment(postId) {
           {posts.map((post) => {
             const postId = post.postId ?? post.id;
             const detail = detailMap[postId];
+            const commentAttackMonsterCodes = getCommentAttackMonsterCodes(postId);
+            const commentSelectedMonsters = commentAttackMonsterCodes.map((code) =>
+              monsters.find((m) => m.id === code)
+            );
+            const commentActiveSlotIndex = commentActiveSlotMap[postId] ?? 0;
+            const commentFilteredMonsters = getCommentFilteredMonsters(postId);
 
             return (
               <div
@@ -402,6 +469,70 @@ async function handleCreateComment(postId) {
                       )}
                     </div>
                     <div className="mt-4 rounded-xl bg-white p-3">
+                      <div className="mb-3 text-sm font-semibold">
+                        Attack deck monsters
+                      </div>
+
+                      <div className="mb-3 flex gap-3">
+                        {[0, 1, 2].map((index) => (
+                          <DeckMonsterSlot
+                            key={index}
+                            monster={commentSelectedMonsters[index]}
+                            isLeader={index === 0}
+                            isActive={commentActiveSlotIndex === index}
+                            onClick={() =>
+                              setCommentActiveSlotMap((prev) => ({
+                                ...prev,
+                                [postId]: index,
+                              }))
+                            }
+                          />
+                        ))}
+                      </div>
+
+                      <input
+                        value={commentMonsterSearchMap[postId] ?? ""}
+                        onChange={(e) =>
+                          setCommentMonsterSearchMap((prev) => ({
+                            ...prev,
+                            [postId]: e.target.value,
+                          }))
+                        }
+                        placeholder="Search attack monsters"
+                        className="mb-3 w-full rounded-xl border px-3 py-2 text-sm"
+                      />
+
+                      <div className="mb-3 grid max-h-52 grid-cols-4 gap-2 overflow-y-auto rounded-2xl border p-3">
+                        {commentFilteredMonsters.map((m) => {
+                          const selected = commentAttackMonsterCodes.includes(m.id);
+
+                          return (
+                            <button
+                              key={m.id}
+                              type="button"
+                              onClick={() => selectCommentAttackMonster(postId, m.id)}
+                              disabled={selected}
+                              className={`rounded-xl border p-2 text-center text-xs transition hover:bg-gray-50 disabled:opacity-40 ${
+                                selected ? "bg-gray-100" : "bg-white"
+                              }`}
+                            >
+                              {m.iconDataUrl ? (
+                                <img
+                                  src={m.iconDataUrl}
+                                  alt={m.name}
+                                  className="mx-auto mb-1 h-10 w-10 rounded-lg object-cover"
+                                />
+                              ) : (
+                                <div className="mx-auto mb-1 h-10 w-10 rounded-lg bg-gray-200" />
+                              )}
+
+                              <div className="truncate font-semibold">{m.name}</div>
+                              <div className="truncate text-[10px] text-gray-400">{m.element}</div>
+                            </button>
+                          );
+                        })}
+                      </div>
+
                       <textarea
                         value={commentContentMap[postId] ?? ""}
                         onChange={(e) =>
