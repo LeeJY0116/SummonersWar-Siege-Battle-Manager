@@ -65,6 +65,83 @@ public class MonsterLocalizationApplyService {
         return appliedCount;
     }
 
+    @Transactional(readOnly = true)
+    public List<MonsterLocalizationResponse> getLocalizationEntries() {
+        Map<String, MonsterLocalizationEntry> entries = readEntries();
+        Map<String, Monster> monstersByCode = getMonstersByCode();
+
+        return entries.entrySet().stream()
+                .map(entry -> toResponse(entry.getKey(), entry.getValue(), monstersByCode.get(entry.getKey())))
+                .toList();
+    }
+
+    private Map<String, Monster> getMonstersByCode() {
+        Map<String, Monster> monstersByCode = new LinkedHashMap<>();
+
+        for (Monster monster : monsterRepository.findAll()) {
+            String code = monster.getCode();
+
+            if (code == null || code.isBlank()) {
+                continue;
+            }
+
+            monstersByCode.putIfAbsent(code, monster);
+        }
+
+        return monstersByCode;
+    }
+
+    public MonsterLocalizationResponse updateLocalizationEntry(
+            String monsterCode,
+            MonsterLocalizationUpdateRequest request
+    ) {
+        Map<String, MonsterLocalizationEntry> entries = readEntries();
+        MonsterLocalizationEntry entry = entries.get(monsterCode);
+
+        if (entry == null) {
+            throw new IllegalArgumentException("Monster localization entry not found: " + monsterCode);
+        }
+
+        entry.setEnabled(request.enabled());
+        entry.setKoreanName(request.koreanName());
+        entry.setAliases(normalizeAliases(request.aliases()));
+
+        writeSourceEntries(entries);
+
+        Monster monster = monsterRepository.findByCode(monsterCode).orElse(null);
+        if (monster != null) {
+            monster.updateLocalization(entry.getKoreanName(), entry.getAliases(), entry.getEnabled());
+        }
+
+        return toResponse(monsterCode, entry, monster);
+    }
+
+    private List<String> normalizeAliases(List<String> aliases) {
+        if (aliases == null) {
+            return List.of();
+        }
+
+        return aliases.stream()
+                .map(alias -> alias == null ? "" : alias.trim())
+                .filter(alias -> !alias.isBlank())
+                .distinct()
+                .toList();
+    }
+
+    private MonsterLocalizationResponse toResponse(String code, MonsterLocalizationEntry entry, Monster monster) {
+        return new MonsterLocalizationResponse(
+                code,
+                entry.getEnabled(),
+                entry.getAwakeningLevel(),
+                entry.getEnglishName(),
+                entry.getAttribute(),
+                entry.getNaturalStars(),
+                entry.getKoreanName(),
+                entry.getAliases() == null ? List.of() : entry.getAliases(),
+                monster == null ? null : monster.getImageUrl()
+        );
+    }
+
     private void hideManagedMonstersMissingFromLocalization(Map<String, MonsterLocalizationEntry> entries) {
         for (Monster monster : monsterRepository.findAll()) {
             String code = monster.getCode();
@@ -147,20 +224,20 @@ public class MonsterLocalizationApplyService {
             try (InputStream inputStream = Files.newInputStream(SOURCE_LOCALIZATION_PATH)) {
                 return objectMapper.readValue(inputStream, new TypeReference<LinkedHashMap<String, MonsterLocalizationEntry>>() {});
             } catch (IOException e) {
-                throw new IllegalStateException("몬스터 관리 파일을 읽을 수 없습니다: " + SOURCE_LOCALIZATION_PATH, e);
+                throw new IllegalStateException("\uBAAC\uC2A4\uD130 \uAD00\uB9AC \uD30C\uC77C\uC744 \uC77D\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4: " + SOURCE_LOCALIZATION_PATH, e);
             }
         }
 
         ClassPathResource resource = new ClassPathResource(LOCALIZATION_PATH);
 
         if (!resource.exists()) {
-            throw new IllegalStateException("몬스터 관리 파일을 찾을 수 없습니다: " + LOCALIZATION_PATH);
+            throw new IllegalStateException("\uBAAC\uC2A4\uD130 \uAD00\uB9AC \uD30C\uC77C\uC744 \uCC3E\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4: " + LOCALIZATION_PATH);
         }
 
         try (InputStream inputStream = resource.getInputStream()) {
             return objectMapper.readValue(inputStream, new TypeReference<LinkedHashMap<String, MonsterLocalizationEntry>>() {});
         } catch (IOException e) {
-            throw new IllegalStateException("몬스터 관리 파일을 읽을 수 없습니다.", e);
+            throw new IllegalStateException("\uBAAC\uC2A4\uD130 \uAD00\uB9AC \uD30C\uC77C\uC744 \uC77D\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.", e);
         }
     }
 
@@ -169,7 +246,8 @@ public class MonsterLocalizationApplyService {
             Files.createDirectories(SOURCE_LOCALIZATION_PATH.getParent());
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(SOURCE_LOCALIZATION_PATH.toFile(), entries);
         } catch (IOException e) {
-            throw new IllegalStateException("몬스터 관리 파일에 신규 항목을 추가할 수 없습니다: " + SOURCE_LOCALIZATION_PATH, e);
+            throw new IllegalStateException("\uBAAC\uC2A4\uD130 \uAD00\uB9AC \uD30C\uC77C\uC744 \uC800\uC7A5\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4: " + SOURCE_LOCALIZATION_PATH, e);
         }
     }
+
 }
