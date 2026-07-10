@@ -11,6 +11,10 @@ public record MonsterResponse(
         List<String> aliases,
         String attribute,
         String leaderEffectType,
+        Integer leaderEffectAmount,
+        String leaderEffectArea,
+        String leaderEffectElement,
+        String leaderEffectText,
         String imageUrl,
         Integer naturalStars,
         Boolean enabled

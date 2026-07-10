@@ -2,16 +2,20 @@ import React, { useMemo, useState } from "react";
 import MonsterSelect from "../monsters/MonsterSelect.jsx";
 import TrioSlot from "../trios/TrioSlot.jsx";
 
-const LEADER_EFFECT_OPTIONS = [
-  "효과적중",
-  "공격속도",
-  "공격력",
-  "체력",
-  "방어력",
-  "효과저항",
-  "치명타 확률",
-  "치명타 피해",
-];
+const LEADER_EFFECT_LABELS = {
+  "Attack Power": "공격력",
+  "Attack Speed": "공격속도",
+  "Critical Rate": "치명타 확률",
+  Defense: "방어력",
+  HP: "체력",
+  Accuracy: "효과적중",
+  Resistance: "효과저항",
+};
+
+function getLeaderEffectLabel(effect) {
+  return LEADER_EFFECT_LABELS[effect] ?? effect;
+}
+
 
 function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
@@ -49,6 +53,14 @@ export default function ManagerTab({
     const m = new Map();
     monsters.forEach((x) => m.set(x.id, x));
     return m;
+  }, [monsters]);
+
+  const leaderEffectOptions = useMemo(() => {
+    return [...new Set(
+      monsters
+        .map((monster) => monster.leaderEffectType)
+        .filter(Boolean)
+    )].sort((a, b) => a.localeCompare(b));
   }, [monsters]);
 
   const filteredTrios = useMemo(() => {
@@ -126,15 +138,6 @@ export default function ManagerTab({
     setNewTrioIcon(dataUrl);
   }
 
-  function handleDeleteMonster(id) {
-    if (
-      !window.confirm(
-        "이 몬스터를 삭제할까요? 관련된 조합도 함께 삭제됩니다."
-      )
-    )
-      return;
-    onDeleteMonster(id);
-  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -157,9 +160,9 @@ export default function ManagerTab({
                 onChange={(e) => setLeaderFilter(e.target.value)}
               >
                 <option value="">(전체)</option>
-                {LEADER_EFFECT_OPTIONS.map((opt) => (
+                {leaderEffectOptions.map((opt) => (
                   <option key={opt} value={opt}>
-                    {opt}
+                    {getLeaderEffectLabel(opt)}
                   </option>
                 ))}
               </select>

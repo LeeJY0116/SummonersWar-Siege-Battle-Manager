@@ -12,29 +12,19 @@ const ELEMENT_META = {
 
 const ELEMENT_ORDER = ["fire", "water", "wind", "light", "dark"];
 
-// 리더 효과 리스트
-const LEADER_EFFECT_OPTIONS = [
-  "효과적중",
-  "공격속도",
-  "공격력",
-  "체력",
-  "방어력",
-  "효과저항",
-  "치명타 확률",
-  "치명타 피해",
-];
-
-// 리더 효과 메타 (뱃지에 쓸 아이콘/색)
-const LEADER_EFFECT_META = {
-  "효과적중":    { emoji: "🎯", badgeClass: "bg-indigo-500" },
-  "공격속도":     { emoji: "🏃", badgeClass: "bg-amber-500" },
-  "공격력":       { emoji: "🗡️", badgeClass: "bg-rose-500" },
-  "체력":         { emoji: "♥️", badgeClass: "bg-blue-500" },
-  "방어력":       { emoji: "🛡️", badgeClass: "bg-slate-500" },
-  "효과저항":    { emoji: "💊", badgeClass: "bg-teal-500" },
-  "치명타 확률":  { emoji: "🎲", badgeClass: "bg-yellow-600" },
-  "치명타 피해":  { emoji: "💥", badgeClass: "bg-orange-600" },
+const LEADER_EFFECT_LABELS = {
+  "Attack Power": "공격력",
+  "Attack Speed": "공격속도",
+  "Critical Rate": "치명타 확률",
+  Defense: "방어력",
+  HP: "체력",
+  Accuracy: "효과적중",
+  Resistance: "효과저항",
 };
+
+function getLeaderEffectLabel(effect) {
+  return LEADER_EFFECT_LABELS[effect] ?? effect;
+}
 
 export default function SiegeBattleTab({
   monsters,
@@ -58,6 +48,14 @@ export default function SiegeBattleTab({
     () => monsters.filter((m) => m.iconDataUrl),
     [monsters]
   );
+
+  const leaderEffectOptions = useMemo(() => {
+    return [...new Set(
+      baseCatalog
+        .map((monster) => monster.leaderEffectType)
+        .filter(Boolean)
+    )].sort((a, b) => getLeaderEffectLabel(a).localeCompare(getLeaderEffectLabel(b), "ko"));
+  }, [baseCatalog]);
 
   // 검색 + 속성 + 리더효과 + 정렬 적용한 도감 목록
   const catalog = useMemo(() => {
@@ -170,9 +168,9 @@ export default function SiegeBattleTab({
                 onChange={(e) => setLeaderEffectFilter(e.target.value)}
               >
                 <option value="all">리더 효과 전체</option>
-                {LEADER_EFFECT_OPTIONS.map((eff) => (
+                {leaderEffectOptions.map((eff) => (
                   <option key={eff} value={eff}>
-                    {eff}
+                    {getLeaderEffectLabel(eff)}
                   </option>
                 ))}
               </select>
@@ -202,9 +200,9 @@ export default function SiegeBattleTab({
             onChange={(e) => setLeaderEffectFilter(e.target.value)}
           >
             <option value="all">리더 효과 전체</option>
-            {LEADER_EFFECT_OPTIONS.map((eff) => (
+            {leaderEffectOptions.map((eff) => (
               <option key={eff} value={eff}>
-                {eff}
+                {getLeaderEffectLabel(eff)}
               </option>
             ))}
           </select>
@@ -221,11 +219,7 @@ export default function SiegeBattleTab({
               <div className="flex-1">
                 <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-7 gap-2">
                   {catalog.map((m) => {
-                    const leaderMeta =
-                      m.leaderEffectType &&
-                      LEADER_EFFECT_META[m.leaderEffectType]
-                        ? LEADER_EFFECT_META[m.leaderEffectType]
-                        : null;
+                    const hasLeaderEffect = Boolean(m.leaderEffectType);
                     const isDefault = m.isDefault;
 
                     function handleCardClick() {
@@ -254,11 +248,12 @@ export default function SiegeBattleTab({
                       >
 
                         {/* 리더 효과 뱃지 (좌하단) */}
-                        {leaderMeta && (
+                        {hasLeaderEffect && (
                           <div
-                            className={`absolute left-1 bottom-6 px-1.5 py-[1px] rounded-full text-[9px] text-white flex items-center gap-[2px] ${leaderMeta.badgeClass}`}
+                            className="absolute left-1 bottom-6 rounded-full bg-gray-900/80 px-1.5 py-[1px] text-[9px] font-semibold text-white"
+                            title={m.leaderEffectText || getLeaderEffectLabel(m.leaderEffectType)}
                           >
-                            <span>{leaderMeta.emoji}</span>
+                            L
                           </div>
                         )}
 

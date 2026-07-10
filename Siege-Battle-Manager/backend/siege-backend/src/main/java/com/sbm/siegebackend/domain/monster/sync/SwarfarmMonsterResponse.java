@@ -19,6 +19,9 @@ public class SwarfarmMonsterResponse {
     @JsonProperty("natural_stars")
     private Integer naturalStars;
 
+    @JsonProperty("leader_skill")
+    private SwarfarmLeaderSkillResponse leaderSkill;
+
     public Long getId() {
         return id;
     }
@@ -41,5 +44,9 @@ public class SwarfarmMonsterResponse {
 
     public Integer getNaturalStars() {
         return naturalStars;
+    }
+
+    public SwarfarmLeaderSkillResponse getLeaderSkill() {
+        return leaderSkill;
     }
 }

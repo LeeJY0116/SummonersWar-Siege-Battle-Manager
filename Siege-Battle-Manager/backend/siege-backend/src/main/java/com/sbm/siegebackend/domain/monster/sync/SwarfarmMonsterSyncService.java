@@ -78,13 +78,18 @@ public class SwarfarmMonsterSyncService {
             String imageUrl = buildImageUrl(swarfarmMonster.getImageFilename());
 
             Monster monster = findExistingMonster(swarfarmMonster.getCom2usId(), code);
+            SwarfarmLeaderSkillResponse leaderSkill = swarfarmMonster.getLeaderSkill();
 
             monster.updateFromSwarfarm(
                     swarfarmMonster.getCom2usId(),
                     swarfarmMonster.getName(),
                     attribute,
                     swarfarmMonster.getNaturalStars(),
-                    imageUrl
+                    imageUrl,
+                    leaderSkill == null ? null : leaderSkill.getAttribute(),
+                    leaderSkill == null ? null : leaderSkill.getAmount(),
+                    leaderSkill == null ? null : leaderSkill.getArea(),
+                    leaderSkill == null ? null : leaderSkill.getElement()
             );
 
             monsterRepository.save(monster);

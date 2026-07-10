@@ -45,6 +45,14 @@ public class Monster {
     @Column(nullable = true, length = 50)
     private String leaderEffectType;
 
+    private Integer leaderEffectAmount;
+
+    @Column(length = 50)
+    private String leaderEffectArea;
+
+    @Column(length = 50)
+    private String leaderEffectElement;
+
     protected Monster() {}
 
     @Builder
@@ -59,12 +67,20 @@ public class Monster {
                                    String name,
                                    MonsterAttribute attribute,
                                    Integer naturalStars,
-                                   String imageUrl) {
+                                   String imageUrl,
+                                   String leaderEffectType,
+                                   Integer leaderEffectAmount,
+                                   String leaderEffectArea,
+                                   String leaderEffectElement) {
         this.com2usId = com2usId;
         this.name = name;
         this.attribute = attribute;
         this.naturalStars = naturalStars;
         this.imageUrl = imageUrl;
+        this.leaderEffectType = leaderEffectType;
+        this.leaderEffectAmount = leaderEffectAmount;
+        this.leaderEffectArea = leaderEffectArea;
+        this.leaderEffectElement = leaderEffectElement;
     }
 
     public void updateLocalization(String koreanName, List<String> aliases, Boolean enabled) {
@@ -102,6 +118,12 @@ public class Monster {
     public MonsterAttribute getAttribute() { return attribute; }
 
     public String getLeaderEffectType() { return leaderEffectType; }
+
+    public Integer getLeaderEffectAmount() { return leaderEffectAmount; }
+
+    public String getLeaderEffectArea() { return leaderEffectArea; }
+
+    public String getLeaderEffectElement() { return leaderEffectElement; }
 
     public Integer getCom2usId() { return com2usId; }
 

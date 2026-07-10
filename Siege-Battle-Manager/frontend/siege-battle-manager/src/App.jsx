@@ -52,11 +52,53 @@ function normalizeBackendMonster(monster) {
     imageUrl,
     enabled: monster.enabled ?? true,
     leaderEffectType: monster.leaderEffectType ?? null,
-    leaderEffectText: monster.leaderEffectText ?? "",
+    leaderEffectAmount: monster.leaderEffectAmount ?? null,
+    leaderEffectArea: monster.leaderEffectArea ?? null,
+    leaderEffectElement: monster.leaderEffectElement ?? null,
+    leaderEffectText: formatLeaderEffectText(monster),
     aliases,
     nicknames: aliases,
     isDefault: true,
   };
+}
+
+const LEADER_EFFECT_LABELS = {
+  "Attack Power": "공격력",
+  "Attack Speed": "공격속도",
+  "Critical Rate": "치명타 확률",
+  Defense: "방어력",
+  HP: "체력",
+  Accuracy: "효과적중",
+  Resistance: "효과저항",
+};
+
+const LEADER_AREA_LABELS = {
+  Arena: "아레나",
+  Dungeon: "던전",
+  General: "전체",
+  Guild: "길드",
+};
+
+const LEADER_ELEMENT_LABELS = {
+  Fire: "불",
+  Water: "물",
+  Wind: "풍",
+  Light: "빛",
+  Dark: "암",
+};
+
+function formatLeaderEffectText(monster) {
+  if (!monster.leaderEffectType) {
+    return "";
+  }
+
+  const parts = [
+    LEADER_AREA_LABELS[monster.leaderEffectArea] ?? monster.leaderEffectArea,
+    LEADER_ELEMENT_LABELS[monster.leaderEffectElement] ?? monster.leaderEffectElement,
+    LEADER_EFFECT_LABELS[monster.leaderEffectType] ?? monster.leaderEffectType,
+  ].filter(Boolean);
+
+  return `${parts.join(" ")} ${monster.leaderEffectAmount ?? ""}%`.trim();
 }
 
 function extractCom2usId(monsterCode) {

@@ -28,11 +28,39 @@ public class MonsterService {
                         m.getAliasList(),
                         m.getAttribute().name(),
                         m.getLeaderEffectType(),
+                        m.getLeaderEffectAmount(),
+                        m.getLeaderEffectArea(),
+                        m.getLeaderEffectElement(),
+                        buildLeaderEffectText(m),
                         m.getImageUrl(),
                         m.getNaturalStars(),
                         m.getEnabled()
                 ))
                 .toList();
+    }
+
+    private String buildLeaderEffectText(Monster monster) {
+        if (monster.getLeaderEffectType() == null || monster.getLeaderEffectType().isBlank()) {
+            return "";
+        }
+
+        StringBuilder text = new StringBuilder();
+
+        if (monster.getLeaderEffectArea() != null && !monster.getLeaderEffectArea().isBlank()) {
+            text.append(monster.getLeaderEffectArea()).append(" ");
+        }
+
+        if (monster.getLeaderEffectElement() != null && !monster.getLeaderEffectElement().isBlank()) {
+            text.append(monster.getLeaderEffectElement()).append(" ");
+        }
+
+        text.append(monster.getLeaderEffectType());
+
+        if (monster.getLeaderEffectAmount() != null) {
+            text.append(" ").append(monster.getLeaderEffectAmount()).append("%");
+        }
+
+        return text.toString();
     }
 
     public Long create(MonsterCreateRequest req) {
