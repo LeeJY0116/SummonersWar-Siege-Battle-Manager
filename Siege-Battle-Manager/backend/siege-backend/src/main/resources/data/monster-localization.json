@@ -219,7 +219,8 @@
     "koreanName": "페어리",
     "aliases": [
       "페어리",
-      "물페어리"
+      "물페어리",
+      "엘루샤"
     ]
   },
   "sw_10132": {
@@ -4460,7 +4461,6 @@
     "naturalStars": 4,
     "koreanName": "뱀파이어",
     "aliases": [
-      "뱀파이어",
       "물뱀"
     ]
   },
@@ -4472,7 +4472,6 @@
     "naturalStars": 4,
     "koreanName": "뱀파이어",
     "aliases": [
-      "뱀파이어",
       "불뱀"
     ]
   },
@@ -4484,7 +4483,6 @@
     "naturalStars": 4,
     "koreanName": "뱀파이어",
     "aliases": [
-      "뱀파이어",
       "풍뱀"
     ]
   },
@@ -4496,7 +4494,6 @@
     "naturalStars": 5,
     "koreanName": "뱀파이어",
     "aliases": [
-      "뱀파이어",
       "빛뱀"
     ]
   },
@@ -4508,7 +4505,6 @@
     "naturalStars": 5,
     "koreanName": "뱀파이어",
     "aliases": [
-      "뱀파이어",
       "암뱀"
     ]
   },
@@ -7038,7 +7034,8 @@
       "손오공",
       "물손오공",
       "오공",
-      "물오공"
+      "물오공",
+      "손대성"
     ]
   },
   "sw_16812": {
@@ -7052,7 +7049,8 @@
       "손오공",
       "불손오공",
       "오공",
-      "불오공"
+      "불오공",
+      "미후왕"
     ]
   },
   "sw_16813": {
@@ -7066,7 +7064,8 @@
       "손오공",
       "풍손오공",
       "오공",
-      "풍오공"
+      "풍오공",
+      "손행자"
     ]
   },
   "sw_16814": {
@@ -7080,7 +7079,8 @@
       "손오공",
       "빛손오공",
       "오공",
-      "빛오공"
+      "빛오공",
+      "투전승불"
     ]
   },
   "sw_16815": {
@@ -7094,7 +7094,8 @@
       "손오공",
       "암손오공",
       "오공",
-      "암오공"
+      "암오공",
+      "육이미후"
     ]
   },
   "sw_16901": {
@@ -13356,7 +13357,7 @@
     ]
   },
   "sw_22812": {
-    "enabled": true,
+    "enabled": false,
     "awakeningLevel": 1,
     "englishName": "Carcano",
     "attribute": "FIRE",
@@ -13370,7 +13371,7 @@
     ]
   },
   "sw_22813": {
-    "enabled": true,
+    "enabled": false,
     "awakeningLevel": 1,
     "englishName": "Carbine",
     "attribute": "WIND",
@@ -13382,7 +13383,7 @@
     ]
   },
   "sw_22815": {
-    "enabled": true,
+    "enabled": false,
     "awakeningLevel": 1,
     "englishName": "Dragunov",
     "attribute": "DARK",
@@ -14549,7 +14550,8 @@
     "aliases": [
       "불켄",
       "불 쉐도우 클로",
-      "쉐도우 클로"
+      "쉐도우 클로",
+      "켄"
     ]
   },
   "sw_24201": {
@@ -15026,7 +15028,8 @@
       "류",
       "스커",
       "불류",
-      "불스커"
+      "불스커",
+      "더글라스"
     ]
   },
   "sw_24513": {
@@ -28276,5 +28279,5531 @@
       "위벨",
       "암위벨"
     ]
+  },
+  "sw_12302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Forest Keeper",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12702": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ghost",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_13002": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Horned Frog",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12902": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Mimic",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12402": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Mushroom",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_13102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Sandman",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_14202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_14212": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Red Angelmon",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_18202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "King Angelmon",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_18212": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Red King Angelmon",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12802": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Low Elemental",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12812": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Lamor",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Forest Keeper",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12701": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ghost",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_13001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Horned Frog",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12901": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Mimic",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12401": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Mushroom",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_13101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Sandman",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Slime",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_14201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_18201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "King Angelmon",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12801": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Low Elemental",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_14211": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Blue Angelmon",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_18211": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Blue King Angelmon",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12811": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tigresse",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Forest Keeper",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12703": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ghost",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_13003": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Horned Frog",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12903": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Mimic",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12403": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Mushroom",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_14203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_14213": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Gold Angelmon",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_18203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "King Angelmon",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_18213": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Gold King Angelmon",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12803": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Low Elemental",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12813": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Samour",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Slime",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_15105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Devilmon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12705": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ghost",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_13005": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Horned Frog",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12905": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Mimic",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_13105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Sandman",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_14205": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_14215": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Dark Angelmon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_18205": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "King Angelmon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_18215": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Dark King Angelmon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12805": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Low Elemental",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12815": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Havana",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_14204": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_14214": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "White Angelmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_18204": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "King Angelmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_18214": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "White King Angelmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12814": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Varis",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_14314": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Rainbowmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_13103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Sandman",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Slime",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_40101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Inugami",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_40201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Phoenix",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_40302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Golem",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_40403": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Sylphid",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_40501": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Undine",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_40602": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Inferno",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_40703": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Chimera",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_40803": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Salamander",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_40903": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Sylph",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_41101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Death Knight",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_41202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lich",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_41303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Keeper of Remains",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_41401": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Contaminated Dragon",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_43001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ice Beast",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_43002": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Fire Beast",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_43003": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Wind Beast",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_43004": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Light Beast",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_43005": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dark Beast",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Keeper of Water",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Keeper of Fire",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Keeper of Wind",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60104": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Keeper of Light",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Keeper of Darkness",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Giant",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Giant",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Giant",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60204": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Giant",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60205": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Giant",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Legendary Dragon",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Legendary Dragon",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Legendary Dragon",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60304": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Legendary Dragon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60305": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Legendary Dragon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60401": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60501": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60601": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60701": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60402": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60502": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60602": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60702": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60403": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60503": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60603": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60703": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60404": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60504": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60604": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60704": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60405": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60505": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60605": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60705": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Angelmon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60804": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Rainbowmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60904": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Rainbowmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_61004": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Rainbowmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_61104": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Rainbowmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60805": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Devilmon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60905": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Devilmon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_61005": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Devilmon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_61105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Devilmon",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62004": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Keeper of Magic",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Lich King",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Lich King",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Lich King",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62104": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Lich King",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Lich King",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_110902": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Fire Minion",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_21714": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Super Angelmon",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_12804": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Low Elemental",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Leos",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Kotos",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Guilles",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Leos",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Kotos",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Guilles",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46304": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Leos",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46305": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Kotos",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46306": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Guilles",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46307": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Leos",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46308": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Kotos",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46309": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Guilles",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Guardian",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47002": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Guardian",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47003": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Guardian",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_45001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "형상아이템용 더미(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_45002": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "형상아이템용 더미(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_45003": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "형상아이템용 더미(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_45004": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "형상아이템용 더미(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_45005": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "형상아이템용 더미(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "미궁 룬문양 (물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "미궁 룬문양 (불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_46203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "미궁 룬문양 (바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Fairy 2A",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Fairy 2A",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Fairy 2A",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47104": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Fairy 2A",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Fairy 2A",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Pixie 2A",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Pixie 2A",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Pixie 2A",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47204": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Pixie 2A",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47205": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Pixie 2A",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Warbear 2A",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Warbear 2A",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Warbear 2A",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47304": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Warbear 2A",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47305": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Warbear 2A",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47401": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Inugami 2A",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47402": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Inugami 2A",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47403": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Inugami 2A",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47404": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Inugami 2A",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47405": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Inugami 2A",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47501": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Werewolf 2A",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47502": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Werewolf 2A",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47503": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Werewolf 2A",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47504": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Werewolf 2A",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47505": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Werewolf 2A",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47601": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Martial Cat 2A",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47602": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Martial Cat 2A",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47603": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Martial Cat 2A",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47604": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Martial Cat 2A",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47605": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Martial Cat 2A",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62200": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "월드보스-고대골렘",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120104": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120111": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120112": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120113": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120114": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120115": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120204": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120205": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120211": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120212": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120213": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120214": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120215": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120304": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120305": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120311": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120312": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120313": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120314": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120315": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120401": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120402": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120403": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120404": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120405": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120411": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120412": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120413": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120414": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120415": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120501": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120502": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120503": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120504": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120505": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120511": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120512": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120513": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120514": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120515": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120601": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120602": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120603": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120604": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120605": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120611": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120612": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120613": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120614": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120615": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_220001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Small Crystal",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_220002": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Small Crystal",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_220003": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Small Crystal",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_220004": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Small Crystal",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_220005": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Small Crystal",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_220011": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Medium Crystal",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_220012": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Medium Crystal",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_220013": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Medium Crystal",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_220014": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Medium Crystal",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_220015": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Medium Crystal",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47701": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Griffon 2A",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47702": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Griffon 2A",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47703": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Griffon 2A",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47704": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Griffon 2A",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47705": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Griffon 2A",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120701": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120702": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120703": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120704": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120705": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120711": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120712": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120713": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120714": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120715": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_23801": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "족자(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_23802": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "족자(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_23803": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "족자(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_23804": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "족자(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_23805": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "족자(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_63102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "만랩튜토리얼보스(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_63202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "만랩튜토리얼_드래곤(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_63301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "만랩튜토리얼_가고일(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_63302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "만랩튜토리얼_가고일(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_63303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "만랩튜토리얼_가고일(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Intercessor",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62403": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Tormentor",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62504": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Intercessor",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62604": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Punisher",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70002": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70003": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70004": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70005": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70104": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70204": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_70205": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimension Predator",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_71004": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Hollow",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_71005": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Hollow",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_71101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Void",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_71102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Void",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_71103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Void",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_112023": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_112033": {
+    "enabled": false,
+    "awakeningLevel": 2,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_112124": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_112134": {
+    "enabled": false,
+    "awakeningLevel": 2,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_200103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Small Crystal",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_200113": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Medium Crystal",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_200204": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Small Crystal",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_200214": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Medium Crystal",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_400001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Predator's Wreckage",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_400002": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Predator's Wreckage",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_400003": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Predator's Wreckage",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_400004": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Predator's Wreckage",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_400005": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Predator's Wreckage",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_400006": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Predator's Wreckage",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_400007": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Predator's Wreckage",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_400008": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Predator's Wreckage",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_400009": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Predator's Wreckage",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_400010": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Predator's Wreckage",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47004": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Guardian",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47801": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lulu and Friends",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47802": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lala and Friends",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47803": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Chichi and Friends",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47804": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Shushu and Friends",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47805": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Chacha and Friends",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47901": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Hemos",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47902": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Sath",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47903": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Hiva",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47904": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Prom",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47905": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Thrain",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120801": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120802": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120803": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120804": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120805": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120811": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120812": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120813": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120814": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120815": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120901": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120902": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120903": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120904": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120905": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120911": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120912": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120913": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120914": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_120915": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Tower",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "하이엘리멘탈 2차 각성 보스(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48002": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "하이엘리멘탈 2차 각성 보스(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48003": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "하이엘리멘탈 2차 각성 보스(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48004": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "하이엘리멘탈 2차 각성 보스(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48005": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "하이엘리멘탈 2차 각성 보스(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 하이엘리멘탈 수정_왼쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121002": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 하이엘리멘탈 수정_왼쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121003": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 하이엘리멘탈 수정_왼쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121004": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 하이엘리멘탈 수정_왼쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121005": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 하이엘리멘탈 수정_왼쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121011": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 하이엘리멘탈 수정_오른쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121012": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 하이엘리멘탈 수정_오른쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121013": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 하이엘리멘탈 수정_오른쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121014": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 하이엘리멘탈 수정_오른쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121015": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 하이엘리멘탈 수정_오른쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_47005": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Guardian",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_49001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Allen",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_49002": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Kai'en",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_49003": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Roid",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_49004": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Darion",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_49005": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Jubelle",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_50001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Megan",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_50002": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Rebecca",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_50003": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Silia",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_50004": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Linda",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_50005": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Gina",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 방랑 기사 수정_왼쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 방랑 기사 수정_왼쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 방랑 기사 수정_왼쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121104": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 방랑 기사 수정_왼쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 방랑 기사 수정_왼쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121111": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 방랑 기사 수정_오른쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121112": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 방랑 기사 수정_오른쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121113": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 방랑 기사 수정_오른쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121114": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 방랑 기사 수정_오른쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121115": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 방랑 기사 수정_오른쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 미스틱 위치 수정_왼쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 미스틱 위치 수정_왼쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 미스틱 위치 수정_왼쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121204": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 미스틱 위치 수정_왼쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121205": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 미스틱 위치 수정_왼쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121211": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 미스틱 위치 수정_오른쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121212": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 미스틱 위치 수정_오른쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121213": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 미스틱 위치 수정_오른쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121214": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 미스틱 위치 수정_오른쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121215": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 미스틱 위치 수정_오른쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "King Slime",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72002": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "King Slime",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72003": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "King Slime",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72011": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "길드보스(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72012": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "길드보스(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72013": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "길드보스(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72021": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "길드보스(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72022": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "길드보스(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72023": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "길드보스(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72031": {
+    "enabled": false,
+    "awakeningLevel": 2,
+    "englishName": "길드보스(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72032": {
+    "enabled": false,
+    "awakeningLevel": 2,
+    "englishName": "길드보스(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72033": {
+    "enabled": false,
+    "awakeningLevel": 2,
+    "englishName": "길드보스(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72041": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "길드보스(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72042": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "길드보스(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72043": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "길드보스(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72051": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "길드보스(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72052": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "길드보스(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72053": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "길드보스(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72061": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "길드보스(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72062": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "길드보스(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_72063": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "길드보스(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_73205": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Mimic",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_73301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Legion Commander of Conviction",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_73302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Legion Commander of Retribution",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_73303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Legion Commander of Judgment",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Templar Royal Guard",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Templar Royal Guard",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Templar Royal Guard",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320211": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Templar Elite Guard",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320212": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Templar Elite Guard",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320213": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Templar Elite Guard",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_73401": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Legion Commander of Conviction",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_73402": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Legion Commander of Retribution",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_73403": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Legion Commander of Judgment",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320221": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Templar Royal Guard",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320222": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Templar Royal Guard",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320223": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Templar Royal Guard",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320231": {
+    "enabled": false,
+    "awakeningLevel": 2,
+    "englishName": "Templar Elite Guard",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320232": {
+    "enabled": false,
+    "awakeningLevel": 2,
+    "englishName": "Templar Elite Guard",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320233": {
+    "enabled": false,
+    "awakeningLevel": 2,
+    "englishName": "Templar Elite Guard",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_900001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "만우절이벤트 아이린",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60206": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Abyssal Ancient Giant",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_60306": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Abyssal Legendary Dragon",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62703": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Spirit",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62713": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "Ancient Spirit",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62723": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Ancient Spirit",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62733": {
+    "enabled": false,
+    "awakeningLevel": 2,
+    "englishName": "Ancient Spirit",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62743": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Ancient Spirit",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62753": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Ancient Spirit",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62763": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Ancient Spirit",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62773": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Ancient Spirit",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62106": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Abyssal Ancient Lich King",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_28801": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Demon Bag",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "리빙 아머 2차 각성 보스(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "리빙 아머 2차 각성 보스(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "리빙 아머 2차 각성 보스(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48104": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "리빙 아머 2차 각성 보스(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "리빙 아머 2차 각성 보스(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "프랑켄 2차 각성 보스(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "프랑켄 2차 각성 보스(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "프랑켄 2차 각성 보스(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48204": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "프랑켄 2차 각성 보스(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48205": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "프랑켄 2차 각성 보스(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 리빙 아머 수정_왼쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 리빙 아머 수정_왼쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 리빙 아머 수정_왼쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121304": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 리빙 아머 수정_왼쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121305": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 리빙 아머 수정_왼쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121311": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 리빙 아머 수정_오른쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121312": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 리빙 아머 수정_오른쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121313": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 리빙 아머 수정_오른쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121314": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 리빙 아머 수정_오른쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121315": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 리빙 아머 수정_오른쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121401": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 프랑켄 수정_왼쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121402": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 프랑켄 수정_왼쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121403": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 프랑켄 수정_왼쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121404": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 프랑켄 수정_왼쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121405": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 프랑켄 수정_왼쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121411": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 프랑켄 수정_오른쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121412": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 프랑켄 수정_오른쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121413": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 프랑켄 수정_오른쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121414": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 프랑켄 수정_오른쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121415": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 프랑켄 수정_오른쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimensional Minion (Water)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimensional Minion (Fire)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_320403": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dimensional Minion (Wind)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62803": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Abyssal Ancient Spirit",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62406": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Abyssal Ancient Tormentor",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_112043": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "아티펙트1 - 보스 수정_기절방무_심연층",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_112053": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "아티펙트1 - 보스 수정_빗맞음_심연층",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_62606": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Abyssal Ancient Punisher",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_73505": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Fiend",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_73602": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Griffin",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_73703": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Leshen",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_42501": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Asmodeus",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_42502": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Asmodeus",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_42503": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Asmodeus",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_42504": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Asmodeus",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_42505": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Asmodeus",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath’Taros",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath’Taros",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath’Taros",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001104": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath’Taros",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath’Taros",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002104": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002204": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002205": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_74203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Hanami",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_74301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Dagon",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_74402": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Jogo",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Sisroo",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Colleen",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Seal",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48304": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Sia",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_48305": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Seren",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121501": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 하르퓨 수정_왼쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121502": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 하르퓨 수정_왼쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121503": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 하르퓨 수정_왼쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121504": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 하르퓨 수정_왼쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121505": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 하르퓨 수정_왼쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121511": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 하르퓨 수정_오른쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121512": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 하르퓨 수정_오른쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121513": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 하르퓨 수정_오른쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121514": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 하르퓨 수정_오른쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121515": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 하르퓨 수정_오른쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_31504": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "묘비(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_31605": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "묘비(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_44107": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Frostjade Beast Khi'zar Kha'jul",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_44108": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Frostjade Beast Khi'zar Kha'jul",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_44109": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Frostjade Beast Khi'zar Kha'jul",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_44207": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Blazing Beast Khi'zar Kha'jul",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_44208": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Blazing Beast Khi'zar Kha'jul",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_44209": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Blazing Beast Khi'zar Kha'jul",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_44307": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Tempest Beast Khi'zar Kha'jul",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_44308": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Tempest Beast Khi'zar Kha'jul",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_44309": {
+    "enabled": false,
+    "awakeningLevel": null,
+    "englishName": "Tempest Beast Khi'zar Kha'jul",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2003503": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Azazel",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2003601": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Kazuya Mishima",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2003705": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "True Devil Kazuya",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_42601": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Asmodeus",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_42602": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Asmodeus",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath’Taros",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath’Taros",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath’Taros",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001204": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath’Taros",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001205": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath’Taros",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_500105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_500205": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_500305": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_501101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_501201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_501301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_502102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_502202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_502302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_503103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_503203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_503303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2003805": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Mouth of Sauron",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2003902": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Uglúk",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2004003": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "The Witch-king of Angmar",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_504104": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_504204": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_504304": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Twisted Wraithlord",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121601": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 인페르노 수정_왼쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121602": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 인페르노 수정_왼쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121603": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 인페르노 수정_왼쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121604": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 인페르노 수정_왼쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121605": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 인페르노 수정_왼쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121611": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 인페르노 수정_오른쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121612": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 인페르노 수정_오른쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121613": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 인페르노 수정_오른쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121614": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 인페르노 수정_오른쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121615": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 인페르노 수정_오른쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121701": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 헬하운드 수정_왼쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121702": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 헬하운드 수정_왼쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121703": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 헬하운드 수정_왼쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121704": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 헬하운드 수정_왼쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121705": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "2차각성 헬하운드 수정_왼쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121711": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 헬하운드 수정_오른쪽(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121712": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 헬하운드 수정_오른쪽(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121713": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 헬하운드 수정_오른쪽(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121714": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 헬하운드 수정_오른쪽(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_121715": {
+    "enabled": false,
+    "awakeningLevel": 1,
+    "englishName": "2차각성 헬하운드 수정_오른쪽(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_600001": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ancient Guardian",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_610101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tarq",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_610102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Sieq",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_610103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Gamir",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_610104": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Shamar",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_610105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Shumar",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_610201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Purian",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_610202": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Tagaros",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_610203": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Anduril",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_610204": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Eludain",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_610205": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Drogan",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_900101": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "스킬 미리보기 수정(물)",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_900102": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "스킬 미리보기 수정(불)",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_900103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "스킬 미리보기 수정(바람)",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_900104": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "스킬 미리보기 수정(빛)",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_900105": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "스킬 미리보기 수정(어둠)",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath'taros",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath'taros",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath'taros",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001304": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath'taros",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2001305": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Ath'taros",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002301": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002302": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "FIRE",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002303": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002304": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2002305": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Lyrith",
+    "attribute": "DARK",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2004103": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Solide",
+    "attribute": "WIND",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2004201": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Hemmung",
+    "attribute": "WATER",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
+  },
+  "sw_2004304": {
+    "enabled": false,
+    "awakeningLevel": 0,
+    "englishName": "Revolte",
+    "attribute": "LIGHT",
+    "naturalStars": 1,
+    "koreanName": "",
+    "aliases": []
   }
 }

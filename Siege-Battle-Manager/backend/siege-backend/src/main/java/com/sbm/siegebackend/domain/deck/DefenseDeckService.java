@@ -171,9 +171,8 @@ public class DefenseDeckService {
         }
 
         if (leaderEffect != null && !leaderEffect.isBlank()) {
-            stream = stream.filter(d ->
-                    d.getLeader().getLeaderEffectType() != null &&
-                            d.getLeader().getLeaderEffectType().equals(leaderEffect)
+            stream = stream.filter(d -> isGuildBattleLeaderEffect(d.getLeader()) &&
+                    d.getLeader().getLeaderEffectType().equals(leaderEffect)
             );
         }
 
@@ -192,6 +191,18 @@ public class DefenseDeckService {
                 .toList();
     }
 
+    private boolean isGuildBattleLeaderEffect(Monster monster) {
+        if (monster == null || monster.getLeaderEffectType() == null || monster.getLeaderEffectType().isBlank()) {
+            return false;
+        }
+
+        return "General".equals(monster.getLeaderEffectArea())
+                || "Guild".equals(monster.getLeaderEffectArea())
+                || "Element".equals(monster.getLeaderEffectArea())
+                || "Attribute".equals(monster.getLeaderEffectArea())
+                || (monster.getLeaderEffectArea() == null && monster.getLeaderEffectElement() != null);
+    }
+
     private DefenseDeckResponse toResponse(DefenseDeck deck) {
         return new DefenseDeckResponse(
                 deck.getId(),
@@ -200,7 +211,7 @@ public class DefenseDeckService {
                 deck.getLeader().getId(),
                 deck.getLeader().getCode(),
                 deck.getLeader().getName(),
-                deck.getLeader().getLeaderEffectType(),
+                isGuildBattleLeaderEffect(deck.getLeader()) ? deck.getLeader().getLeaderEffectType() : null,
                 deck.getMonsters().stream()
                         .map(m -> new DefenseDeckResponse.MonsterItem(
                                 m.getId(),

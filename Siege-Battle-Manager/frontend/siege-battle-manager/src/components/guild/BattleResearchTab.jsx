@@ -48,6 +48,7 @@ export default function BattleResearchTab({ monsters = []}) {
       <div className="mt-3 flex gap-2">
         {items.map((item, index) => {
           const monster = findMonsterByResearchItem(item);
+          const monsterName = monster?.name ?? item.monsterName;
 
           return (
             <div
@@ -61,7 +62,7 @@ export default function BattleResearchTab({ monsters = []}) {
               {monster?.iconDataUrl ? (
                 <img
                   src={monster.iconDataUrl}
-                  alt={item.monsterName}
+                  alt={monsterName}
                   className="mx-auto h-12 w-12 rounded-lg object-cover"
                 />
               ) : (
@@ -69,7 +70,7 @@ export default function BattleResearchTab({ monsters = []}) {
               )}
 
               <div className="mt-1 truncate text-xs font-semibold">
-                {item.monsterName}
+                {monsterName}
               </div>
             </div>
           );
@@ -116,7 +117,7 @@ export default function BattleResearchTab({ monsters = []}) {
     const currentCodes = getCommentAttackMonsterCodes(postId);
 
     if (currentCodes.includes(code)) {
-      alert("?대? ?좏깮??紐ъ뒪?곗엯?덈떎.");
+      alert("\uC774\uBBF8 \uC120\uD0DD\uB41C \uBAAC\uC2A4\uD130\uC785\uB2C8\uB2E4.");
       return;
     }
 

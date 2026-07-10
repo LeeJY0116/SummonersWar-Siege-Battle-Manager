@@ -5,6 +5,8 @@ import TrioSlot from "../trios/TrioSlot.jsx";
 const LEADER_EFFECT_LABELS = {
   "Attack Power": "공격력",
   "Attack Speed": "공격속도",
+  "Critical DMG": "\uCE58\uBA85 \uD53C\uD574",
+  "Critical Damage": "\uCE58\uBA85 \uD53C\uD574",
   "Critical Rate": "치명타 확률",
   Defense: "방어력",
   HP: "체력",
@@ -14,6 +16,14 @@ const LEADER_EFFECT_LABELS = {
 
 function getLeaderEffectLabel(effect) {
   return LEADER_EFFECT_LABELS[effect] ?? effect;
+}
+
+function isGuildBattleLeaderEffect(monster) {
+  return Boolean(
+    monster?.leaderEffectType &&
+      (["General", "Guild", "Element", "Attribute"].includes(monster.leaderEffectArea) ||
+        (!monster.leaderEffectArea && Boolean(monster.leaderEffectElement)))
+  );
 }
 
 
@@ -58,6 +68,7 @@ export default function ManagerTab({
   const leaderEffectOptions = useMemo(() => {
     return [...new Set(
       monsters
+        .filter(isGuildBattleLeaderEffect)
         .map((monster) => monster.leaderEffectType)
         .filter(Boolean)
     )].sort((a, b) => a.localeCompare(b));
@@ -68,7 +79,7 @@ export default function ManagerTab({
       // 1) 리더 필터
       if (leaderFilter) {
         const leaderMonster = monsterMap.get(t.monsterIds[0]); // 리더 몬스터
-        if (!leaderMonster || leaderMonster.leaderEffectType !== leaderFilter) {
+        if (!isGuildBattleLeaderEffect(leaderMonster) || leaderMonster.leaderEffectType !== leaderFilter) {
             return false;
         }
       } 
@@ -236,7 +247,7 @@ export default function ManagerTab({
                           {t.name || "점령전 조합"}
                         </div>
                         
-                        {leaderMonster?.leaderEffectText && (
+                        {isGuildBattleLeaderEffect(leaderMonster) && leaderMonster?.leaderEffectText && (
                             <div className="mt-1 text-[10px] text-blue-700">
                                 리더 효과 : {leaderMonster.leaderEffectText}
                             </div> 

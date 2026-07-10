@@ -106,7 +106,7 @@ public class MonsterLocalizationApplyService {
     private MonsterLocalizationEntry toEntry(Monster monster) {
         MonsterLocalizationEntry entry = new MonsterLocalizationEntry();
         Integer awakeningLevel = calculateAwakeningLevel(monster.getCode());
-        entry.setEnabled(awakeningLevel == null || awakeningLevel > 0);
+        entry.setEnabled(false);
         entry.setAwakeningLevel(awakeningLevel);
         entry.setEnglishName(monster.getName());
         entry.setAttribute(monster.getAttribute() == null ? null : monster.getAttribute().name());

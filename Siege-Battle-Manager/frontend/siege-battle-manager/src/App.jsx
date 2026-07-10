@@ -63,32 +63,45 @@ function normalizeBackendMonster(monster) {
 }
 
 const LEADER_EFFECT_LABELS = {
-  "Attack Power": "공격력",
-  "Attack Speed": "공격속도",
-  "Critical Rate": "치명타 확률",
-  Defense: "방어력",
-  HP: "체력",
-  Accuracy: "효과적중",
-  Resistance: "효과저항",
+  "Attack Power": "\uACF5\uACA9\uB825",
+  Attack: "\uACF5\uACA9\uB825",
+  "Attack Speed": "\uACF5\uACA9 \uC18D\uB3C4",
+  Speed: "\uACF5\uACA9 \uC18D\uB3C4",
+  "Critical DMG": "\uCE58\uBA85 \uD53C\uD574",
+  "Critical Damage": "\uCE58\uBA85 \uD53C\uD574",
+  "Critical Rate": "\uCE58\uBA85 \uD655\uB960",
+  Defense: "\uBC29\uC5B4\uB825",
+  HP: "\uCCB4\uB825",
+  Accuracy: "\uD6A8\uACFC \uC801\uC911",
+  Resistance: "\uC800\uD56D",
 };
 
 const LEADER_AREA_LABELS = {
-  Arena: "아레나",
-  Dungeon: "던전",
-  General: "전체",
-  Guild: "길드",
+  Arena: "\uC544\uB808\uB098",
+  Dungeon: "\uB358\uC804",
+  General: "\uC804\uCCB4",
+  Guild: "\uAE38\uB4DC \uC804\uD22C",
+  Element: "\uC18D\uC131",
+  Attribute: "\uC18D\uC131",
 };
 
 const LEADER_ELEMENT_LABELS = {
-  Fire: "불",
-  Water: "물",
-  Wind: "풍",
-  Light: "빛",
-  Dark: "암",
+  Fire: "\uBD88",
+  Water: "\uBB3C",
+  Wind: "\uD48D",
+  Light: "\uBE5B",
+  Dark: "\uC554",
 };
 
+function isGuildBattleLeaderEffect(monster) {
+  return Boolean(
+    monster?.leaderEffectType &&
+      (["General", "Guild", "Element", "Attribute"].includes(monster.leaderEffectArea) || (!monster.leaderEffectArea && Boolean(monster.leaderEffectElement)))
+  );
+}
+
 function formatLeaderEffectText(monster) {
-  if (!monster.leaderEffectType) {
+  if (!isGuildBattleLeaderEffect(monster)) {
     return "";
   }
 
@@ -165,8 +178,8 @@ export default function SiegeBattleManager() {
   }, []);
 
 
-  // 로그인
-// 로그인
+  // 로그??
+// 로그??
   const token = localStorage.getItem("accessToken");
 
   if (!token) {
@@ -188,9 +201,9 @@ export default function SiegeBattleManager() {
   useEffect(() => {
     if (!token) return;
   
-  // if (!token) {
-    // window.location.href = "/login"; 라우터 만들 때 주석 해제
-  // }
+  // Token is checked before loading guild data.
+
+
 
   fetchMyGuild()
   .then(setGuild)
@@ -285,14 +298,14 @@ export default function SiegeBattleManager() {
   }
 
 
-  // ------- 몬스터 / 조합 CRUD 로직 -------
+  // ------- Monster / trio CRUD logic -------
 
   function handleDeleteMonster(id) {
     setMonsters((prev) => {
       const target = prev.find((m) => m.id === id);
       if (target?.isDefault) {
-        // 기본 몬스터는 삭제 허용 안 함 (이중 안전장치)
-        alert("직접 추가한 몬스터만 삭제 가능합니다.");
+        // Built-in monsters are not deleted here.
+        alert("\uC9C1\uC811 \uCD94\uAC00\uD55C \uBAAC\uC2A4\uD130\uB9CC \uC0AD\uC81C\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.");
         return prev;
       }
       return prev.filter((m) => m.id !== id);
@@ -306,7 +319,7 @@ export default function SiegeBattleManager() {
       {
         id: uid(),
         monsterIds,
-        name: name?.trim() || "",
+        name: name?.trim() || "\uC810\uB839\uC804 \uC870\uD569",
         iconDataUrl: iconDataUrl || null,
         count: 0,
       },
@@ -317,7 +330,7 @@ export default function SiegeBattleManager() {
   function handleCreateTrioFromSiege(monsterIds, name) {
     handleCreateTrio({
       monsterIds,
-      name: name?.trim() || "점령전 조합",
+      name: name?.trim() || "\uC810\uB839\uC804 \uC870\uD569",
       iconDataUrl: null,
     });
   }
@@ -346,33 +359,29 @@ export default function SiegeBattleManager() {
     );
   }
 
-  // 길드 생성 로직
+  // Guild creation logic
 
-  async function handleCreateGuild() {
-  const name = prompt("길드 이름을 입력하세요");
+  async function handleCreateGuild() {  const name = prompt("\uAE38\uB4DC \uC774\uB984\uC744 \uC785\uB825\uD558\uC138\uC694");
   if (!name || !name.trim()) return;
 
-  // 생성 후 다시 내 길드 조회해서 화면 반영
+  // Reflect the created guild immediately in the UI.
   try {
     const created = await createGuild(name.trim(), "");
     console.log("createGuild response data:", created);
-
-    // ✅ 1) 생성 응답에 길드 정보가 오면 그걸로 바로 setGuild
-    // (네 백엔드는 GuildResponse를 바로 반환하니까 이게 가장 간단)
     setGuild(created);
 
-    // ✅ 2) 멤버는 API 구현 후에 로드
+
     // const ms = await fetchMyGuildMembers();
     // setMembers(ms);
   } catch (e) {
     console.error("create guild failed:", e);
-    alert(e.message || "길드 생성 실패");
+    alert(e.message || "\uAE38\uB4DC \uC0DD\uC131 \uC2E4\uD328");
     setGuild(null);
   }
 }
 
 
-  // ---------------- 렌더 ----------------
+  // ---------------- Render ----------------
   return (
     <div className="min-h-screen w-full bg-gray-50 text-gray-900">
       <div className="max-w-6xl mx-auto p-6 md:p-8">

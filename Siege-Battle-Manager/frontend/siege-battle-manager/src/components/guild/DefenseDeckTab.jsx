@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+﻿import React, { useEffect, useMemo, useState } from "react";
 import {
   createDefenseDeck,
   fetchDefenseDecks,
@@ -10,6 +10,15 @@ import { fetchMemberInventory } from "../../lib/inventory.js";
 import DefenseDeckFilterBar from "./DefenseDeckFilterBar.jsx";
 import Toast from "../common/Toast.jsx";
 import { useToast } from "../../hooks/useToast.js";
+
+const GUILD_BATTLE_LEADER_AREAS = new Set(["General", "Guild", "Element", "Attribute"]);
+
+function isGuildBattleLeaderEffect(monster) {
+  return Boolean(
+    monster?.leaderEffectType &&
+      (GUILD_BATTLE_LEADER_AREAS.has(monster.leaderEffectArea) || (!monster.leaderEffectArea && Boolean(monster.leaderEffectElement)))
+  );
+}
 
 export default function DefenseDeckTab({ members = [], monsters = [] }) {
   const [ownerMemberId, setOwnerMemberId] = useState("");
@@ -29,22 +38,22 @@ export default function DefenseDeckTab({ members = [], monsters = [] }) {
       if (ownerFilterId && String(deck.ownerMemberId) !== String(ownerFilterId)) {
         return false;
       }
+      if (leaderEffectFilter) {
+        const leaderMonster = monsters.find(
+          (m) => String(m.id) === String(deck.leaderMonsterId) || m.code === deck.leaderMonsterCode
+        );
+        const effect = deck.leaderEffectType || (
+          isGuildBattleLeaderEffect(leaderMonster) ? leaderMonster.leaderEffectType : ""
+        );
 
-    if (leaderEffectFilter) {
+        if (effect !== leaderEffectFilter) {
+          return false;
+        }
 
-      const leaderMonster = monsters.find(
-        (m) => m.id === deck.leaderMonsterCode
-      );
-
-      const effect =
-        deck.leaderEffectType ||
-        leaderMonster?.leaderEffectType ||
-        "";
-
-      if (effect !== leaderEffectFilter) {
-        return false;
+        if (leaderMonster && !isGuildBattleLeaderEffect(leaderMonster)) {
+          return false;
+        }
       }
-    }
 
       if (monsterFilterCodes.length > 0) {
         const deckCodes = (deck.monsters || []).map((m) => m.monsterCode);
@@ -53,7 +62,7 @@ export default function DefenseDeckTab({ members = [], monsters = [] }) {
 
       return true;
     });
-  }, [decks, ownerFilterId, leaderEffectFilter, monsterFilterCodes]);
+  }, [decks, ownerFilterId, leaderEffectFilter, monsterFilterCodes, monsters]);
 
   const selectedMonsters = selectedMonsterCodes.map((code) =>
   monsters.find((m) => m.id === code)
@@ -66,6 +75,7 @@ const [monsterSearch, setMonsterSearch] = useState("");
 const leaderEffectOptions = useMemo(() => {
   return [...new Set(
     monsters
+      .filter(isGuildBattleLeaderEffect)
       .map((m) => m.leaderEffectType)
       .filter(Boolean)
   )];

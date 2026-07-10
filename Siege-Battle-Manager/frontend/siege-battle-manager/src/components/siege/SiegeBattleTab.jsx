@@ -15,6 +15,8 @@ const ELEMENT_ORDER = ["fire", "water", "wind", "light", "dark"];
 const LEADER_EFFECT_LABELS = {
   "Attack Power": "공격력",
   "Attack Speed": "공격속도",
+  "Critical DMG": "\uCE58\uBA85 \uD53C\uD574",
+  "Critical Damage": "\uCE58\uBA85 \uD53C\uD574",
   "Critical Rate": "치명타 확률",
   Defense: "방어력",
   HP: "체력",
@@ -25,6 +27,14 @@ const LEADER_EFFECT_LABELS = {
 function getLeaderEffectLabel(effect) {
   return LEADER_EFFECT_LABELS[effect] ?? effect;
 }
+function isGuildBattleLeaderEffect(monster) {
+  return Boolean(
+    monster?.leaderEffectType &&
+      (["General", "Guild", "Element", "Attribute"].includes(monster.leaderEffectArea) ||
+        (!monster.leaderEffectArea && Boolean(monster.leaderEffectElement)))
+  );
+}
+
 
 export default function SiegeBattleTab({
   monsters,
@@ -52,6 +62,7 @@ export default function SiegeBattleTab({
   const leaderEffectOptions = useMemo(() => {
     return [...new Set(
       baseCatalog
+        .filter(isGuildBattleLeaderEffect)
         .map((monster) => monster.leaderEffectType)
         .filter(Boolean)
     )].sort((a, b) => getLeaderEffectLabel(a).localeCompare(getLeaderEffectLabel(b), "ko"));
@@ -81,7 +92,7 @@ export default function SiegeBattleTab({
 
     // 리더 효과 필터
     if (leaderEffectFilter !== "all") {
-      list = list.filter((m) => m.leaderEffectType === leaderEffectFilter);
+      list = list.filter((m) => isGuildBattleLeaderEffect(m) && m.leaderEffectType === leaderEffectFilter);
     }
 
     // 4성 방덱 모드 : grade < 5인 몬스터만
@@ -219,7 +230,7 @@ export default function SiegeBattleTab({
               <div className="flex-1">
                 <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-7 gap-2">
                   {catalog.map((m) => {
-                    const hasLeaderEffect = Boolean(m.leaderEffectType);
+                    const hasLeaderEffect = isGuildBattleLeaderEffect(m);
                     const isDefault = m.isDefault;
 
                     function handleCardClick() {

@@ -5,7 +5,7 @@ export default function DefenseDeckCard({ deck, monsters = [], onDelete }) {
   
 
   const leaderMonster = monsters.find(
-    (m) => m.id === deck.leaderMonsterCode
+    (m) => String(m.id) === String(deck.leaderMonsterId) || m.code === deck.leaderMonsterCode
   );
 
   const leaderEffect =

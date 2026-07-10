@@ -1,5 +1,31 @@
 import { useMemo } from "react";
 
+const GUILD_BATTLE_LEADER_AREAS = new Set(["General", "Guild", "Element", "Attribute"]);
+const LEADER_EFFECT_LABELS = {
+  "Attack Power": "\uACF5\uACA9\uB825",
+  Attack: "\uACF5\uACA9\uB825",
+  "Attack Speed": "\uACF5\uACA9 \uC18D\uB3C4",
+  Speed: "\uACF5\uACA9 \uC18D\uB3C4",
+  "Critical DMG": "\uCE58\uBA85 \uD53C\uD574",
+  "Critical Damage": "\uCE58\uBA85 \uD53C\uD574",
+  "Critical Rate": "\uCE58\uBA85 \uD655\uB960",
+  Defense: "\uBC29\uC5B4\uB825",
+  HP: "\uCCB4\uB825",
+  Accuracy: "\uD6A8\uACFC \uC801\uC911",
+  Resistance: "\uC800\uD56D",
+};
+
+function isGuildBattleLeaderEffect(monster) {
+  return Boolean(
+    monster?.leaderEffectType &&
+      (GUILD_BATTLE_LEADER_AREAS.has(monster.leaderEffectArea) || (!monster.leaderEffectArea && Boolean(monster.leaderEffectElement)))
+  );
+}
+
+function getLeaderEffectLabel(effect) {
+  return LEADER_EFFECT_LABELS[effect] || effect;
+}
+
 export default function DefenseDeckFilterBar({
   members = [],
   monsters = [],
@@ -22,6 +48,7 @@ export default function DefenseDeckFilterBar({
     return [
       ...new Set(
         monsters
+          .filter(isGuildBattleLeaderEffect)
           .map((m) => m.leaderEffectType)
           .filter(Boolean)
       ),
@@ -139,7 +166,7 @@ export default function DefenseDeckFilterBar({
           {leaderEffectOptions.map((effect) => (
 
             <button
-              key={effect}
+              key={getLeaderEffectLabel(effect)}
               type="button"
               onClick={() =>
                 setLeaderEffectFilter(effect)
@@ -150,7 +177,7 @@ export default function DefenseDeckFilterBar({
                   : "border-gray-200 bg-white text-gray-600"
               }`}
             >
-              {effect}
+              {getLeaderEffectLabel(effect)}
             </button>
 
           ))}
@@ -254,7 +281,7 @@ export default function DefenseDeckFilterBar({
               }
               className="rounded-full border bg-white px-3 py-1 text-blue-600"
             >
-              리더효과: {leaderEffectFilter} ✕
+              리더효과: {getLeaderEffectLabel(leaderEffectFilter)} ✕
             </button>
 
           )}
