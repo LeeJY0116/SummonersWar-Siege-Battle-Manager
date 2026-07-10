@@ -45,12 +45,17 @@ function resolveMonsterImageUrl(monster) {
 function normalizeBackendMonster(monster) {
   const monsterCode = monster.code ?? monster.monsterCode ?? String(monster.id);
   const imageUrl = resolveMonsterImageUrl(monster);
+  const englishName = monster.name;
+  const displayName = monster.koreanName || monster.name;
+  const aliases = normalizeMonsterAliases(monster, englishName);
 
   return {
     id: monsterCode,
     monsterCode,
     backendId: monster.id,
-    name: monster.name,
+    name: displayName,
+    englishName,
+    koreanName: monster.koreanName ?? null,
     element: monster.attribute?.toLowerCase?.() ?? monster.element ?? "",
     attribute: monster.attribute,
     grade: monster.naturalStars ?? monster.grade ?? null,
@@ -59,7 +64,8 @@ function normalizeBackendMonster(monster) {
     imageUrl,
     leaderEffectType: monster.leaderEffectType ?? null,
     leaderEffectText: monster.leaderEffectText ?? "",
-    nicknames: monster.nicknames ?? [],
+    aliases,
+    nicknames: aliases,
     isDefault: true,
   };
 }
@@ -75,6 +81,17 @@ function normalizeLocalMonster(monster) {
     imageUrl,
     iconDataUrl: imageUrl,
   };
+}
+
+function normalizeMonsterAliases(monster, englishName) {
+  const aliases = monster.aliases ?? monster.nicknames ?? [];
+  const aliasList = Array.isArray(aliases)
+    ? aliases
+    : String(aliases).split(",");
+
+  return [englishName, ...aliasList]
+    .map((alias) => alias?.trim?.() ?? "")
+    .filter(Boolean);
 }
 
 async function loadBackendMonsters() {

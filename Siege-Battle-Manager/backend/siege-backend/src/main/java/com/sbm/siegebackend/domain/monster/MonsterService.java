@@ -22,6 +22,8 @@ public class MonsterService {
                         m.getId(),
                         m.getCode(),
                         m.getName(),
+                        m.getKoreanName(),
+                        m.getAliasList(),
                         m.getAttribute().name(),
                         m.getLeaderEffectType(),
                         m.getImageUrl(),

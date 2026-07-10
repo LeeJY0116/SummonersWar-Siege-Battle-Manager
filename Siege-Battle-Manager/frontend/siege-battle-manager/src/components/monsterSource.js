@@ -12,16 +12,35 @@ const localMonsters = [
 function normalizeMonster(monster) {
   const monsterCode = monster.code ?? monster.monsterCode ?? monster.id;
   const imageUrl = resolveMonsterImageUrl(monster);
+  const englishName = monster.name;
+  const displayName = monster.koreanName || monster.name;
+  const aliases = normalizeMonsterAliases(monster, englishName);
 
   return {
     ...monster,
     id: monsterCode,
     monsterCode,
+    name: displayName,
+    englishName,
+    koreanName: monster.koreanName ?? null,
     element: monster.attribute?.toLowerCase?.() ?? monster.element ?? "",
     grade: monster.naturalStars ?? monster.grade ?? null,
+    aliases,
+    nicknames: aliases,
     iconDataUrl: imageUrl,
     imageUrl,
   };
+}
+
+function normalizeMonsterAliases(monster, englishName) {
+  const aliases = monster.aliases ?? monster.nicknames ?? [];
+  const aliasList = Array.isArray(aliases)
+    ? aliases
+    : String(aliases).split(",");
+
+  return [englishName, ...aliasList]
+    .map((alias) => alias?.trim?.() ?? "")
+    .filter(Boolean);
 }
 
 function resolveMonsterImageUrl(monster) {

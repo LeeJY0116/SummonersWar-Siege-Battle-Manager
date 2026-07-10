@@ -3,6 +3,9 @@ package com.sbm.siegebackend.domain.monster;
 import jakarta.persistence.*;
 import lombok.Builder;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Entity
 @Table(name = "monsters")
 public class Monster {
@@ -24,6 +27,12 @@ public class Monster {
 
     @Column(nullable = false, length = 100)
     private String name;
+
+    @Column(length = 100)
+    private String koreanName;
+
+    @Column(length = 1000)
+    private String aliases;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -59,6 +68,21 @@ public class Monster {
     public String getCode() { return code; }
 
     public String getName() { return name; }
+
+    public String getKoreanName() { return koreanName; }
+
+    public String getAliases() { return aliases; }
+
+    public List<String> getAliasList() {
+        if (aliases == null || aliases.isBlank()) {
+            return List.of();
+        }
+
+        return Arrays.stream(aliases.split(","))
+                .map(String::trim)
+                .filter(alias -> !alias.isBlank())
+                .toList();
+    }
 
     public MonsterAttribute getAttribute() { return attribute; }
 
