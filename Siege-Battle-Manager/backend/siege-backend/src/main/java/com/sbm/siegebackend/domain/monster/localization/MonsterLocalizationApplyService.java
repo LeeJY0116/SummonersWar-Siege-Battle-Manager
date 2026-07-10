@@ -90,13 +90,41 @@ public class MonsterLocalizationApplyService {
 
     private MonsterLocalizationEntry toEntry(Monster monster) {
         MonsterLocalizationEntry entry = new MonsterLocalizationEntry();
-        entry.setEnabled(true);
+        Integer awakeningLevel = calculateAwakeningLevel(monster.getCode());
+        entry.setEnabled(awakeningLevel == null || awakeningLevel > 0);
+        entry.setAwakeningLevel(awakeningLevel);
         entry.setEnglishName(monster.getName());
         entry.setAttribute(monster.getAttribute() == null ? null : monster.getAttribute().name());
         entry.setNaturalStars(monster.getNaturalStars());
         entry.setKoreanName("");
         entry.setAliases(List.of());
         return entry;
+    }
+
+    private Integer calculateAwakeningLevel(String monsterCode) {
+        if (monsterCode == null || !monsterCode.startsWith("sw_")) {
+            return null;
+        }
+
+        try {
+            int suffix = Integer.parseInt(monsterCode.substring(3)) % 100;
+
+            if (suffix >= 1 && suffix <= 5) {
+                return 0;
+            }
+
+            if (suffix >= 11 && suffix <= 15) {
+                return 1;
+            }
+
+            if (suffix >= 31 && suffix <= 35) {
+                return 2;
+            }
+
+            return null;
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private Map<String, MonsterLocalizationEntry> readEntries() {

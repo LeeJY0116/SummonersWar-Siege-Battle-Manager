@@ -5,6 +5,7 @@ import java.util.List;
 public class MonsterLocalizationEntry {
 
     private Boolean enabled;
+    private Integer awakeningLevel;
     private String englishName;
     private String attribute;
     private Integer naturalStars;
@@ -13,6 +14,10 @@ public class MonsterLocalizationEntry {
 
     public Boolean getEnabled() {
         return enabled;
+    }
+
+    public Integer getAwakeningLevel() {
+        return awakeningLevel;
     }
 
     public String getEnglishName() {
@@ -37,6 +42,10 @@ public class MonsterLocalizationEntry {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public void setAwakeningLevel(Integer awakeningLevel) {
+        this.awakeningLevel = awakeningLevel;
     }
 
     public void setEnglishName(String englishName) {
