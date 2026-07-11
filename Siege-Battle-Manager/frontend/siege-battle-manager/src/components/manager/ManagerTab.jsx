@@ -1,30 +1,7 @@
 import React, { useMemo, useState } from "react";
 import MonsterSelect from "../monsters/MonsterSelect.jsx";
 import TrioSlot from "../trios/TrioSlot.jsx";
-
-const LEADER_EFFECT_LABELS = {
-  "Attack Power": "공격력",
-  "Attack Speed": "공격속도",
-  "Critical DMG": "치명 피해",
-  "Critical Damage": "치명 피해",
-  "Critical Rate": "치명타 확률",
-  Defense: "방어력",
-  HP: "체력",
-  Accuracy: "효과적중",
-  Resistance: "효과저항",
-};
-
-function getLeaderEffectLabel(effect) {
-  return LEADER_EFFECT_LABELS[effect] ?? effect;
-}
-
-function isGuildBattleLeaderEffect(monster) {
-  return Boolean(
-    monster?.leaderEffectType &&
-      (["General", "Guild", "Element", "Attribute"].includes(monster.leaderEffectArea) ||
-        (!monster.leaderEffectArea && Boolean(monster.leaderEffectElement)))
-  );
-}
+import { getLeaderEffectLabel, isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
 
 
 function fileToDataUrl(file) {

@@ -1,3 +1,5 @@
+import { getElementLabel, getLeaderEffectLabel } from "../../lib/monsterLabels.js";
+
 const TEXT = {
   deckSuffix: "의 방덱",
   leaderEffect: "리더 효과",
@@ -7,38 +9,11 @@ const TEXT = {
   none: "없음",
 };
 
-const ELEMENT_LABELS = {
-  fire: "불",
-  water: "물",
-  wind: "풍",
-  light: "빛",
-  dark: "암",
-  FIRE: "불",
-  WATER: "물",
-  WIND: "풍",
-  LIGHT: "빛",
-  DARK: "암",
-};
-
-const LEADER_EFFECT_LABELS = {
-  "Attack Power": "공격력",
-  Attack: "공격력",
-  "Attack Speed": "공격 속도",
-  Speed: "공격 속도",
-  "Critical DMG": "치명 피해",
-  "Critical Damage": "치명 피해",
-  "Critical Rate": "치명 확률",
-  Defense: "방어력",
-  HP: "체력",
-  Accuracy: "효과 적중",
-  Resistance: "저항",
-};
-
 function getLeaderEffectText(deck, leaderMonster) {
   return (
     leaderMonster?.leaderEffectText ||
-    LEADER_EFFECT_LABELS[deck.leaderEffectType] ||
-    LEADER_EFFECT_LABELS[leaderMonster?.leaderEffectType] ||
+    getLeaderEffectLabel(deck.leaderEffectType) ||
+    getLeaderEffectLabel(leaderMonster?.leaderEffectType) ||
     deck.leaderEffectType ||
     leaderMonster?.leaderEffectType ||
     TEXT.none
@@ -83,7 +58,7 @@ export default function DefenseDeckCard({ deck, monsters = [], onDelete }) {
           const monster = findMonster(item.monsterCode);
           const isLeader = index === 0;
           const monsterName = getMonsterDisplayName(monster, item);
-          const elementLabel = ELEMENT_LABELS[monster?.element] ?? ELEMENT_LABELS[monster?.attribute];
+          const elementLabel = getElementLabel(monster?.element ?? monster?.attribute);
 
           return (
             <div

@@ -11,15 +11,7 @@ import DefenseDeckFilterBar from "./DefenseDeckFilterBar.jsx";
 import Toast from "../common/Toast.jsx";
 import { useToast } from "../../hooks/useToast.js";
 import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
-
-const GUILD_BATTLE_LEADER_AREAS = new Set(["General", "Guild", "Element", "Attribute"]);
-
-function isGuildBattleLeaderEffect(monster) {
-  return Boolean(
-    monster?.leaderEffectType &&
-      (GUILD_BATTLE_LEADER_AREAS.has(monster.leaderEffectArea) || (!monster.leaderEffectArea && Boolean(monster.leaderEffectElement)))
-  );
-}
+import { isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
 
 export default function DefenseDeckTab({ members = [], monsters = [] }) {
   const [ownerMemberId, setOwnerMemberId] = useState("");

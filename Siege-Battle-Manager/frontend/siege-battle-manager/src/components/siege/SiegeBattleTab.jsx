@@ -1,41 +1,18 @@
 import React, { useMemo, useState } from "react";
 import TrioSlot from "../trios/TrioSlot.jsx";
 import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
+import { getElementLabel, getLeaderEffectLabel, isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
 
 // Element filter labels
 const ELEMENT_META = {
-  fire: { label: "불" },
-  water: { label: "물" },
-  wind: { label: "풍" },
-  light: { label: "빛" },
-  dark: { label: "암" },
+  fire: { label: getElementLabel("fire") },
+  water: { label: getElementLabel("water") },
+  wind: { label: getElementLabel("wind") },
+  light: { label: getElementLabel("light") },
+  dark: { label: getElementLabel("dark") },
 };
 
 const ELEMENT_ORDER = ["fire", "water", "wind", "light", "dark"];
-
-const LEADER_EFFECT_LABELS = {
-  "Attack Power": "공격력",
-  "Attack Speed": "공격속도",
-  "Critical DMG": "치명 피해",
-  "Critical Damage": "치명 피해",
-  "Critical Rate": "치명타 확률",
-  Defense: "방어력",
-  HP: "체력",
-  Accuracy: "효과적중",
-  Resistance: "효과저항",
-};
-
-function getLeaderEffectLabel(effect) {
-  return LEADER_EFFECT_LABELS[effect] ?? effect;
-}
-function isGuildBattleLeaderEffect(monster) {
-  return Boolean(
-    monster?.leaderEffectType &&
-      (["General", "Guild", "Element", "Attribute"].includes(monster.leaderEffectArea) ||
-        (!monster.leaderEffectArea && Boolean(monster.leaderEffectElement)))
-  );
-}
-
 
 export default function SiegeBattleTab({
   monsters,

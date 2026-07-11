@@ -10,6 +10,7 @@ import SignupPage from "./components/auth/SignupPage.jsx";
 import GuildTab from "./components/guild/GuildTab.jsx";
 import { apiFetch } from "./lib/api.js";
 import { applyMonsterLocalization, syncSwarfarmMonsters } from "./lib/monsterSync.js";
+import { formatLeaderEffectText } from "./lib/monsterLabels.js";
 
 
 const STORAGE_KEY = "siege-battle-manager@v1";
@@ -60,58 +61,6 @@ function normalizeBackendMonster(monster) {
     nicknames: aliases,
     isDefault: true,
   };
-}
-
-const LEADER_EFFECT_LABELS = {
-  "Attack Power": "공격력",
-  Attack: "공격력",
-  "Attack Speed": "공격 속도",
-  Speed: "공격 속도",
-  "Critical DMG": "치명 피해",
-  "Critical Damage": "치명 피해",
-  "Critical Rate": "치명 확률",
-  Defense: "방어력",
-  HP: "체력",
-  Accuracy: "효과 적중",
-  Resistance: "저항",
-};
-
-const LEADER_AREA_LABELS = {
-  Arena: "아레나",
-  Dungeon: "던전",
-  General: "전체",
-  Guild: "길드 전투",
-  Element: "속성",
-  Attribute: "속성",
-};
-
-const LEADER_ELEMENT_LABELS = {
-  Fire: "불",
-  Water: "물",
-  Wind: "풍",
-  Light: "빛",
-  Dark: "암",
-};
-
-function isGuildBattleLeaderEffect(monster) {
-  return Boolean(
-    monster?.leaderEffectType &&
-      (["General", "Guild", "Element", "Attribute"].includes(monster.leaderEffectArea) || (!monster.leaderEffectArea && Boolean(monster.leaderEffectElement)))
-  );
-}
-
-function formatLeaderEffectText(monster) {
-  if (!isGuildBattleLeaderEffect(monster)) {
-    return "";
-  }
-
-  const parts = [
-    LEADER_AREA_LABELS[monster.leaderEffectArea] ?? monster.leaderEffectArea,
-    LEADER_ELEMENT_LABELS[monster.leaderEffectElement] ?? monster.leaderEffectElement,
-    LEADER_EFFECT_LABELS[monster.leaderEffectType] ?? monster.leaderEffectType,
-  ].filter(Boolean);
-
-  return `${parts.join(" ")} ${monster.leaderEffectAmount ?? ""}%`.trim();
 }
 
 function extractCom2usId(monsterCode) {
@@ -177,9 +126,6 @@ export default function SiegeBattleManager() {
     document.title = "Siege-Battle-Manager";
   }, []);
 
-
-  // 로그??
-// 로그??
   const token = localStorage.getItem("accessToken");
 
   if (!token) {

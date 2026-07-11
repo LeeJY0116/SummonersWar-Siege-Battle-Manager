@@ -1,31 +1,6 @@
 import { useMemo } from "react";
 import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
-
-const GUILD_BATTLE_LEADER_AREAS = new Set(["General", "Guild", "Element", "Attribute"]);
-const LEADER_EFFECT_LABELS = {
-  "Attack Power": "공격력",
-  Attack: "공격력",
-  "Attack Speed": "공격 속도",
-  Speed: "공격 속도",
-  "Critical DMG": "치명 피해",
-  "Critical Damage": "치명 피해",
-  "Critical Rate": "치명 확률",
-  Defense: "방어력",
-  HP: "체력",
-  Accuracy: "효과 적중",
-  Resistance: "저항",
-};
-
-function isGuildBattleLeaderEffect(monster) {
-  return Boolean(
-    monster?.leaderEffectType &&
-      (GUILD_BATTLE_LEADER_AREAS.has(monster.leaderEffectArea) || (!monster.leaderEffectArea && Boolean(monster.leaderEffectElement)))
-  );
-}
-
-function getLeaderEffectLabel(effect) {
-  return LEADER_EFFECT_LABELS[effect] || effect;
-}
+import { getLeaderEffectLabel, isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
 
 export default function DefenseDeckFilterBar({
   members = [],
