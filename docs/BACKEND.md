@@ -187,8 +187,44 @@ OncePerRequestFilter 기반 구현
 
 - 코드
 - 이름
+- 한글명
+- 별칭
 - 속성
+- 이미지 URL
+- 기본 성급
 - 리더 효과
+- 표시 여부
+
+---
+
+## Swarfarm 연동
+
+몬스터 기본 데이터는 Swarfarm 외부 API를 통해 동기화합니다.
+
+```text
+GET https://swarfarm.com/api/v2/monsters/
+```
+
+동기화 기준:
+- `com2usId` 기준 기존 몬스터 확인
+- 신규 몬스터는 `sw_{com2usId}` 형태의 `monsterCode` 생성
+- 이미지 파일은 저장하지 않고 이미지 URL만 DB에 저장
+- 신규 몬스터는 관리 파일에 `enabled: false` 상태로 추가
+
+---
+
+## 한글명 / 별칭 관리
+
+한글명과 별칭은 관리 파일을 기준으로 적용합니다.
+
+```text
+backend/siege-backend/src/main/resources/data/monster-localization.json
+```
+
+응답 정책:
+- 사용자 화면 표시 이름은 `koreanName` 우선
+- `koreanName`이 없으면 원문 이름 사용
+- 검색은 `monsterCode`, 원문 이름, 한글명, 별칭을 함께 사용
 
 ---
 
@@ -359,6 +395,7 @@ join fetch d.monsters
 - Docker 적용
 - AWS 배포
 - CI/CD 구축
+- 운영 환경용 파일/이미지 스토리지 정책 정리
 
 ---
 

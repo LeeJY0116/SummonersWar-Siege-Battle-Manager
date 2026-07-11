@@ -144,9 +144,18 @@ GuildMember
 | ---------------- | -------- |
 | id               | PK       |
 | code             | 몬스터 코드   |
+| com2usId         | Swarfarm 기준 ID |
 | name             | 몬스터 이름   |
+| koreanName       | 한글 표시 이름 |
+| aliases          | 별칭 목록    |
 | attribute        | 속성       |
+| imageUrl         | 이미지 URL  |
+| naturalStars     | 기본 성급    |
 | leaderEffectType | 리더 효과 타입 |
+| leaderEffectAmount | 리더 효과 수치 |
+| leaderEffectArea | 리더 효과 적용 범위 |
+| leaderEffectElement | 속성 리더 효과 대상 |
+| enabled          | 화면 표시 여부 |
 
 ---
 
@@ -162,9 +171,11 @@ GuildMember
 ---
 
 ## 특징
-- JSON 데이터 기반 관리
-- 코드(code) 기준 식별
+- Swarfarm API 기반 동기화
+- `monsterCode` 기준 식별
+- 한글명/별칭 관리 파일 기반 표시
 - 이름 중복 가능 고려
+- 이미지 파일은 저장하지 않고 URL만 저장
 
 ---
 
@@ -318,6 +329,13 @@ name
 monsterCode
 ```
 기준으로 변경
+
+---
+
+현재 기준:
+- 외부 API 동기화 몬스터는 `sw_{com2usId}` 형식 사용
+- API 요청/응답과 프론트 선택값은 `monsterCode` 우선 사용
+- DB 내부 연관관계는 `monster_id`를 유지하되, 클라이언트 계약은 `monsterCode` 중심으로 확장
 
 ---
 

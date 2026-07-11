@@ -224,12 +224,64 @@ GET /api/monsters
   "data": [
     {
       "id": 1,
-      "code": "def_fire_Franken",
+      "code": "sw_10131",
       "name": "프랑켄",
+      "koreanName": "프랑켄",
+      "aliases": ["불프랑", "프랑"],
       "attribute": "FIRE",
-      "leaderEffectType": "방어력"
+      "imageUrl": "https://swarfarm.com/static/herders/images/monsters/...",
+      "naturalStars": 3,
+      "leaderEffectType": "Defense",
+      "leaderEffectAmount": 21,
+      "leaderEffectArea": "Guild"
     }
   ]
+}
+```
+
+---
+
+## Swarfarm 몬스터 동기화
+### Request
+```http
+POST /api/admin/monsters/sync-swarfarm
+Authorization: Bearer {JWT}
+```
+
+---
+
+## 몬스터 한글명 적용
+### Request
+```http
+POST /api/admin/monsters/apply-localization
+Authorization: Bearer {JWT}
+```
+
+---
+
+## 몬스터 한글명/별칭 관리 목록
+### Request
+```http
+GET /api/admin/monsters/localization
+Authorization: Bearer {JWT}
+```
+
+---
+
+## 몬스터 한글명/별칭 수정
+### Request
+```http
+PUT /api/admin/monsters/localization/{code}
+Authorization: Bearer {JWT}
+Content-Type: application/json
+```
+
+### Body
+```json
+{
+  "enabled": true,
+  "koreanName": "프랑켄",
+  "aliases": ["불프랑", "프랑"]
 }
 ```
 
@@ -337,7 +389,7 @@ Authorization: Bearer {JWT}
 ## Query Parameters
 | 파라미터             | 설명           |
 | ---------------- | ------------ |
-| monsterId        | 특정 몬스터 포함 필터 |
+| monsterCode      | 특정 몬스터 포함 필터 |
 | leaderEffectType | 리더 효과 필터     |
 | ownerMemberId    | 특정 길드원 필터    |
 
@@ -429,9 +481,72 @@ Authorization: Bearer {JWT}
 
 ---
 
+# 📚 Battle Research API
+## 게시글 작성
+```http
+POST /api/research/posts
+Authorization: Bearer {JWT}
+```
+
+---
+
+## 게시글 목록 조회
+```http
+GET /api/research/posts
+Authorization: Bearer {JWT}
+```
+
+---
+
+## 게시글 상세 조회
+```http
+GET /api/research/posts/{postId}
+Authorization: Bearer {JWT}
+```
+
+---
+
+## 게시글 수정
+```http
+PUT /api/research/posts/{postId}
+Authorization: Bearer {JWT}
+```
+
+---
+
+## 게시글 삭제
+```http
+DELETE /api/research/posts/{postId}
+Authorization: Bearer {JWT}
+```
+
+---
+
+## 댓글 작성
+```http
+POST /api/research/posts/{postId}/comments
+Authorization: Bearer {JWT}
+```
+
+---
+
+## 댓글 수정
+```http
+PUT /api/research/comments/{commentId}
+Authorization: Bearer {JWT}
+```
+
+---
+
+## 댓글 삭제
+```http
+DELETE /api/research/comments/{commentId}
+Authorization: Bearer {JWT}
+```
+
+---
+
 # 🚧 향후 추가 예정 API
-- Battle Research API
-- 공덱 댓글 API
 - 통계 API
 - 추천 API
 - 실시간 API
