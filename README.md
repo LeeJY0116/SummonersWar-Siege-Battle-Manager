@@ -476,4 +476,5 @@ backend/
 | [Backend Docs](./docs/BACKEND.md)              | 백엔드 구조 및 설계 |
 | [API Docs](./docs/API.md)                      | API 명세      |
 | [ERD](./docs/ERD.md)                           | 데이터베이스 구조   |
+| [Test Scenario](./docs/TEST_SCENARIO.md)       | 로컬 테스트 흐름   |
 | [Trouble Shooting](./docs/TROUBLE_SHOOTING.md) | 문제 해결 과정 정리 |
