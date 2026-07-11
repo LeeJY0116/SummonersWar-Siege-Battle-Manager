@@ -25,6 +25,7 @@ export default function LoginPage() {
   const [gameNickname, setGameNickname] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [notice, setNotice] = useState(null);
+  const [loginError, setLoginError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const isSignup = view === "signup";
@@ -41,9 +42,10 @@ export default function LoginPage() {
   const handleLogin = async (event) => {
     event.preventDefault();
     setNotice(null);
+    setLoginError("");
 
     if (!loginId || !pw) {
-      showNotice("아이디와 비밀번호를 입력해주세요.", "error");
+      setLoginError("아이디 또는 비밀번호가 올바르지 않습니다.");
       return;
     }
 
@@ -52,7 +54,7 @@ export default function LoginPage() {
       await login(loginId, pw);
       window.location.href = "/";
     } catch (e) {
-      showNotice("로그인 실패", "error");
+      setLoginError("아이디 또는 비밀번호가 올바르지 않습니다.");
     } finally {
       setLoading(false);
     }
@@ -207,6 +209,10 @@ export default function LoginPage() {
                 placeholder="아이디"
               />
               <PasswordField value={pw} onChange={setPw} label="비밀번호" />
+
+              <p className="min-h-5 text-sm font-medium text-red-600">
+                {loginError}
+              </p>
 
               <button
                 className="rounded-md bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
