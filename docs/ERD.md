@@ -43,7 +43,8 @@ GuildMember
 | 필드           | 설명       |
 | ------------ | -------- |
 | id           | PK       |
-| email        | 로그인 이메일  |
+| loginId      | 로그인 아이디  |
+| email        | 연락용 이메일  |
 | passwordHash | 암호화 비밀번호 |
 | nickname     | 닉네임      |
 | createdAt    | 생성일      |

@@ -11,7 +11,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(unique = true, length = 50)
+    private String loginId;
+
+    @Column(nullable = false, length = 100)
     private String email;
 
     @Column(nullable = false, length = 255)
@@ -54,6 +57,10 @@ public class User {
         return email;
     }
 
+    public String getLoginId() {
+        return loginId;
+    }
+
     public String getPasswordHash() {
         return passwordHash;
     }
@@ -78,6 +85,10 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
     }
 
     public void setPasswordHash(String passwordHash) {

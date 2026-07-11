@@ -32,12 +32,12 @@ public class JwtTokenProvider {
     /**
      * JWT 토큰 생성
      */
-    public String createToken(Long userId, String email, String role) {
+    public String createToken(Long userId, String loginId, String role) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + TOKEN_VALIDITY_MILLIS);
 
         return Jwts.builder()
-                .setSubject(email)               // 토큰 주체(subject)에 이메일 저장
+                .setSubject(loginId)
                 .claim("userId", userId)         // 커스텀 클레임
                 .claim("role", role)
                 .setIssuedAt(now)
@@ -70,7 +70,7 @@ public class JwtTokenProvider {
                 .getBody();
     }
 
-    public String getEmail(String token) {
+    public String getLoginId(String token) {
         return getClaims(token).getSubject();
     }
 

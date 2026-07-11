@@ -50,7 +50,7 @@ public class DefenseDeckController {
      * 길드 방덱 목록 조회 + 필터
      *
      * GET /api/defense-decks
-     * ?monsterId=
+     * ?monsterFilterCode=
      * &leaderEffect=
      * &ownerMemberId=
      */

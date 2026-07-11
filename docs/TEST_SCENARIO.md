@@ -15,6 +15,7 @@ Siege-Battle-Manager 로컬 테스트 시나리오
 로컬 H2 DB에 아래 계정이 있으면 이 계정으로 테스트합니다.
 
 ```text
+loginId: test
 email: test@test.com
 password: test
 nickname: test
@@ -60,7 +61,7 @@ http://localhost:5173
 
 ## 1) 인증
 
-1. `test@test.com / test`로 로그인합니다.
+1. `test / test`로 로그인합니다.
 2. 계정이 없으면 회원가입 후 다시 로그인합니다.
 3. 로그인 후 상단에 길드 정보 또는 길드 생성 화면이 표시되는지 확인합니다.
 

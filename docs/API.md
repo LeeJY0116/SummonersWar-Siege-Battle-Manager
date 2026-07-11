@@ -69,6 +69,7 @@ Content-Type: application/json
 
 ```json
 {
+  "loginId": "test",
   "email": "test@test.com",
   "password": "test",
   "nickname": "test"
@@ -82,6 +83,7 @@ Content-Type: application/json
   "success": true,
   "data": {
     "id": 1,
+    "loginId": "test",
     "email": "test@test.com",
     "nickname": "test"
   },
@@ -98,7 +100,7 @@ Content-Type: application/json
 
 ```json
 {
-  "email": "test@test.com",
+  "loginId": "test",
   "password": "test"
 }
 ```
@@ -110,6 +112,7 @@ Content-Type: application/json
   "success": true,
   "data": {
     "userId": 1,
+    "loginId": "test",
     "email": "test@test.com",
     "nickname": "test",
     "token": "JWT_TOKEN"
@@ -132,6 +135,7 @@ Authorization: Bearer {JWT}
   "success": true,
   "data": {
     "id": 1,
+    "loginId": "test",
     "email": "test@test.com",
     "nickname": "test",
     "role": "USER"

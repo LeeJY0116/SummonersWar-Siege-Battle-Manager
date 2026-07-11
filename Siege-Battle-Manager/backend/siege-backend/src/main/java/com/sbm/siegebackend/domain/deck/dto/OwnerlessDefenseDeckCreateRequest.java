@@ -15,5 +15,5 @@ public class OwnerlessDefenseDeckCreateRequest {
 
     public void setTitle(String title) { this.title = title; }
 
-    public void setMonsterIds(List<Long> monsterIds) { this.monsterCodes = monsterCodes; }
+    public void setMonsterCodes(List<String> monsterCodes) { this.monsterCodes = monsterCodes; }
 }

@@ -5,11 +5,16 @@ package com.sbm.siegebackend.domain.user.dto;
  */
 public class UserSignUpRequest {
 
+    private String loginId;
     private String email;
     private String password;   // 평문 비밀번호 (서비스에서 해시)
     private String nickname;
 
     public UserSignUpRequest() {
+    }
+
+    public String getLoginId() {
+        return loginId;
     }
 
     public String getEmail() {
@@ -22,6 +27,10 @@ public class UserSignUpRequest {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
     }
 
     public void setEmail(String email) {

@@ -6,17 +6,23 @@ package com.sbm.siegebackend.domain.user.dto;
 public class UserSignUpResponse {
 
     private Long id;
+    private String loginId;
     private String email;
     private String nickname;
 
-    public UserSignUpResponse(Long id, String email, String nickname) {
+    public UserSignUpResponse(Long id, String loginId, String email, String nickname) {
         this.id = id;
+        this.loginId = loginId;
         this.email = email;
         this.nickname = nickname;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getLoginId() {
+        return loginId;
     }
 
     public String getEmail() {

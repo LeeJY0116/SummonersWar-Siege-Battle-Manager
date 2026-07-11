@@ -5,10 +5,15 @@ package com.sbm.siegebackend.domain.user.dto;
  */
 public class UserLoginRequest {
 
+    private String loginId;
     private String email;
     private String password;
 
     public UserLoginRequest() {
+    }
+
+    public String getLoginId() {
+        return loginId != null ? loginId : email;
     }
 
     public String getEmail() {
@@ -17,6 +22,10 @@ public class UserLoginRequest {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
     }
 
     public void setEmail(String email) {

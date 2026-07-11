@@ -19,7 +19,7 @@ export default function SiegeBattleTab({
   onSaveTrio,
   onDeleteMonster,
 }) {
-  const [selected, setSelected] = useState([]);          // monsterId 배열 (1~3개)
+  const [selected, setSelected] = useState([]);          // monsterCode 배열 (1~3개)
   const [name, setName] = useState("");                 // 점령전 조합 이름
 
   const [search, setSearch] = useState("");             // 도감 이름 검색

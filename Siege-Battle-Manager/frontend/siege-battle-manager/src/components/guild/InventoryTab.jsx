@@ -17,7 +17,7 @@ function clampNonNegative(n) {
 export default function InventoryTab({ members, monsters }) {
   const [selectedMemberId, setSelectedMemberId] = useState("");
   const [loading, setLoading] = useState(false);
-  const [inventoryMap, setInventoryMap] = useState({}); // { monsterId: count }
+  const [inventoryMap, setInventoryMap] = useState({}); // { monsterCode: count }
   const [query, setQuery] = useState("");
   const [dirty, setDirty] = useState(false);
   const [decks, setDecks] = useState([]);
@@ -44,7 +44,7 @@ export default function InventoryTab({ members, monsters }) {
 
     fetchMemberInventory(selectedMemberId)
       .then((data) => {
-        // data 형태를 {monsterId, count}[] 로 가정
+        // data 형태를 { monsterCode, quantity }[] 로 변환
         const map = {};
 
         for (const it of data || []) {

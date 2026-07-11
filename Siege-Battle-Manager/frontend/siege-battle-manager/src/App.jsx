@@ -6,7 +6,6 @@ import MonsterReviewTab from "./components/monsters/MonsterReviewTab.jsx";
 import SiegeBattleTab from "./components/siege/SiegeBattleTab.jsx";
 import { fetchMyGuild, createGuild, fetchMyGuildMembers } from "./lib/guild.js";
 import LoginPage from "./components/auth/LoginPage.jsx";
-import SignupPage from "./components/auth/SignupPage.jsx";
 import GuildTab from "./components/guild/GuildTab.jsx";
 import { apiFetch } from "./lib/api.js";
 import { applyMonsterLocalization, syncSwarfarmMonsters } from "./lib/monsterSync.js";
@@ -118,7 +117,6 @@ export default function SiegeBattleManager() {
   const [trios, setTrios] = useState([]);
   const [guild, setGuild] = useState(null);
   const [members, setMembers] = useState([]);
-  const [authMode, setAuthMode] = useState("login");
   const [syncingMonsters, setSyncingMonsters] = useState(false);
   const [applyingLocalization, setApplyingLocalization] = useState(false);
 
@@ -129,19 +127,7 @@ export default function SiegeBattleManager() {
   const token = localStorage.getItem("accessToken");
 
   if (!token) {
-    if (authMode === "signup") {
-      return (
-        <SignupPage
-          onBackToLogin={() => setAuthMode("login")}
-        />
-      );
-    }
-
-    return (
-      <LoginPage
-        onGoSignup={() => setAuthMode("signup")}
-      />
-    );
+    return <LoginPage />;
   }
 
   useEffect(() => {

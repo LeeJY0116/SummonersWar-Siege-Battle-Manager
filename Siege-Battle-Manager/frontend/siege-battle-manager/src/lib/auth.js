@@ -1,9 +1,10 @@
 import { apiFetch } from "./api";
 
-export async function signup({ email, password, nickname }) {
+export async function signup({ loginId, email, password, nickname }) {
   const res = await apiFetch("/users/signup", {
     method: "POST",
     body: JSON.stringify({
+      loginId,
       email,
       password,
       nickname,
@@ -11,13 +12,12 @@ export async function signup({ email, password, nickname }) {
   });
 }
 
-export async function login(email, password) {
+export async function login(loginId, password) {
   const res = await apiFetch("/users/login", {
     method: "POST",
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ loginId, password }),
   });
 
-    // ✅ 여기서 응답 구조에 맞게 추출
   const token =
     res?.data?.accessToken ??
     res?.data?.token ??
@@ -26,7 +26,7 @@ export async function login(email, password) {
 
   if (!token) {
     console.log("login response:", res);
-    throw new Error("로그인 응답에 accessToken이 없습니다.");
+    throw new Error("로그인 응답에 토큰이 없습니다.");
   }
 
   localStorage.setItem("accessToken", token);

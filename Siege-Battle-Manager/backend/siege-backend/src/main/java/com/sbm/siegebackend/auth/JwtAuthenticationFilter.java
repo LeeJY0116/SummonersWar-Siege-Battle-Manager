@@ -67,12 +67,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
 
-        String email = jwtTokenProvider.getEmail(token);
+        String loginId = jwtTokenProvider.getLoginId(token);
         String role = jwtTokenProvider.getRole(token);
         Long userId = jwtTokenProvider.getUserId(token);
 
-        // DB에서 사용자 다시 확인 (권장)
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+        // DB에서 사용자 다시 확인
+        Optional<User> optionalUser = userRepository.findByLoginId(loginId)
+                .or(() -> userRepository.findByEmail(loginId));
         if (optionalUser.isEmpty()) {
             filterChain.doFilter(request, response);
             return;
@@ -83,10 +84,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         List<SimpleGrantedAuthority> authorities =
                 List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
-        // principal 자리는 일단 email로 두자 (원하면 custom 객체 만들어도 됨)
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(
-                        email,
+                        loginId,
                         null,
                         authorities
                 );

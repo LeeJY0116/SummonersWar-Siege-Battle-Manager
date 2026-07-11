@@ -6,12 +6,14 @@ package com.sbm.siegebackend.domain.user.dto;
 public class UserLoginResponse {
 
     private Long userId;
+    private String loginId;
     private String email;
     private String nickname;
     private String token; // 나중에 JWT 토큰 들어갈 자리
 
-    public UserLoginResponse(Long userId, String email, String nickname, String token) {
+    public UserLoginResponse(Long userId, String loginId, String email, String nickname, String token) {
         this.userId = userId;
+        this.loginId = loginId;
         this.email = email;
         this.nickname = nickname;
         this.token = token;
@@ -19,6 +21,10 @@ public class UserLoginResponse {
 
     public Long getUserId() {
         return userId;
+    }
+
+    public String getLoginId() {
+        return loginId;
     }
 
     public String getEmail() {

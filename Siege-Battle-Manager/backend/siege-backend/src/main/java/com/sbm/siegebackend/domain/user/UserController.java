@@ -52,13 +52,13 @@ public class UserController {
      */
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserMeResponse>> me(Authentication authentication) {
-        // JwtAuthenticationFilter에서 principal에 email을 넣어줬음
-        String email = (String) authentication.getPrincipal();
+        String loginId = (String) authentication.getPrincipal();
 
-        User user = userService.findByEmailOrThrow(email);
+        User user = userService.findByLoginIdOrThrow(loginId);
 
         UserMeResponse response = new UserMeResponse(
                 user.getId(),
+                user.getLoginId(),
                 user.getEmail(),
                 user.getNickname(),
                 user.getRole().name()
