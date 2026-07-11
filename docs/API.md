@@ -8,199 +8,267 @@ Siege-Battle-Manager API 문서
 
 ## Base URL
 
-```text id="2j2npi"
+```text
 http://localhost:8080
 ```
 
----
+## API Prefix
 
-# 📄 공통 응답 구조
+```text
+/api
+```
 
-모든 API는 아래 형태로 응답
+## 공통 응답 구조
+
 ```json
 {
   "success": true,
   "data": {},
-  "message": "성공"
+  "message": null
 }
 ```
 
----
+에러 응답:
 
-# 🔐 인증 방식
+```json
+{
+  "success": false,
+  "data": null,
+  "message": "에러 메시지"
+}
+```
 
-JWT 기반 인증 사용
+## 인증 방식
 
-로그인 성공 시 발급된 토큰을 Header에 포함
+JWT 인증이 필요한 API는 로그인 성공 시 발급된 토큰을 `Authorization` 헤더에 포함합니다.
 
 ```text
 Authorization: Bearer {JWT}
 ```
 
+## 몬스터 식별 기준
+
+몬스터 식별자는 `monsterCode`를 우선 사용합니다.
+
+```text
+예: sw_10131
+```
+
+기존 응답에는 호환성을 위해 `monsterId`가 함께 내려갈 수 있지만, 신규 요청과 프론트 연동은 `monsterCode` 기준을 우선합니다.
+
 ---
 
 # 👤 User API
+
 ## 회원가입
-### Request
+
 ```http
 POST /api/users/signup
 Content-Type: application/json
 ```
 
----
-
-## Body
 ```json
 {
   "email": "test@test.com",
-  "password": "1234",
-  "name": "테스트"
+  "password": "test",
+  "nickname": "test"
 }
 ```
 
----
+응답:
 
-## Response
-```json
-{
-  "success": true,
-  "data": {
-    "id": 1
-  },
-  "message": "회원가입 성공"
-}
-```
-
----
-
-# 🔐 로그인
-## Request
-```http
-POST /api/users/login
-Content-Type: application/json
-```
----
-
-## Body
-```json
-{
-  "email": "test@test.com",
-  "password": "1234"
-}
-```
-
----
-
-## Response
-```json
-{
-  "success": true,
-  "data": {
-    "token": "JWT_TOKEN"
-  },
-  "message": "로그인 성공"
-}
-```
-
----
-
-# 🙋 내 정보 조회
-## Request
-```http
-GET /api/users/me
-Authorization: Bearer {JWT}
-```
-
----
-
-## Response
 ```json
 {
   "success": true,
   "data": {
     "id": 1,
     "email": "test@test.com",
-    "nickname": "테스트"
-  }
+    "nickname": "test"
+  },
+  "message": null
+}
+```
+
+## 로그인
+
+```http
+POST /api/users/login
+Content-Type: application/json
+```
+
+```json
+{
+  "email": "test@test.com",
+  "password": "test"
+}
+```
+
+응답:
+
+```json
+{
+  "success": true,
+  "data": {
+    "userId": 1,
+    "email": "test@test.com",
+    "nickname": "test",
+    "token": "JWT_TOKEN"
+  },
+  "message": null
+}
+```
+
+## 내 정보 조회
+
+```http
+GET /api/users/me
+Authorization: Bearer {JWT}
+```
+
+응답:
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "email": "test@test.com",
+    "nickname": "test",
+    "role": "USER"
+  },
+  "message": null
 }
 ```
 
 ---
 
 # 🏰 Guild API
+
 ## 길드 생성
-### Request
+
 ```http
 POST /api/guilds
 Authorization: Bearer {JWT}
 Content-Type: application/json
 ```
 
----
-
-### Body
 ```json
 {
-  "name": "테스트 길드"
+  "name": "test"
 }
 ```
 
----
+## 길드 목록 조회
 
-### Response
-```json
-{
-  "success": true,
-  "data": {
-    "id": 1,
-    "name": "테스트 길드"
-  }
-}
+```http
+GET /api/guilds
+Authorization: Bearer {JWT}
 ```
 
----
+## 내 길드 조회
 
-# 🏰 내 길드 조회
-## Request
 ```http
 GET /api/guilds/me
 Authorization: Bearer {JWT}
 ```
 
----
+## 내 길드원 조회
 
-## Response
-```json
-{
-  "success": true,
-  "data": {
-    "id": 1,
-    "name": "테스트 길드",
-    "memberCount": 5
-  }
-}
-```
-
----
-
-# 👥 길드원 조회
-## Request
 ```http
-GET /api/guilds/members
+GET /api/guilds/me/members
 Authorization: Bearer {JWT}
 ```
 
----
+응답 예시:
 
-## Response
 ```json
 {
   "success": true,
   "data": [
     {
       "id": 1,
-      "displayName": "길드마스터",
+      "displayName": "test",
       "role": "MASTER"
+    }
+  ],
+  "message": null
+}
+```
+
+---
+
+# 👥 Guild Member API
+
+## 가상 길드원 추가
+
+```http
+POST /api/guild-members/{guildId}/virtual
+Authorization: Bearer {JWT}
+Content-Type: application/json
+```
+
+```json
+{
+  "displayName": "길드원A"
+}
+```
+
+## 가상 길드원 삭제
+
+```http
+DELETE /api/guild-members/{guildMemberId}
+Authorization: Bearer {JWT}
+```
+
+## 내 길드의 길드원 목록 조회
+
+```http
+GET /api/guild-members/me
+Authorization: Bearer {JWT}
+```
+
+---
+
+# 🎒 Guild Member Inventory API
+
+## 길드원 인벤토리 조회
+
+```http
+GET /api/guild-members/{guildMemberId}/inventory
+Authorization: Bearer {JWT}
+```
+
+응답 예시:
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "monsterId": 1,
+      "monsterCode": "sw_10131",
+      "monsterName": "프랑켄",
+      "quantity": 2
+    }
+  ],
+  "message": null
+}
+```
+
+## 길드원 인벤토리 저장
+
+```http
+PUT /api/guild-members/{guildMemberId}/inventory
+Authorization: Bearer {JWT}
+Content-Type: application/json
+```
+
+```json
+{
+  "items": [
+    {
+      "monsterCode": "sw_10131",
+      "quantity": 2
     }
   ]
 }
@@ -209,15 +277,15 @@ Authorization: Bearer {JWT}
 ---
 
 # 👾 Monster API
+
 ## 몬스터 목록 조회
-### Request
+
 ```http
 GET /api/monsters
 ```
 
----
+응답 예시:
 
-### Response
 ```json
 {
   "success": true,
@@ -225,58 +293,102 @@ GET /api/monsters
     {
       "id": 1,
       "code": "sw_10131",
-      "name": "프랑켄",
+      "name": "Crawler",
       "koreanName": "프랑켄",
       "aliases": ["불프랑", "프랑"],
       "attribute": "FIRE",
       "imageUrl": "https://swarfarm.com/static/herders/images/monsters/...",
       "naturalStars": 3,
+      "awakeningLevel": 2,
+      "enabled": true,
       "leaderEffectType": "Defense",
       "leaderEffectAmount": 21,
       "leaderEffectArea": "Guild"
     }
-  ]
+  ],
+  "message": null
 }
 ```
 
+이미지 파일 원본은 저장소에 포함하지 않고, 외부 API 이미지 URL만 DB에 저장합니다.
+
+## 몬스터 직접 생성
+
+```http
+POST /api/monsters
+Content-Type: application/json
+```
+
+현재 운영 흐름에서는 Swarfarm 동기화와 로컬 관리 파일을 우선 사용합니다.
+
 ---
 
+# 🧩 Monster Admin API
+
 ## Swarfarm 몬스터 동기화
-### Request
+
 ```http
 POST /api/admin/monsters/sync-swarfarm
 Authorization: Bearer {JWT}
 ```
 
----
+처리 기준:
 
-## 몬스터 한글명 적용
-### Request
+- Swarfarm API에서 몬스터 데이터를 가져옵니다.
+- `com2us_id` 기준으로 기존 몬스터를 갱신합니다.
+- 신규 몬스터는 `code = "sw_" + com2usId` 형식으로 생성합니다.
+- 이미지 파일은 저장하지 않고 `imageUrl`만 저장합니다.
+
+## 로컬 한글명/별칭 적용
+
 ```http
 POST /api/admin/monsters/apply-localization
 Authorization: Bearer {JWT}
 ```
 
----
+관리 파일:
 
-## 몬스터 한글명/별칭 관리 목록
-### Request
+```text
+Siege-Battle-Manager/backend/siege-backend/src/main/resources/data/monster-localization.json
+```
+
+## 로컬라이징 목록 조회
+
 ```http
 GET /api/admin/monsters/localization
 Authorization: Bearer {JWT}
 ```
 
----
+응답 예시:
 
-## 몬스터 한글명/별칭 수정
-### Request
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "code": "sw_10131",
+      "enabled": true,
+      "awakeningLevel": 2,
+      "englishName": "Crawler",
+      "attribute": "FIRE",
+      "naturalStars": 3,
+      "koreanName": "프랑켄",
+      "aliases": ["불프랑", "프랑"],
+      "imageUrl": "https://swarfarm.com/static/herders/images/monsters/..."
+    }
+  ],
+  "message": null
+}
+```
+
+## 로컬라이징 항목 수정
+
 ```http
 PUT /api/admin/monsters/localization/{code}
 Authorization: Bearer {JWT}
 Content-Type: application/json
 ```
 
-### Body
 ```json
 {
   "enabled": true,
@@ -287,142 +399,41 @@ Content-Type: application/json
 
 ---
 
-# 📦 Inventory API
-## 인벤토리 조회
-### Request
-```http
-GET /api/guild-members/{guildMemberId}/inventory
-Authorization: Bearer {JWT}
-```
-
----
-
-### Response
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "monsterCode": "def_fire_Franken",
-      "quantity": 3
-    }
-  ]
-}
-```
-
----
-
-# 📦 인벤토리 수정
-## Request
-```http
-PUT /api/guild-members/{guildMemberId}/inventory
-Authorization: Bearer {JWT}
-Content-Type: application/json
-```
-
----
-
-## Body
-```json
-{
-  "items": [
-    {
-      "monsterCode": "def_fire_Franken",
-      "quantity": 3
-    }
-  ]
-}
-```
-
----
-
-## Response
-```json
-{
-  "success": true,
-  "message": "인벤토리 수정 완료"
-}
-```
-
----
-
 # 🛡️ Defense Deck API
-## 방덱 생성
-### Request
+
+## 길드원 방덱 생성
+
 ```http
-POST /api/defense-decks
+POST /api/defense-decks/{guildMemberId}
 Authorization: Bearer {JWT}
 Content-Type: application/json
 ```
 
----
-
-## Body
 ```json
 {
-  "ownerMemberId": 1,
-  "monsterIds": [1, 2, 3]
+  "monsterCodes": ["sw_10131", "sw_10231", "sw_10331"]
 }
 ```
 
----
+첫 번째 몬스터가 리더로 처리됩니다.
 
-## Response
-```json
-{
-  "success": true,
-  "message": "방덱 생성 완료"
-}
-```
+## 길드 방덱 목록 조회
 
----
-
-# 🛡️ 방덱 목록 조회
-## Request
 ```http
-GET /api/defense-decks
+GET /api/defense-decks?monsterFilterCode=sw_10131&leaderEffect=Defense&ownerMemberId=1
 Authorization: Bearer {JWT}
 ```
 
----
+Query Params:
 
-## Query Parameters
-| 파라미터             | 설명           |
-| ---------------- | ------------ |
-| monsterCode      | 특정 몬스터 포함 필터 |
-| leaderEffectType | 리더 효과 필터     |
-| ownerMemberId    | 특정 길드원 필터    |
+| 이름 | 필수 | 설명 |
+|---|---:|---|
+| `monsterFilterCode` | N | 포함 몬스터 필터. `monsterCode` 사용 |
+| `leaderEffect` | N | 리더 효과 필터 |
+| `ownerMemberId` | N | 특정 길드원 방덱만 조회 |
 
----
+## 길드원 방덱 삭제
 
-## Response
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": 1,
-      "ownerName": "길드마스터",
-      "monsters": [
-        {
-          "name": "프랑켄"
-        },
-        {
-          "name": "그림리퍼"
-        },
-        {
-          "name": "조커"
-        }
-      ]
-    }
-  ]
-}
-```
-
----
-
-# 🗑️ 방덱 삭제
-## Request
 ```http
 DELETE /api/defense-decks/{deckId}
 Authorization: Bearer {JWT}
@@ -430,115 +441,140 @@ Authorization: Bearer {JWT}
 
 ---
 
-## Response
-```json
-{
-  "success": true,
-  "message": "방덱 삭제 완료"
-}
-```
+# 📋 Ownerless Defense Deck API
 
----
+주인 없는 방덱은 길드 운영진이 공용 템플릿처럼 관리하는 방덱입니다.
 
-# ⚠️ 예외 응답
-## 400 Bad Request
-```json
-{
-  "success": false,
-  "message": "잘못된 요청입니다."
-}
-```
+## 템플릿 생성
 
----
-
-## 401 Unauthorized
-```json
-{
-  "success": false,
-  "message": "인증이 필요합니다."
-}
-```
-
----
-
-## 403 Forbidden
-```json
-{
-  "success": false,
-  "message": "권한이 없습니다."
-}
-```
-
----
-
-## 404 Not Found
-```json
-{
-  "success": false,
-  "message": "데이터를 찾을 수 없습니다."
-}
-```
-
----
-
-# 📚 Battle Research API
-## 게시글 작성
 ```http
-POST /api/research/posts
+POST /api/ownerless-defense-decks
+Authorization: Bearer {JWT}
+Content-Type: application/json
+```
+
+```json
+{
+  "title": "공용 방덱 A",
+  "monsterCodes": ["sw_10131", "sw_10231", "sw_10331"]
+}
+```
+
+## 템플릿 목록 조회
+
+```http
+GET /api/ownerless-defense-decks
+Authorization: Bearer {JWT}
+```
+
+## 템플릿 상세 조회
+
+```http
+GET /api/ownerless-defense-decks/{deckId}
+Authorization: Bearer {JWT}
+```
+
+## 템플릿 삭제
+
+```http
+DELETE /api/ownerless-defense-decks/{deckId}
 Authorization: Bearer {JWT}
 ```
 
 ---
 
+# 🔬 Battle Research API
+
+API prefix:
+
+```text
+/api/research
+```
+
+## 게시글 작성
+
+```http
+POST /api/research/posts
+Authorization: Bearer {JWT}
+Content-Type: application/json
+```
+
+```json
+{
+  "title": "방덱 공략",
+  "monsterCodes": ["sw_10131", "sw_10231", "sw_10331"],
+  "content": "공략 내용"
+}
+```
+
 ## 게시글 목록 조회
+
 ```http
 GET /api/research/posts
 Authorization: Bearer {JWT}
 ```
 
----
-
 ## 게시글 상세 조회
+
 ```http
 GET /api/research/posts/{postId}
 Authorization: Bearer {JWT}
 ```
 
----
-
 ## 게시글 수정
+
 ```http
 PUT /api/research/posts/{postId}
 Authorization: Bearer {JWT}
+Content-Type: application/json
 ```
 
----
+```json
+{
+  "title": "수정된 공략",
+  "defenseMonsterCodes": ["sw_10131", "sw_10231", "sw_10331"]
+}
+```
 
 ## 게시글 삭제
+
 ```http
 DELETE /api/research/posts/{postId}
 Authorization: Bearer {JWT}
 ```
 
----
-
 ## 댓글 작성
+
 ```http
 POST /api/research/posts/{postId}/comments
 Authorization: Bearer {JWT}
+Content-Type: application/json
 ```
 
----
+```json
+{
+  "attackMonsterCodes": ["sw_20131", "sw_20231", "sw_20331"],
+  "content": "공덱 메모"
+}
+```
 
 ## 댓글 수정
+
 ```http
 PUT /api/research/comments/{commentId}
 Authorization: Bearer {JWT}
+Content-Type: application/json
 ```
 
----
+```json
+{
+  "attackMonsterCodes": ["sw_20131", "sw_20231", "sw_20331"],
+  "content": "수정된 공덱 메모"
+}
+```
 
 ## 댓글 삭제
+
 ```http
 DELETE /api/research/comments/{commentId}
 Authorization: Bearer {JWT}
@@ -546,19 +582,9 @@ Authorization: Bearer {JWT}
 
 ---
 
-# 🚧 향후 추가 예정 API
-- 통계 API
-- 추천 API
-- 실시간 API
+# 🔒 공개 저장소 정책
 
----
-
-## 📄 Documents
-
-| 문서 | 설명 |
-|---|---|
-| [RoadMap](./RoadMap.md) | 프로젝트 진행 현황 |
-| [Backend Docs](./BACKEND.md) | 백엔드 구조 |
-| [API Docs](./API.md) | API 명세 |
-| [ERD](./ERD.md) | 데이터베이스 구조 |
-| [Trouble Shooting](./TROUBLE_SHOOTING.md) | 문제 해결 기록 |
+- `.env`, 로컬 H2 DB, 실행 로그는 GitHub에 포함하지 않습니다.
+- 게임 몬스터 이미지 원본 파일은 저장소에 포함하지 않습니다.
+- 몬스터 이미지는 외부 API의 이미지 URL을 DB에 저장해 사용합니다.
+- 사용자 화면 노출 이름은 `monster-localization.json`의 `koreanName`, `aliases`, `enabled`, `awakeningLevel` 기준을 따릅니다.
