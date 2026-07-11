@@ -1,18 +1,19 @@
 import { useMemo } from "react";
+import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
 
 const GUILD_BATTLE_LEADER_AREAS = new Set(["General", "Guild", "Element", "Attribute"]);
 const LEADER_EFFECT_LABELS = {
-  "Attack Power": "\uACF5\uACA9\uB825",
-  Attack: "\uACF5\uACA9\uB825",
-  "Attack Speed": "\uACF5\uACA9 \uC18D\uB3C4",
-  Speed: "\uACF5\uACA9 \uC18D\uB3C4",
-  "Critical DMG": "\uCE58\uBA85 \uD53C\uD574",
-  "Critical Damage": "\uCE58\uBA85 \uD53C\uD574",
-  "Critical Rate": "\uCE58\uBA85 \uD655\uB960",
-  Defense: "\uBC29\uC5B4\uB825",
-  HP: "\uCCB4\uB825",
-  Accuracy: "\uD6A8\uACFC \uC801\uC911",
-  Resistance: "\uC800\uD56D",
+  "Attack Power": "공격력",
+  Attack: "공격력",
+  "Attack Speed": "공격 속도",
+  Speed: "공격 속도",
+  "Critical DMG": "치명 피해",
+  "Critical Damage": "치명 피해",
+  "Critical Rate": "치명 확률",
+  Defense: "방어력",
+  HP: "체력",
+  Accuracy: "효과 적중",
+  Resistance: "저항",
 };
 
 function isGuildBattleLeaderEffect(monster) {
@@ -58,21 +59,9 @@ export default function DefenseDeckFilterBar({
   // 검색 결과 몬스터
   const deckFilterMonsters = useMemo(() => {
 
-    const q = monsterFilterKeyword
-      .trim()
-      .toLowerCase();
+    if (!monsterFilterKeyword.trim()) return [];
 
-    if (!q) return [];
-
-    return monsters.filter((m) => {
-
-      return (
-        m.name?.toLowerCase().includes(q) ||
-        m.id?.toLowerCase().includes(q) ||
-        m.nicknames?.join(" ").toLowerCase().includes(q)
-      );
-
-    });
+    return monsters.filter((m) => matchesMonsterSearch(m, monsterFilterKeyword));
 
   }, [monsterFilterKeyword, monsters]);
 

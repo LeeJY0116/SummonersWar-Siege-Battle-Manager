@@ -4911,7 +4911,7 @@
     "attribute" : "WATER",
     "naturalStars" : 3,
     "koreanName" : "미스틱 위치",
-    "aliases" : [ "미스틱 위치", "물미스틱 위치" ]
+    "aliases" : [ "미스틱 위치", "물미스틱 위치", "메간" ]
   },
   "sw_15932" : {
     "enabled" : true,
@@ -4920,7 +4920,7 @@
     "attribute" : "FIRE",
     "naturalStars" : 3,
     "koreanName" : "미스틱 위치",
-    "aliases" : [ "미스틱 위치", "불미스틱 위치" ]
+    "aliases" : [ "미스틱 위치", "불미스틱 위치", "메간" ]
   },
   "sw_15933" : {
     "enabled" : true,
@@ -4929,7 +4929,7 @@
     "attribute" : "WIND",
     "naturalStars" : 3,
     "koreanName" : "미스틱 위치",
-    "aliases" : [ "미스틱 위치", "풍미스틱 위치" ]
+    "aliases" : [ "미스틱 위치", "풍미스틱 위치", "메간" ]
   },
   "sw_15934" : {
     "enabled" : true,
@@ -4938,7 +4938,7 @@
     "attribute" : "LIGHT",
     "naturalStars" : 3,
     "koreanName" : "미스틱 위치",
-    "aliases" : [ "미스틱 위치", "빛미스틱 위치" ]
+    "aliases" : [ "미스틱 위치", "빛미스틱 위치", "메간" ]
   },
   "sw_15935" : {
     "enabled" : true,
@@ -4947,7 +4947,7 @@
     "attribute" : "DARK",
     "naturalStars" : 3,
     "koreanName" : "미스틱 위치",
-    "aliases" : [ "미스틱 위치", "암미스틱 위치" ]
+    "aliases" : [ "미스틱 위치", "암미스틱 위치", "메간" ]
   },
   "sw_16001" : {
     "enabled" : false,
@@ -9078,7 +9078,7 @@
     "attribute" : "WATER",
     "naturalStars" : 3,
     "koreanName" : "프랑켄",
-    "aliases" : [ "프랑켄", "물프랑켄" ]
+    "aliases" : [ "프랑켄", "물프랑켄", "도저" ]
   },
   "sw_20832" : {
     "enabled" : true,
@@ -9087,7 +9087,7 @@
     "attribute" : "FIRE",
     "naturalStars" : 3,
     "koreanName" : "프랑켄",
-    "aliases" : [ "불도저", "프랑켄", "불프랑켄" ]
+    "aliases" : [ "불도저", "프랑켄", "불프랑켄", "도저" ]
   },
   "sw_20833" : {
     "enabled" : true,
@@ -9096,7 +9096,7 @@
     "attribute" : "WIND",
     "naturalStars" : 3,
     "koreanName" : "프랑켄",
-    "aliases" : [ "프랑켄", "풍프랑켄" ]
+    "aliases" : [ "프랑켄", "풍프랑켄", "도저" ]
   },
   "sw_20834" : {
     "enabled" : true,
@@ -9105,7 +9105,7 @@
     "attribute" : "LIGHT",
     "naturalStars" : 3,
     "koreanName" : "프랑켄",
-    "aliases" : [ "프랑켄", "빛프랑켄" ]
+    "aliases" : [ "프랑켄", "빛프랑켄", "도저" ]
   },
   "sw_20835" : {
     "enabled" : true,
@@ -9114,7 +9114,7 @@
     "attribute" : "DARK",
     "naturalStars" : 3,
     "koreanName" : "프랑켄",
-    "aliases" : [ "프랑켄", "암프랑켄" ]
+    "aliases" : [ "프랑켄", "암프랑켄", "도저" ]
   },
   "sw_20901" : {
     "enabled" : false,
@@ -11223,7 +11223,7 @@
     "aliases" : [ "비스트 라이더", "비라", "암비스트 라이더", "암비라" ]
   },
   "sw_23611" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Barbara",
     "attribute" : "WATER",
@@ -11232,7 +11232,7 @@
     "aliases" : [ "바바라", "비스트 라이더", "비라", "물바바라", "물비스트 라이더", "물비라" ]
   },
   "sw_23612" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Masha",
     "attribute" : "FIRE",
@@ -11241,7 +11241,7 @@
     "aliases" : [ "마샤", "비스트 라이더", "비라", "불마샤", "불비스트 라이더", "불비라" ]
   },
   "sw_23613" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Savannah",
     "attribute" : "WIND",
@@ -11250,7 +11250,7 @@
     "aliases" : [ "사바나", "비스트 라이더", "비라", "풍사바나", "풍비스트 라이더", "풍비라" ]
   },
   "sw_23614" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Narsha",
     "attribute" : "LIGHT",
@@ -11259,7 +11259,7 @@
     "aliases" : [ "비스트 라이더", "비라", "빛비스트 라이더", "빛비라" ]
   },
   "sw_23615" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Xiana",
     "attribute" : "DARK",

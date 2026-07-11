@@ -116,7 +116,7 @@ public class BattleResearchService {
                                 .map(m -> new BattleResearchPostListItemResponse.MonsterItem(
                                         m.getId(),
                                         m.getCode(),
-                                        m.getName()
+                                        getMonsterDisplayName(m)
                                 ))
                                 .toList(),
                         countMap.getOrDefault(p.getId(), 0L).intValue(),
@@ -149,7 +149,7 @@ public class BattleResearchService {
                                 .map(m -> new BattleResearchCommentResponse.MonsterItem(
                                         m.getId(),
                                         m.getCode(),
-                                        m.getName()
+                                        getMonsterDisplayName(m)
                                 ))
                                 .toList(),
                         c.getContent(),
@@ -168,7 +168,7 @@ public class BattleResearchService {
                         .map(m -> new BattleResearchPostDetailResponse.MonsterItem(
                                 m.getId(),
                                 m.getCode(),
-                                m.getName()
+                                getMonsterDisplayName(m)
                                 ))
                         .toList(),
                 post.getCreatedAt(),
@@ -349,5 +349,13 @@ public class BattleResearchService {
                 .map(id -> monsterRepository.findById(id)
                         .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 ID: " + id)))
                 .toList();
+    }
+
+    private String getMonsterDisplayName(Monster monster) {
+        if (monster.getKoreanName() != null && !monster.getKoreanName().isBlank()) {
+            return monster.getKoreanName();
+        }
+
+        return monster.getName();
     }
 }

@@ -6,6 +6,7 @@ import {
   createBattleResearchComment,
 } from "../../lib/battleResearch.js";
 import DeckMonsterSlot from "./DeckMonsterSlot.jsx";
+import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
 
 export default function BattleResearchTab({ monsters = []}) {
   const [posts, setPosts] = useState([]);
@@ -28,15 +29,7 @@ export default function BattleResearchTab({ monsters = []}) {
   );
 
   const filteredMonsters = monsters.filter((m) => {
-    const q = monsterSearch.trim().toLowerCase();
-
-    if (!q) return true;
-
-    return (
-      m.name?.toLowerCase().includes(q) ||
-      m.id?.toLowerCase().includes(q) ||
-      m.nicknames?.join(" ").toLowerCase().includes(q)
-    );
+    return matchesMonsterSearch(m, monsterSearch);
   });
 
   function findMonsterByResearchItem(item) {
@@ -102,22 +95,16 @@ export default function BattleResearchTab({ monsters = []}) {
   }
 
   function getCommentFilteredMonsters(postId) {
-    const q = (commentMonsterSearchMap[postId] ?? "").trim().toLowerCase();
+    const query = commentMonsterSearchMap[postId] ?? "";
 
-    if (!q) return monsters;
-
-    return monsters.filter((m) => (
-      m.name?.toLowerCase().includes(q) ||
-      m.id?.toLowerCase().includes(q) ||
-      m.nicknames?.join(" ").toLowerCase().includes(q)
-    ));
+    return monsters.filter((m) => matchesMonsterSearch(m, query));
   }
 
   function selectCommentAttackMonster(postId, code) {
     const currentCodes = getCommentAttackMonsterCodes(postId);
 
     if (currentCodes.includes(code)) {
-      alert("\uC774\uBBF8 \uC120\uD0DD\uB41C \uBAAC\uC2A4\uD130\uC785\uB2C8\uB2E4.");
+      alert("이미 선택된 몬스터입니다.");
       return;
     }
 

@@ -33,34 +33,34 @@ function normalizeMonster(monster) {
 }
 
 const LEADER_EFFECT_LABELS = {
-  "Attack Power": "\uACF5\uACA9\uB825",
-  Attack: "\uACF5\uACA9\uB825",
-  "Attack Speed": "\uACF5\uACA9 \uC18D\uB3C4",
-  Speed: "\uACF5\uACA9 \uC18D\uB3C4",
-  "Critical DMG": "\uCE58\uBA85 \uD53C\uD574",
-  "Critical Damage": "\uCE58\uBA85 \uD53C\uD574",
-  "Critical Rate": "\uCE58\uBA85 \uD655\uB960",
-  Defense: "\uBC29\uC5B4\uB825",
-  HP: "\uCCB4\uB825",
-  Accuracy: "\uD6A8\uACFC \uC801\uC911",
-  Resistance: "\uC800\uD56D",
+  "Attack Power": "공격력",
+  Attack: "공격력",
+  "Attack Speed": "공격 속도",
+  Speed: "공격 속도",
+  "Critical DMG": "치명 피해",
+  "Critical Damage": "치명 피해",
+  "Critical Rate": "치명 확률",
+  Defense: "방어력",
+  HP: "체력",
+  Accuracy: "효과 적중",
+  Resistance: "저항",
 };
 
 const LEADER_AREA_LABELS = {
-  Arena: "\uC544\uB808\uB098",
-  Dungeon: "\uB358\uC804",
-  General: "\uC804\uCCB4",
-  Guild: "\uAE38\uB4DC \uC804\uD22C",
-  Element: "\uC18D\uC131",
-  Attribute: "\uC18D\uC131",
+  Arena: "아레나",
+  Dungeon: "던전",
+  General: "전체",
+  Guild: "길드 전투",
+  Element: "속성",
+  Attribute: "속성",
 };
 
 const LEADER_ELEMENT_LABELS = {
-  Fire: "\uBD88",
-  Water: "\uBB3C",
-  Wind: "\uD48D",
-  Light: "\uBE5B",
-  Dark: "\uC554",
+  Fire: "불",
+  Water: "물",
+  Wind: "풍",
+  Light: "빛",
+  Dark: "암",
 };
 
 function isGuildBattleLeaderEffect(monster) {
@@ -132,7 +132,6 @@ function resolveMonsterImageUrl(monster) {
   return imageUrl;
 }
 
-// ?�� 지금�? JSON, ?�중??API�?교체
 export async function getMonsters() {
   try {
     const body = await apiFetch("/monsters");

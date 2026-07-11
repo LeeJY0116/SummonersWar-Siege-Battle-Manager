@@ -1,13 +1,14 @@
 import React, { useMemo, useState } from "react";
 import TrioSlot from "../trios/TrioSlot.jsx";
+import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
 
 // Element filter labels
 const ELEMENT_META = {
-  fire: { label: "\uBD88" },
-  water: { label: "\uBB3C" },
-  wind: { label: "\uD48D" },
-  light: { label: "\uBE5B" },
-  dark: { label: "\uC554" },
+  fire: { label: "불" },
+  water: { label: "물" },
+  wind: { label: "풍" },
+  light: { label: "빛" },
+  dark: { label: "암" },
 };
 
 const ELEMENT_ORDER = ["fire", "water", "wind", "light", "dark"];
@@ -15,8 +16,8 @@ const ELEMENT_ORDER = ["fire", "water", "wind", "light", "dark"];
 const LEADER_EFFECT_LABELS = {
   "Attack Power": "공격력",
   "Attack Speed": "공격속도",
-  "Critical DMG": "\uCE58\uBA85 \uD53C\uD574",
-  "Critical Damage": "\uCE58\uBA85 \uD53C\uD574",
+  "Critical DMG": "치명 피해",
+  "Critical Damage": "치명 피해",
   "Critical Rate": "치명타 확률",
   Defense: "방어력",
   HP: "체력",
@@ -74,17 +75,7 @@ export default function SiegeBattleTab({
 
     // 이름 검색
     if (search.trim()) {
-      const q = search.trim().toLowerCase();
-
-      list = list.filter((m) => {
-        const inName = m.name.toLowerCase().includes(q);
-
-        const nicknames = m.nicknames || []; // 없으면 빈 배열
-        const inNickname = nicknames.some((nn) =>
-        nn.toLowerCase().includes(q)
-      );
-    return inName || inNickname;
-    });
+      list = list.filter((m) => matchesMonsterSearch(m, search));
   }
 
     // 속성 필터 (항상 필터됨, 전체 없음)

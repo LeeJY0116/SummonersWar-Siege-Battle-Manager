@@ -111,10 +111,14 @@ public class OwnerlessDefenseDeckService {
                 deck.getTitle(),
                 deck.getLeader().getId(),
                 deck.getLeader().getCode(),
-                deck.getLeader().getName(),
+                getMonsterDisplayName(deck.getLeader()),
                 deck.getLeader().getLeaderEffectType(),
                 deck.getMonsters().stream()
-                        .map(mm -> new OwnerlessDefenseDeckDetailResponse.MonsterItem(mm.getId(), mm.getCode(), mm.getName()))
+                        .map(mm -> new OwnerlessDefenseDeckDetailResponse.MonsterItem(
+                                mm.getId(),
+                                mm.getCode(),
+                                getMonsterDisplayName(mm)
+                        ))
                         .toList(),
                 available.size(),
                 available
@@ -171,14 +175,14 @@ public class OwnerlessDefenseDeckService {
 
                 leader.getId(),
                 leader.getCode(),
-                leader.getName(),
+                getMonsterDisplayName(leader),
                 leader.getLeaderEffectType(),
 
                 monsters.stream()
                         .map(m -> new OwnerlessDefenseDeckDetailResponse.MonsterItem(
                                 m.getId(),
                                 m.getCode(),
-                                m.getName()
+                                getMonsterDisplayName(m)
                         ))
                         .toList(),
 
@@ -238,5 +242,13 @@ public class OwnerlessDefenseDeckService {
         }
 
         ownerlessRepo.delete(deck);
+    }
+
+    private String getMonsterDisplayName(Monster monster) {
+        if (monster.getKoreanName() != null && !monster.getKoreanName().isBlank()) {
+            return monster.getKoreanName();
+        }
+
+        return monster.getName();
     }
 }

@@ -5,8 +5,8 @@ import TrioSlot from "../trios/TrioSlot.jsx";
 const LEADER_EFFECT_LABELS = {
   "Attack Power": "공격력",
   "Attack Speed": "공격속도",
-  "Critical DMG": "\uCE58\uBA85 \uD53C\uD574",
-  "Critical Damage": "\uCE58\uBA85 \uD53C\uD574",
+  "Critical DMG": "치명 피해",
+  "Critical Damage": "치명 피해",
   "Critical Rate": "치명타 확률",
   Defense: "방어력",
   HP: "체력",
@@ -182,11 +182,11 @@ export default function ManagerTab({
             {/* 포함 필터 */}
             <label className="flex flex-col gap-1">
               <span className="text-sm font-medium text-gray-700">
-                {"\uD3EC\uD568 \uBAAC\uC2A4\uD130 \uAC80\uC0C9"}
+                {"포함 몬스터 검색"}
               </span>
               <input
                 className="px-3 py-2 rounded-xl border border-gray-200 shadow-sm"
-                placeholder={"\uC608) \uD504\uB791\uCF04, \uB9AC\uBE59\uC544\uBA38"}
+                placeholder={"예) 프랑켄, 리빙아머"}
                 value={containsQuery}
                 onChange={(e) => setContainsQuery(e.target.value)}
               />

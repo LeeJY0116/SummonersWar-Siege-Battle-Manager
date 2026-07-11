@@ -10,6 +10,7 @@ import { fetchMemberInventory } from "../../lib/inventory.js";
 import DefenseDeckFilterBar from "./DefenseDeckFilterBar.jsx";
 import Toast from "../common/Toast.jsx";
 import { useToast } from "../../hooks/useToast.js";
+import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
 
 const GUILD_BATTLE_LEADER_AREAS = new Set(["General", "Guild", "Element", "Attribute"]);
 
@@ -102,17 +103,9 @@ const hasActiveFilters =
 
   // 몬스터 이름 검색
 const deckFilterMonsters = useMemo(() => {
-  const q = monsterFilterKeyword.trim().toLowerCase();
+  if (!monsterFilterKeyword.trim()) return [];
 
-  if (!q) return [];
-
-  return monsters.filter((m) => {
-    return (
-      m.name?.toLowerCase().includes(q) ||
-      m.id?.toLowerCase().includes(q) ||
-      m.nicknames?.join(" ").toLowerCase().includes(q)
-    );
-  });
+  return monsters.filter((m) => matchesMonsterSearch(m, monsterFilterKeyword));
 }, [monsterFilterKeyword, monsters]);
 
 // 몬스터 선택 토글 함수
@@ -215,14 +208,7 @@ const filteredMonsters = monsters.filter((m) => {
   // ✅ 보유 중이 아니거나 사용 가능 수량이 없으면 숨김
   if (usable <= 0) return false;
 
-  const q = monsterSearch.trim().toLowerCase();
-  if (!q) return true;
-
-  return (
-    m.name?.toLowerCase().includes(q) ||
-    m.id?.toLowerCase().includes(q) ||
-    m.nicknames?.join(" ").toLowerCase().includes(q)
-  );
+  return matchesMonsterSearch(m, monsterSearch);
 });
 
 

@@ -5,6 +5,7 @@ import {
   createOwnerlessDefenseDeck,
  } from "../../lib/ownerlessDefenseDeck.js";
 import DeckMonsterSlot from "./DeckMonsterSlot.jsx";
+import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
 
 export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
   const [decks, setDecks] = useState([]);
@@ -22,14 +23,7 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
   );
 
   const filteredMonsters = monsters.filter((m) => {
-    const q = monsterSearch.trim().toLowerCase();
-    if (!q) return true;
-
-    return (
-      m.name?.toLowerCase().includes(q) ||
-      m.id?.toLowerCase().includes(q) ||
-      m.nicknames?.join(" ").toLowerCase().includes(q)
-    );
+    return matchesMonsterSearch(m, monsterSearch);
   });
 
   function selectMonster(code) {

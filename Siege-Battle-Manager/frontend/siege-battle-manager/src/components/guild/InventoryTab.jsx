@@ -6,6 +6,7 @@ import {
 import { fetchDefenseDecks } from "../../lib/defenseDeck.js";
 import Toast from "../common/Toast.jsx";
 import { useToast } from "../../hooks/useToast.js";
+import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
 
 function clampNonNegative(n) {
   const v = Number.isFinite(n) ? n : Number(n);
@@ -89,16 +90,7 @@ export default function InventoryTab({ members, monsters }) {
   }, [decks, selectedMemberId]);
 
   const filteredMonsters = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return monsters;
-    return (monsters || []).filter((m) => {
-      const name = String(m.name || "").toLowerCase();
-      const id = String(m.id || "").toLowerCase();
-      const nicks = Array.isArray(m.nicknames)
-        ? m.nicknames.join(" ").toLowerCase()
-        : "";
-      return name.includes(q) || id.includes(q) || nicks.includes(q);
-    });
+    return (monsters || []).filter((m) => matchesMonsterSearch(m, query));
   }, [monsters, query]);
 
   function changeCount(monsterCode, nextCount) {

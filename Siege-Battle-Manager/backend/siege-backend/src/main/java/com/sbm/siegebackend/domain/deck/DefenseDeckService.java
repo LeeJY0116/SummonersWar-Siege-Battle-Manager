@@ -210,15 +210,23 @@ public class DefenseDeckService {
                 deck.getOwner().getDisplayName(),
                 deck.getLeader().getId(),
                 deck.getLeader().getCode(),
-                deck.getLeader().getName(),
+                getMonsterDisplayName(deck.getLeader()),
                 isGuildBattleLeaderEffect(deck.getLeader()) ? deck.getLeader().getLeaderEffectType() : null,
                 deck.getMonsters().stream()
                         .map(m -> new DefenseDeckResponse.MonsterItem(
                                 m.getId(),
                                 m.getCode(),
-                                m.getName()
+                                getMonsterDisplayName(m)
                         ))
                         .toList()
         );
+    }
+
+    private String getMonsterDisplayName(Monster monster) {
+        if (monster.getKoreanName() != null && !monster.getKoreanName().isBlank()) {
+            return monster.getKoreanName();
+        }
+
+        return monster.getName();
     }
 }
