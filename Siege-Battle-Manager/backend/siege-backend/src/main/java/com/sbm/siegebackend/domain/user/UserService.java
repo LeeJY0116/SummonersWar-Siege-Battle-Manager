@@ -103,7 +103,8 @@ public class UserService {
 
     private Optional<User> findByLoginIdOrLegacyEmail(String loginId) {
         return userRepository.findByLoginId(loginId)
-                .or(() -> userRepository.findByEmail(loginId));
+                .or(() -> userRepository.findByEmail(loginId))
+                .or(() -> userRepository.findByNickname(loginId));
     }
 
     private String normalizeRequired(String value, String fieldName) {

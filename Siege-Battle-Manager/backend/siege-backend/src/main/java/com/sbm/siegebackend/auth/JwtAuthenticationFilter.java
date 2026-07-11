@@ -73,7 +73,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // DB에서 사용자 다시 확인
         Optional<User> optionalUser = userRepository.findByLoginId(loginId)
-                .or(() -> userRepository.findByEmail(loginId));
+                .or(() -> userRepository.findByEmail(loginId))
+                .or(() -> userRepository.findByNickname(loginId));
         if (optionalUser.isEmpty()) {
             filterChain.doFilter(request, response);
             return;
