@@ -1,0 +1,23 @@
+# IDE
+.idea/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Local database files
+data/
+*.db
+*.mv.db
+*.trace.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
