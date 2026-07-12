@@ -8,6 +8,7 @@ import { fetchMyGuild, fetchMyGuildMembers } from "./lib/guild.js";
 import LoginPage from "./components/auth/LoginPage.jsx";
 import { fetchMe } from "./lib/auth.js";
 import GuildTab from "./components/guild/GuildTab.jsx";
+import GuildJoinRequestPage from "./components/guild/GuildJoinRequestPage.jsx";
 import { apiFetch } from "./lib/api.js";
 import { applyMonsterLocalization, syncSwarfarmMonsters } from "./lib/monsterSync.js";
 import { formatLeaderEffectText } from "./lib/monsterLabels.js";
@@ -117,6 +118,7 @@ export default function SiegeBattleManager() {
   const [monsters, setMonsters] = useState([]);
   const [trios, setTrios] = useState([]);
   const [guild, setGuild] = useState(null);
+  const [guildLoaded, setGuildLoaded] = useState(false);
   const [members, setMembers] = useState([]);
   const [me, setMe] = useState(null);
   const [syncingMonsters, setSyncingMonsters] = useState(false);
@@ -139,9 +141,11 @@ export default function SiegeBattleManager() {
       .then(setMe)
       .catch(() => setMe(null));
 
+    setGuildLoaded(false);
     fetchMyGuild()
       .then(setGuild)
-      .catch(() => setGuild(null));
+      .catch(() => setGuild(null))
+      .finally(() => setGuildLoaded(true));
   }, [token]);
 
 
@@ -157,7 +161,11 @@ export default function SiegeBattleManager() {
 
   async function refreshMyGuildMembers() {
     if (!guild) return;
-    const loadedMembers = await fetchMyGuildMembers();
+    const [loadedGuild, loadedMembers] = await Promise.all([
+      fetchMyGuild(),
+      fetchMyGuildMembers(),
+    ]);
+    setGuild(loadedGuild);
     setMembers(loadedMembers);
   }
 
@@ -321,6 +329,10 @@ export default function SiegeBattleManager() {
   }
 
   // ---------------- Render ----------------
+  if (me && guildLoaded && !guild && !isAdmin) {
+    return <GuildJoinRequestPage me={me} />;
+  }
+
   return (
     <div className="min-h-screen w-full bg-gray-50 text-gray-900">
       <div className="max-w-6xl mx-auto p-6 md:p-8">
@@ -361,6 +373,7 @@ export default function SiegeBattleManager() {
             monsters={monsters}
             canManageGuild={canManageGuild}
             currentGuildMemberId={currentGuildMember?.id ?? null}
+            currentNickname={currentNickname}
             onRefreshMembers={refreshMyGuildMembers}
           />
         )}

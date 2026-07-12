@@ -40,7 +40,7 @@ public class BattleResearchService {
 
     private GuildMember getActor(String email) {
         User user = userService.findByEmailOrThrow(email);
-        return guildMemberRepository.findByUser(user)
+        return guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
                 .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
     }
 

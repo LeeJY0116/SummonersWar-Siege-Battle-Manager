@@ -31,4 +31,26 @@ export async function fetchMyGuildMembers() {
   return res.data;
 }
 
+export async function updateGuildMemberRole(guildMemberId, role) {
+  await apiFetch(`/guild-members/${guildMemberId}/role`, {
+    method: "PATCH",
+    body: JSON.stringify({ role }),
+  });
+}
 
+export async function kickGuildMember(guildMemberId) {
+  await apiFetch(`/guild-members/${guildMemberId}/real`, {
+    method: "DELETE",
+  });
+}
+
+export async function fetchGuildMemberBans() {
+  const res = await apiFetch("/guild-members/bans");
+  return Array.isArray(res) ? res : res.data;
+}
+
+export async function liftGuildMemberBan(banId) {
+  await apiFetch(`/guild-members/bans/${banId}/lift`, {
+    method: "PATCH",
+  });
+}

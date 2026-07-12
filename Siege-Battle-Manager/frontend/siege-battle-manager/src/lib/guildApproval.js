@@ -23,13 +23,47 @@ export async function fetchPendingMemberRequests() {
 }
 
 export async function approveMemberRequest(memberId) {
-  await apiFetch(`/guilds/me/join-requests/${memberId}/approve`, {
+  if (typeof memberId === "object" && memberId?.requestSource === "ACCOUNT") {
+    await apiFetch(`/guilds/me/account-join-requests/${memberId.memberId}/approve`, {
+      method: "POST",
+    });
+    return;
+  }
+
+  const requestId = typeof memberId === "object" ? memberId.memberId : memberId;
+  await apiFetch(`/guilds/me/join-requests/${requestId}/approve`, {
     method: "POST",
   });
 }
 
 export async function rejectMemberRequest(memberId) {
-  await apiFetch(`/guilds/me/join-requests/${memberId}/reject`, {
+  if (typeof memberId === "object" && memberId?.requestSource === "ACCOUNT") {
+    await apiFetch(`/guilds/me/account-join-requests/${memberId.memberId}/reject`, {
+      method: "POST",
+    });
+    return;
+  }
+
+  const requestId = typeof memberId === "object" ? memberId.memberId : memberId;
+  await apiFetch(`/guilds/me/join-requests/${requestId}/reject`, {
     method: "POST",
+  });
+}
+
+export async function requestExistingAccountJoin(guildName) {
+  await apiFetch("/guilds/join-requests", {
+    method: "POST",
+    body: JSON.stringify({ guildName }),
+  });
+}
+
+export async function fetchMyPendingExistingJoinRequest() {
+  const body = await apiFetch("/guilds/join-requests/me");
+  return body.data ?? null;
+}
+
+export async function cancelMyPendingExistingJoinRequest() {
+  await apiFetch("/guilds/join-requests/me", {
+    method: "DELETE",
   });
 }

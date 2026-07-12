@@ -42,7 +42,7 @@ public class GuildMemberInventoryService {
     public List<GuildMemberInventoryItemResponse> getInventory(Long guildMemberId, String email) {
         User user = userService.findByEmailOrThrow(email);
 
-        GuildMember actor = guildMemberRepository.findByUser(user)
+        GuildMember actor = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
                 .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         GuildMember target = guildMemberRepository.findById(guildMemberId)
@@ -83,7 +83,7 @@ public class GuildMemberInventoryService {
 
         User user = userService.findByEmailOrThrow(email);
 
-        GuildMember actor = guildMemberRepository.findByUser(user)
+        GuildMember actor = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
                 .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         GuildMember target = guildMemberRepository.findById(guildMemberId)

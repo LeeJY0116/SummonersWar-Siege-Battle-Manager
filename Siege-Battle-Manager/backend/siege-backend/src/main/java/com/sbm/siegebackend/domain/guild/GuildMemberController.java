@@ -1,6 +1,8 @@
 package com.sbm.siegebackend.domain.guild;
 
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberCreateRequest;
+import com.sbm.siegebackend.domain.guild.dto.GuildMemberBanResponse;
+import com.sbm.siegebackend.domain.guild.dto.GuildMemberRoleUpdateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +43,43 @@ public class GuildMemberController {
     ) {
         String email = (String) auth.getPrincipal();
         guildMemberService.deleteVirtualMember(guildMemberId, email);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{guildMemberId}/role")
+    public ResponseEntity<?> changeRealMemberRole(
+            @PathVariable Long guildMemberId,
+            @RequestBody GuildMemberRoleUpdateRequest request,
+            Authentication auth
+    ) {
+        String loginId = (String) auth.getPrincipal();
+        guildMemberService.changeRealMemberRole(guildMemberId, loginId, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{guildMemberId}/real")
+    public ResponseEntity<?> kickRealMember(
+            @PathVariable Long guildMemberId,
+            Authentication auth
+    ) {
+        String loginId = (String) auth.getPrincipal();
+        guildMemberService.kickRealMember(guildMemberId, loginId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/bans")
+    public ResponseEntity<List<GuildMemberBanResponse>> getActiveBans(Authentication auth) {
+        String loginId = (String) auth.getPrincipal();
+        return ResponseEntity.ok(guildMemberService.getActiveBans(loginId));
+    }
+
+    @PatchMapping("/bans/{banId}/lift")
+    public ResponseEntity<?> liftBan(
+            @PathVariable Long banId,
+            Authentication auth
+    ) {
+        String loginId = (String) auth.getPrincipal();
+        guildMemberService.liftBan(banId, loginId);
         return ResponseEntity.ok().build();
     }
 

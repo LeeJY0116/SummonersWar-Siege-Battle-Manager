@@ -48,7 +48,7 @@ public class DefenseDeckService {
     public Long createDeck(Long ownerMemberId, String email, DefenseDeckCreateRequest request) {
         User user = userService.findByEmailOrThrow(email);
 
-        GuildMember actor = guildMemberRepository.findByUser(user)
+        GuildMember actor = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
                 .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         GuildMember owner = guildMemberRepository.findById(ownerMemberId)
@@ -116,7 +116,7 @@ public class DefenseDeckService {
     public void deleteDeck(Long deckId, String email) {
         User user = userService.findByEmailOrThrow(email);
 
-        GuildMember actor = guildMemberRepository.findByUser(user)
+        GuildMember actor = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
                 .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         DefenseDeck deck = defenseDeckRepository.findById(deckId)
@@ -147,7 +147,7 @@ public class DefenseDeckService {
     ) {
         User user = userService.findByEmailOrThrow(email);
 
-        GuildMember me = guildMemberRepository.findByUser(user)
+        GuildMember me = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
                 .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         Long guildId = me.getGuild().getId();
@@ -155,7 +155,8 @@ public class DefenseDeckService {
 
         List<DefenseDeck> decks = defenseDeckRepository.findByGuildIdWithOwnerAndMonsters(guildId);
 
-        Stream<DefenseDeck> stream = decks.stream();
+        Stream<DefenseDeck> stream = decks.stream()
+                .filter(d -> d.getOwner().getStatus() == GuildMemberStatus.APPROVED);
 
         if (!isManager) {
             stream = stream.filter(d -> d.getOwner().getId().equals(me.getId()));

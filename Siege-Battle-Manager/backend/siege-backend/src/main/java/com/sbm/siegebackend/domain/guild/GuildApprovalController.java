@@ -1,6 +1,7 @@
 package com.sbm.siegebackend.domain.guild;
 
 import com.sbm.siegebackend.domain.guild.dto.GuildJoinRequestResponse;
+import com.sbm.siegebackend.domain.guild.dto.GuildJoinRequestCreateRequest;
 import com.sbm.siegebackend.global.api.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -61,6 +62,35 @@ public class GuildApprovalController {
         ));
     }
 
+    @PostMapping("/api/guilds/join-requests")
+    public ResponseEntity<ApiResponse<Void>> requestExistingAccountJoin(
+            Authentication authentication,
+            @org.springframework.web.bind.annotation.RequestBody GuildJoinRequestCreateRequest request
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        guildApprovalService.requestExistingAccountJoin(loginId, request.getGuildName());
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @GetMapping("/api/guilds/join-requests/me")
+    public ResponseEntity<ApiResponse<GuildJoinRequestResponse>> getMyPendingExistingJoinRequest(
+            Authentication authentication
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        return ResponseEntity.ok(ApiResponse.success(
+                guildApprovalService.getMyPendingExistingJoinRequest(loginId)
+        ));
+    }
+
+    @org.springframework.web.bind.annotation.DeleteMapping("/api/guilds/join-requests/me")
+    public ResponseEntity<ApiResponse<Void>> cancelMyPendingExistingJoinRequest(
+            Authentication authentication
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        guildApprovalService.cancelMyPendingExistingJoinRequest(loginId);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
     @PostMapping("/api/guilds/me/join-requests/{memberId}/approve")
     public ResponseEntity<ApiResponse<Void>> approveMemberRequest(
             Authentication authentication,
@@ -78,6 +108,26 @@ public class GuildApprovalController {
     ) {
         String loginId = (String) authentication.getPrincipal();
         guildApprovalService.rejectMemberRequest(loginId, memberId);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @PostMapping("/api/guilds/me/account-join-requests/{requestId}/approve")
+    public ResponseEntity<ApiResponse<Void>> approveExistingMemberRequest(
+            Authentication authentication,
+            @PathVariable Long requestId
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        guildApprovalService.approveExistingMemberRequest(loginId, requestId);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @PostMapping("/api/guilds/me/account-join-requests/{requestId}/reject")
+    public ResponseEntity<ApiResponse<Void>> rejectExistingMemberRequest(
+            Authentication authentication,
+            @PathVariable Long requestId
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        guildApprovalService.rejectExistingMemberRequest(loginId, requestId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

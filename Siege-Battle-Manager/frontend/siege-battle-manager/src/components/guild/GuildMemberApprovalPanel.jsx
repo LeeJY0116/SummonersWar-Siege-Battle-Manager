@@ -27,11 +27,11 @@ export default function GuildMemberApprovalPanel({ onApproved }) {
     loadRequests();
   }, []);
 
-  async function handleAction(memberId, action) {
+  async function handleAction(request, action) {
     try {
-      setWorkingId(memberId);
+      setWorkingId(`${request.requestSource ?? "SIGNUP"}-${request.memberId}`);
       setError("");
-      await action(memberId);
+      await action(request);
       await loadRequests();
       await onApproved?.();
     } catch (e) {
@@ -70,6 +70,7 @@ export default function GuildMemberApprovalPanel({ onApproved }) {
               <th className="px-3 py-2">닉네임</th>
               <th className="px-3 py-2">아이디</th>
               <th className="px-3 py-2">이메일</th>
+              <th className="px-3 py-2">유형</th>
               <th className="px-3 py-2">상태</th>
               <th className="px-3 py-2">처리</th>
             </tr>
@@ -77,37 +78,40 @@ export default function GuildMemberApprovalPanel({ onApproved }) {
           <tbody className="divide-y divide-[#51341e]">
             {loading ? (
               <tr>
-                <td className="px-3 py-4 text-[#d6b878]" colSpan={5}>
+                <td className="px-3 py-4 text-[#d6b878]" colSpan={6}>
                   불러오는 중
                 </td>
               </tr>
             ) : requests.length === 0 ? (
               <tr>
-                <td className="px-3 py-4 text-[#d6b878]" colSpan={5}>
+                <td className="px-3 py-4 text-[#d6b878]" colSpan={6}>
                   대기 중인 신청이 없습니다.
                 </td>
               </tr>
             ) : (
               requests.map((request) => (
-                <tr key={request.memberId}>
+                <tr key={`${request.requestSource ?? "SIGNUP"}-${request.memberId}`}>
                   <td className="px-3 py-2 font-semibold">{request.nickname || request.displayName}</td>
                   <td className="px-3 py-2">{request.loginId}</td>
                   <td className="px-3 py-2">{request.email}</td>
+                  <td className="px-3 py-2">
+                    {request.requestSource === "ACCOUNT" ? "기존 계정" : "신규 가입"}
+                  </td>
                   <td className="px-3 py-2">{request.status}</td>
                   <td className="px-3 py-2">
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        disabled={workingId === request.memberId}
-                        onClick={() => handleAction(request.memberId, approveMemberRequest)}
+                        disabled={workingId === `${request.requestSource ?? "SIGNUP"}-${request.memberId}`}
+                        onClick={() => handleAction(request, approveMemberRequest)}
                         className="rounded-md bg-[#ffe08a] px-3 py-1.5 text-xs font-bold text-[#2a160d] disabled:opacity-40"
                       >
                         승인
                       </button>
                       <button
                         type="button"
-                        disabled={workingId === request.memberId}
-                        onClick={() => handleAction(request.memberId, rejectMemberRequest)}
+                        disabled={workingId === `${request.requestSource ?? "SIGNUP"}-${request.memberId}`}
+                        onClick={() => handleAction(request, rejectMemberRequest)}
                         className="rounded-md border border-[#d5a84a] px-3 py-1.5 text-xs font-semibold text-[#ffe08a] hover:bg-[#3c2415] disabled:opacity-40"
                       >
                         거절

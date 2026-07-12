@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class GuildJoinRequestResponse {
 
     private Long memberId;
+    private String requestSource;
     private Long guildId;
     private String guildName;
     private Long userId;
@@ -20,6 +21,7 @@ public class GuildJoinRequestResponse {
     private LocalDateTime requestedAt;
 
     public GuildJoinRequestResponse(Long memberId,
+                                    String requestSource,
                                     Long guildId,
                                     String guildName,
                                     Long userId,
@@ -31,6 +33,7 @@ public class GuildJoinRequestResponse {
                                     GuildMemberStatus status,
                                     LocalDateTime requestedAt) {
         this.memberId = memberId;
+        this.requestSource = requestSource;
         this.guildId = guildId;
         this.guildName = guildName;
         this.userId = userId;
@@ -45,6 +48,10 @@ public class GuildJoinRequestResponse {
 
     public Long getMemberId() {
         return memberId;
+    }
+
+    public String getRequestSource() {
+        return requestSource;
     }
 
     public Long getGuildId() {

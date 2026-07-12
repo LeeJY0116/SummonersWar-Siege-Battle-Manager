@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { apiFetch } from "../../lib/api.js";
+import AdminGuildManagementPanel from "../admin/AdminGuildManagementPanel.jsx";
 import GuildApprovalPanel from "../admin/GuildApprovalPanel.jsx";
+import NicknameChangeApprovalPanel from "../admin/NicknameChangeApprovalPanel.jsx";
 
 const TEXT = {
   title: "몬스터 관리",
@@ -380,6 +382,8 @@ export default function MonsterReviewTab() {
   return (
     <main className="space-y-4">
       <GuildApprovalPanel />
+      <NicknameChangeApprovalPanel />
+      <AdminGuildManagementPanel />
 
       <section className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

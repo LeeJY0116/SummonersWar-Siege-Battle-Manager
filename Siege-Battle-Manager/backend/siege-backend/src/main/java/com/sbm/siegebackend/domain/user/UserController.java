@@ -2,6 +2,8 @@ package com.sbm.siegebackend.domain.user;
 
 import com.sbm.siegebackend.domain.user.dto.UserLoginRequest;
 import com.sbm.siegebackend.domain.user.dto.UserLoginResponse;
+import com.sbm.siegebackend.domain.user.dto.UserNicknameChangeRequestCreateRequest;
+import com.sbm.siegebackend.domain.user.dto.UserNicknameChangeRequestResponse;
 import com.sbm.siegebackend.domain.user.dto.UserSignUpRequest;
 import com.sbm.siegebackend.domain.user.dto.UserSignUpResponse;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import com.sbm.siegebackend.domain.user.dto.UserMeResponse;
 import org.springframework.security.core.Authentication;
 import com.sbm.siegebackend.global.api.ApiResponse;
+
+import java.util.List;
 
 
 /**
@@ -65,5 +69,63 @@ public class UserController {
         );
 
         return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @PostMapping("/me/nickname-change-requests")
+    public ResponseEntity<ApiResponse<UserNicknameChangeRequestResponse>> requestNicknameChange(
+            Authentication authentication,
+            @RequestBody UserNicknameChangeRequestCreateRequest request
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        return ResponseEntity.ok(ApiResponse.success(
+                userService.requestNicknameChange(loginId, request.getRequestedNickname())
+        ));
+    }
+
+    @GetMapping("/me/nickname-change-requests/pending")
+    public ResponseEntity<ApiResponse<UserNicknameChangeRequestResponse>> getMyPendingNicknameChangeRequest(
+            Authentication authentication
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        return ResponseEntity.ok(ApiResponse.success(
+                userService.getMyPendingNicknameChangeRequest(loginId)
+        ));
+    }
+
+    @DeleteMapping("/me/nickname-change-requests/pending")
+    public ResponseEntity<ApiResponse<Void>> cancelMyPendingNicknameChangeRequest(Authentication authentication) {
+        String loginId = (String) authentication.getPrincipal();
+        userService.cancelMyPendingNicknameChangeRequest(loginId);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @GetMapping("/admin/nickname-change-requests")
+    public ResponseEntity<ApiResponse<List<UserNicknameChangeRequestResponse>>> getPendingNicknameChangeRequests(
+            Authentication authentication
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        return ResponseEntity.ok(ApiResponse.success(
+                userService.getPendingNicknameChangeRequests(loginId)
+        ));
+    }
+
+    @PostMapping("/admin/nickname-change-requests/{requestId}/approve")
+    public ResponseEntity<ApiResponse<Void>> approveNicknameChangeRequest(
+            Authentication authentication,
+            @PathVariable Long requestId
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        userService.approveNicknameChangeRequest(loginId, requestId);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @PostMapping("/admin/nickname-change-requests/{requestId}/reject")
+    public ResponseEntity<ApiResponse<Void>> rejectNicknameChangeRequest(
+            Authentication authentication,
+            @PathVariable Long requestId
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        userService.rejectNicknameChangeRequest(loginId, requestId);
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

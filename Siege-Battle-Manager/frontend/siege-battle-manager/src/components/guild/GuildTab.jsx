@@ -4,6 +4,7 @@ import DefenseDeckTab from "./DefenseDeckTab.jsx";
 import OwnerlessDefenseDeckTab from "./OwnerlessDefenseDeckTab.jsx";
 import BattleResearchTab from "./BattleResearchTab.jsx";
 import GuildMemberManagementTab from "./GuildMemberManagementTab.jsx";
+import NicknameChangeRequestPanel from "./NicknameChangeRequestPanel.jsx";
 
 export default function GuildTab({
   guild,
@@ -11,6 +12,7 @@ export default function GuildTab({
   monsters,
   canManageGuild = false,
   currentGuildMemberId = null,
+  currentNickname = "",
   onRefreshMembers,
 }) {
   const [subTab, setSubTab] = useState("inventory");
@@ -59,12 +61,15 @@ export default function GuildTab({
       {!canUse ? (
         <div className="text-sm text-gray-600">길드 가입 승인 후 이용할 수 있습니다.</div>
       ) : subTab === "inventory" ? (
-        <InventoryTab
-          members={members}
-          monsters={monsters}
-          canManageGuild={canManageGuild}
-          currentGuildMemberId={currentGuildMemberId}
-        />
+        <>
+          <NicknameChangeRequestPanel currentNickname={currentNickname} />
+          <InventoryTab
+            members={members}
+            monsters={monsters}
+            canManageGuild={canManageGuild}
+            currentGuildMemberId={currentGuildMemberId}
+          />
+        </>
       ) : subTab === "defenseDeck" ? (
         <DefenseDeckTab
           members={members}

@@ -39,7 +39,7 @@ public class OwnerlessDefenseDeckService {
     public Long create(String email, OwnerlessDefenseDeckCreateRequest request) {
         User user = userService.findByEmailOrThrow(email);
 
-        GuildMember actor = guildMemberRepository.findByUser(user)
+        GuildMember actor = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
                 .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         // 권한: 마스터/부마스터만
@@ -74,7 +74,7 @@ public class OwnerlessDefenseDeckService {
     public OwnerlessDefenseDeckDetailResponse getDetail(String email, Long deckId) {
         User user = userService.findByEmailOrThrow(email);
 
-        GuildMember actor = guildMemberRepository.findByUser(user)
+        GuildMember actor = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
                 .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         OwnerlessDefenseDeck deck = ownerlessRepo.findById(deckId)
@@ -129,7 +129,7 @@ public class OwnerlessDefenseDeckService {
     public List<OwnerlessDefenseDeckDetailResponse> getList(String email) {
         User user = userService.findByEmailOrThrow(email);
 
-        GuildMember actor = guildMemberRepository.findByUser(user)
+        GuildMember actor = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
                 .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         List<OwnerlessDefenseDeck> decks =
@@ -226,7 +226,7 @@ public class OwnerlessDefenseDeckService {
     public void delete(String email, Long deckId) {
         User user = userService.findByEmailOrThrow(email);
 
-        GuildMember actor = guildMemberRepository.findByUser(user)
+        GuildMember actor = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
                 .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         // 권한: 마스터/부마스터만

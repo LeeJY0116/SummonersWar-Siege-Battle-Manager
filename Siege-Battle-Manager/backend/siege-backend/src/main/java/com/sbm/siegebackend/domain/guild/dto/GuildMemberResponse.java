@@ -16,6 +16,7 @@ public class GuildMemberResponse {
     private GuildMemberType type;
     private GuildMemberStatus status;
     private boolean realUser;
+    private String currentGuildName;
 
     public GuildMemberResponse(Long id,
                                Long userId,
@@ -27,6 +28,20 @@ public class GuildMemberResponse {
                                GuildMemberType type,
                                GuildMemberStatus status,
                                boolean realUser) {
+        this(id, userId, loginId, email, nickname, displayName, role, type, status, realUser, null);
+    }
+
+    public GuildMemberResponse(Long id,
+                               Long userId,
+                               String loginId,
+                               String email,
+                               String nickname,
+                               String displayName,
+                               GuildMemberRole role,
+                               GuildMemberType type,
+                               GuildMemberStatus status,
+                               boolean realUser,
+                               String currentGuildName) {
         this.id = id;
         this.userId = userId;
         this.loginId = loginId;
@@ -37,6 +52,7 @@ public class GuildMemberResponse {
         this.type = type;
         this.status = status;
         this.realUser = realUser;
+        this.currentGuildName = currentGuildName;
     }
 
     public Long getId() {
@@ -77,5 +93,9 @@ public class GuildMemberResponse {
 
     public boolean isRealUser() {
         return realUser;
+    }
+
+    public String getCurrentGuildName() {
+        return currentGuildName;
     }
 }

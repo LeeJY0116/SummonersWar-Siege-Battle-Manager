@@ -9,13 +9,16 @@ import com.sbm.siegebackend.domain.guild.GuildMemberStatus;
 import com.sbm.siegebackend.domain.guild.GuildRepository;
 import com.sbm.siegebackend.domain.user.dto.UserLoginRequest;
 import com.sbm.siegebackend.domain.user.dto.UserLoginResponse;
+import com.sbm.siegebackend.domain.user.dto.UserNicknameChangeRequestResponse;
 import com.sbm.siegebackend.domain.user.dto.UserSignUpRequest;
 import com.sbm.siegebackend.domain.user.dto.UserSignUpResponse;
+import com.sbm.siegebackend.global.exception.ForbiddenException;
 import com.sbm.siegebackend.global.exception.NotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,6 +26,8 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserNicknameChangeRequestRepository nicknameChangeRequestRepository;
+    private final UserNicknameHistoryRepository userNicknameHistoryRepository;
     private final SignupRequestRepository signupRequestRepository;
     private final GuildRepository guildRepository;
     private final GuildMemberRepository guildMemberRepository;
@@ -30,12 +35,16 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public UserService(UserRepository userRepository,
+                       UserNicknameChangeRequestRepository nicknameChangeRequestRepository,
+                       UserNicknameHistoryRepository userNicknameHistoryRepository,
                        SignupRequestRepository signupRequestRepository,
                        GuildRepository guildRepository,
                        GuildMemberRepository guildMemberRepository,
                        PasswordEncoder passwordEncoder,
                        JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
+        this.nicknameChangeRequestRepository = nicknameChangeRequestRepository;
+        this.userNicknameHistoryRepository = userNicknameHistoryRepository;
         this.signupRequestRepository = signupRequestRepository;
         this.guildRepository = guildRepository;
         this.guildMemberRepository = guildMemberRepository;
@@ -119,6 +128,83 @@ public class UserService {
         );
     }
 
+    public UserNicknameChangeRequestResponse requestNicknameChange(String loginId, String requestedNickname) {
+        User user = findByLoginIdOrThrow(loginId);
+        String nextNickname = normalizeRequired(requestedNickname, "변경할 닉네임");
+
+        if (nextNickname.equals(user.getNickname())) {
+            throw new IllegalArgumentException("현재 닉네임과 동일합니다.");
+        }
+        if (userRepository.existsByNickname(nextNickname)
+                || nicknameChangeRequestRepository.existsByRequestedNicknameAndStatus(nextNickname, GuildMemberStatus.PENDING)) {
+            throw new IllegalArgumentException("이미 사용 중이거나 요청 대기 중인 닉네임입니다.");
+        }
+        if (nicknameChangeRequestRepository.existsByUserAndStatus(user, GuildMemberStatus.PENDING)) {
+            throw new IllegalStateException("이미 처리 대기 중인 닉네임 변경 요청이 있습니다.");
+        }
+
+        return toNicknameChangeResponse(
+                nicknameChangeRequestRepository.save(UserNicknameChangeRequest.create(user, nextNickname))
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public UserNicknameChangeRequestResponse getMyPendingNicknameChangeRequest(String loginId) {
+        User user = findByLoginIdOrThrow(loginId);
+        return nicknameChangeRequestRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.PENDING)
+                .map(this::toNicknameChangeResponse)
+                .orElse(null);
+    }
+
+    public void cancelMyPendingNicknameChangeRequest(String loginId) {
+        User user = findByLoginIdOrThrow(loginId);
+        UserNicknameChangeRequest request = nicknameChangeRequestRepository
+                .findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.PENDING)
+                .orElseThrow(() -> new NotFoundException("철회할 닉네임 변경 요청이 없습니다."));
+
+        request.reject(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserNicknameChangeRequestResponse> getPendingNicknameChangeRequests(String loginId) {
+        validateAdmin(loginId);
+
+        return nicknameChangeRequestRepository.findAllByStatusOrderByIdDesc(GuildMemberStatus.PENDING)
+                .stream()
+                .map(this::toNicknameChangeResponse)
+                .toList();
+    }
+
+    public void approveNicknameChangeRequest(String loginId, Long requestId) {
+        User admin = validateAdmin(loginId);
+        UserNicknameChangeRequest request = getPendingNicknameChangeRequest(requestId);
+        User user = request.getUser();
+        String previousNickname = user.getNickname();
+        String nextNickname = request.getRequestedNickname();
+
+        if (!nextNickname.equals(previousNickname) && userRepository.existsByNickname(nextNickname)) {
+            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+        }
+
+        user.setNickname(nextNickname);
+        guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
+                .ifPresent(member -> member.changeDisplayName(nextNickname));
+        userNicknameHistoryRepository.save(UserNicknameHistory.create(
+                user,
+                previousNickname,
+                nextNickname,
+                admin,
+                "ADMIN_APPROVED"
+        ));
+        request.approve(admin);
+    }
+
+    public void rejectNicknameChangeRequest(String loginId, Long requestId) {
+        User admin = validateAdmin(loginId);
+        UserNicknameChangeRequest request = getPendingNicknameChangeRequest(requestId);
+        request.reject(admin);
+    }
+
     @Transactional(readOnly = true)
     public User findByEmailOrThrow(String email) {
         return findByLoginIdOrThrow(email);
@@ -134,6 +220,43 @@ public class UserService {
         return userRepository.findByLoginId(loginId)
                 .or(() -> userRepository.findByEmail(loginId))
                 .or(() -> userRepository.findByNickname(loginId));
+    }
+
+    private User validateAdmin(String loginId) {
+        User user = findByLoginIdOrThrow(loginId);
+        if (user.getRole() != UserRole.ADMIN) {
+            throw new ForbiddenException("관리자만 처리할 수 있습니다.");
+        }
+
+        return user;
+    }
+
+    private UserNicknameChangeRequest getPendingNicknameChangeRequest(Long requestId) {
+        UserNicknameChangeRequest request = nicknameChangeRequestRepository.findById(requestId)
+                .orElseThrow(() -> new NotFoundException("닉네임 변경 요청을 찾을 수 없습니다."));
+
+        if (request.getStatus() != GuildMemberStatus.PENDING) {
+            throw new IllegalArgumentException("대기 중인 닉네임 변경 요청이 아닙니다.");
+        }
+
+        return request;
+    }
+
+    private UserNicknameChangeRequestResponse toNicknameChangeResponse(UserNicknameChangeRequest request) {
+        User user = request.getUser();
+        User reviewedBy = request.getReviewedBy();
+        return new UserNicknameChangeRequestResponse(
+                request.getId(),
+                user.getId(),
+                user.getLoginId(),
+                user.getEmail(),
+                request.getPreviousNickname(),
+                request.getRequestedNickname(),
+                request.getStatus(),
+                reviewedBy == null ? null : reviewedBy.getLoginId(),
+                request.getReviewedAt(),
+                request.getCreatedAt()
+        );
     }
 
     private void validatePendingSignupLogin(String loginId, String password) {
@@ -163,8 +286,12 @@ public class UserService {
             return;
         }
 
-        GuildMember member = guildMemberRepository.findByUser(user)
-                .orElseThrow(() -> new IllegalArgumentException("가입 승인 정보가 없습니다."));
+        GuildMember member = guildMemberRepository.findFirstByUserOrderByIdDesc(user)
+                .orElse(null);
+
+        if (member == null) {
+            return;
+        }
 
         if (member.getStatus() == GuildMemberStatus.APPROVED) {
             return;
@@ -172,6 +299,10 @@ public class UserService {
 
         if (member.getStatus() == GuildMemberStatus.REJECTED) {
             throw new IllegalArgumentException("가입 요청이 거절되었습니다.");
+        }
+
+        if (member.getStatus() == GuildMemberStatus.LEFT) {
+            return;
         }
 
         if (member.getRole() == GuildMemberRole.MASTER) {
