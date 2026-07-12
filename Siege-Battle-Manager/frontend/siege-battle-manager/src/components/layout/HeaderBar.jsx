@@ -11,11 +11,16 @@ export default function HeaderBar({
   activeTab,
   onChangeTab,
   guild,
+  canManageGuild = false,
   onSyncSwarfarmMonsters,
   syncingMonsters = false,
   onApplyMonsterLocalization,
   applyingLocalization = false,
 }) {
+  const tabs = canManageGuild
+    ? TABS
+    : TABS.filter((tab) => tab.key !== "review");
+
   return (
     <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
@@ -29,7 +34,7 @@ export default function HeaderBar({
 
       <div className="flex flex-col items-end gap-2">
         <div className="inline-flex gap-1 rounded-2xl bg-gray-100 p-1">
-          {TABS.map((tab) => (
+          {tabs.map((tab) => (
             <button
               key={tab.key}
               type="button"
@@ -53,23 +58,27 @@ export default function HeaderBar({
               : "없음"}
           </div>
 
-          <button
-            type="button"
-            onClick={onSyncSwarfarmMonsters}
-            disabled={syncingMonsters}
-            className="rounded-2xl border border-gray-200 bg-white px-4 py-2 shadow-sm hover:bg-gray-100 disabled:opacity-50"
-          >
-            {syncingMonsters ? "Syncing..." : "Sync Swarfarm"}
-          </button>
+          {canManageGuild && (
+            <button
+              type="button"
+              onClick={onSyncSwarfarmMonsters}
+              disabled={syncingMonsters}
+              className="rounded-2xl border border-gray-200 bg-white px-4 py-2 shadow-sm hover:bg-gray-100 disabled:opacity-50"
+            >
+              {syncingMonsters ? "Syncing..." : "Sync Swarfarm"}
+            </button>
+          )}
 
-          <button
-            type="button"
-            onClick={onApplyMonsterLocalization}
-            disabled={applyingLocalization}
-            className="rounded-2xl border border-gray-200 bg-white px-4 py-2 shadow-sm hover:bg-gray-100 disabled:opacity-50"
-          >
-            {applyingLocalization ? "Applying..." : "Apply Names"}
-          </button>
+          {canManageGuild && (
+            <button
+              type="button"
+              onClick={onApplyMonsterLocalization}
+              disabled={applyingLocalization}
+              className="rounded-2xl border border-gray-200 bg-white px-4 py-2 shadow-sm hover:bg-gray-100 disabled:opacity-50"
+            >
+              {applyingLocalization ? "Applying..." : "Apply Names"}
+            </button>
+          )}
 
           <button
             type="button"

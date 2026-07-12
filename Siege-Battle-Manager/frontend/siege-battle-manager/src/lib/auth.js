@@ -34,3 +34,8 @@ export async function login(loginId, password) {
   localStorage.setItem("accessToken", token);
   return res.data;
 }
+
+export async function fetchMe() {
+  const res = await apiFetch("/users/me");
+  return res.data;
+}

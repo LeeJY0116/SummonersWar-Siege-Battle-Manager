@@ -6,6 +6,7 @@ import MonsterReviewTab from "./components/monsters/MonsterReviewTab.jsx";
 import SiegeBattleTab from "./components/siege/SiegeBattleTab.jsx";
 import { fetchMyGuild, fetchMyGuildMembers } from "./lib/guild.js";
 import LoginPage from "./components/auth/LoginPage.jsx";
+import { fetchMe } from "./lib/auth.js";
 import GuildTab from "./components/guild/GuildTab.jsx";
 import { apiFetch } from "./lib/api.js";
 import { applyMonsterLocalization, syncSwarfarmMonsters } from "./lib/monsterSync.js";
@@ -114,9 +115,10 @@ async function loadBackendMonsters() {
 export default function SiegeBattleManager() {
   const [activeTab, setActiveTab] = useState("manager");
   const [monsters, setMonsters] = useState([]);
-  const [trios, setTrios] = useState([]);
+  const [trios, setTrios] = useState([]);
   const [guild, setGuild] = useState(null);
   const [members, setMembers] = useState([]);
+  const [me, setMe] = useState(null);
   const [syncingMonsters, setSyncingMonsters] = useState(false);
   const [applyingLocalization, setApplyingLocalization] = useState(false);
 
@@ -132,15 +134,15 @@ export default function SiegeBattleManager() {
 
   useEffect(() => {
     if (!token) return;
-  
-  // Token is checked before loading guild data.
 
+    fetchMe()
+      .then(setMe)
+      .catch(() => setMe(null));
 
-
-  fetchMyGuild()
-  .then(setGuild)
-  .catch(() => setGuild(null));
-}, [token]);
+    fetchMyGuild()
+      .then(setGuild)
+      .catch(() => setGuild(null));
+  }, [token]);
 
 
   // 길드 멤버 로드
@@ -152,6 +154,18 @@ export default function SiegeBattleManager() {
   .then(setMembers)
   .catch(() => setMembers([]));
 }, [guild]);
+
+  const currentMember =
+    members.find((member) => member.realUser && member.displayName === me?.nickname) ?? null;
+  const currentGuildRole = currentMember?.role ?? null;
+  const canManageGuild = currentGuildRole === "MASTER" || currentGuildRole === "SUB_MASTER";
+  const permissionLoaded = Boolean(me) && (!guild || members.length > 0);
+
+  useEffect(() => {
+    if (permissionLoaded && !canManageGuild && activeTab === "review") {
+      setActiveTab("manager");
+    }
+  }, [activeTab, canManageGuild, permissionLoaded]);
 
   useEffect(() => {
     loadBackendMonsters()
@@ -298,6 +312,7 @@ export default function SiegeBattleManager() {
         <HeaderBar
           guild={guild}
           members={members}
+          canManageGuild={canManageGuild}
           activeTab={activeTab}
           onChangeTab={setActiveTab}
           onSyncSwarfarmMonsters={handleSyncSwarfarmMonsters}
