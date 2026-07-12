@@ -93,8 +93,13 @@ existsByUser()
 
 주요 엔티티:
 - User
+- SignupRequest
+- UserNicknameChangeRequest
+- UserNicknameHistory
 - Guild
 - GuildMember
+- ExistingGuildJoinRequest
+- GuildMemberBan
 - Monster
 - DefenseDeck
 - GuildMemberInventory
@@ -166,6 +171,52 @@ OncePerRequestFilter 기반 구현
 - REAL / VIRTUAL 구분
 - 권한(Role) 보유
 - 길드 단위 관리
+- 상태(Status) 보유
+- 탈퇴/추방 후 재가입 시 기존 row를 재사용하지 않고 새 row 생성
+- 현재 소속 길드는 `APPROVED` 상태의 최신 row를 기준으로 판단
+
+---
+
+## 가입 승인 구조
+
+회원가입과 실제 계정 생성을 분리합니다.
+
+- 가입 신청 시 `SignupRequest(PENDING)`만 저장
+- 관리자 또는 길드장 승인 전에는 실제 `User`, `Guild`, `GuildMember`를 만들지 않음
+- 길드장 신청 승인 시 `User`, `Guild`, `GuildMember(MASTER)` 생성
+- 길드원 신청 승인 시 `User`, `GuildMember(MEMBER)` 생성
+- 거절된 신청은 실제 계정을 만들지 않으므로 같은 아이디로 재신청 가능
+
+기존 계정이 길드가 없는 상태라면 `ExistingGuildJoinRequest`를 통해 새 길드 가입을 요청합니다.
+
+---
+
+## 회원 관리 / 재가입 차단
+
+길드장과 부길드장은 회원 관리 탭에서 길드원을 관리합니다.
+
+- 가입 요청 승인/거절
+- 등급 변경
+- 길드원 추방
+- 추방된 계정의 재가입 차단 목록 조회
+- 재가입 차단 해제
+
+추방 시 `GuildMember`는 `LEFT` 상태로 변경하고, 재가입 차단은 `GuildMemberBan`으로 별도 관리합니다.
+
+---
+
+## 관리자 이력 관리
+
+관리자는 운영 추적을 위해 다음 정보를 조회할 수 있습니다.
+
+- 전체 길드 목록
+- 길드별 길드원 목록
+- 현재 소속 길드
+- 길드 이동 이력
+- 닉네임 변경 요청
+- 닉네임 변경 이력
+
+닉네임은 즉시 변경하지 않고 `UserNicknameChangeRequest` 승인 후 `UserNicknameHistory`에 기록합니다.
 
 ---
 
@@ -339,6 +390,8 @@ join fetch d.monsters
 | 403   | 권한 없음  |
 | 404   | 데이터 없음 |
 | 500   | 서버 오류  |
+
+`IllegalStateException`은 사용자가 복구 가능한 정책 위반 메시지로 처리하기 위해 400 응답으로 변환합니다.
 
 ---
 

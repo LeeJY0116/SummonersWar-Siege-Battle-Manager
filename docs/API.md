@@ -146,6 +146,34 @@ Authorization: Bearer {JWT}
 }
 ```
 
+## 닉네임 변경 요청
+
+```http
+POST /api/users/me/nickname-change-requests
+Authorization: Bearer {JWT}
+Content-Type: application/json
+```
+
+```json
+{
+  "newNickname": "새닉네임"
+}
+```
+
+## 내 닉네임 변경 대기 요청 조회
+
+```http
+GET /api/users/me/nickname-change-requests/pending
+Authorization: Bearer {JWT}
+```
+
+## 내 닉네임 변경 대기 요청 철회
+
+```http
+DELETE /api/users/me/nickname-change-requests/pending
+Authorization: Bearer {JWT}
+```
+
 ---
 
 # 🏰 Guild API
@@ -201,6 +229,59 @@ Authorization: Bearer {JWT}
 }
 ```
 
+## 내 길드 가입 요청 목록 조회
+
+길드장/부길드장이 처리할 수 있는 가입 요청을 조회합니다.
+
+```http
+GET /api/guilds/me/join-requests
+Authorization: Bearer {JWT}
+```
+
+## 기존 계정의 길드 가입 요청
+
+길드가 없는 기존 계정이 새 길드 가입을 요청합니다.
+
+```http
+POST /api/guilds/join-requests
+Authorization: Bearer {JWT}
+Content-Type: application/json
+```
+
+```json
+{
+  "guildName": "test"
+}
+```
+
+## 내 기존 계정 가입 요청 조회
+
+```http
+GET /api/guilds/join-requests/me
+Authorization: Bearer {JWT}
+```
+
+## 내 기존 계정 가입 요청 철회
+
+```http
+DELETE /api/guilds/join-requests/me
+Authorization: Bearer {JWT}
+```
+
+## 기존 계정 가입 요청 승인
+
+```http
+POST /api/guilds/me/account-join-requests/{requestId}/approve
+Authorization: Bearer {JWT}
+```
+
+## 기존 계정 가입 요청 거절
+
+```http
+POST /api/guilds/me/account-join-requests/{requestId}/reject
+Authorization: Bearer {JWT}
+```
+
 ---
 
 # 👥 Guild Member API
@@ -230,6 +311,115 @@ Authorization: Bearer {JWT}
 
 ```http
 GET /api/guild-members/me
+Authorization: Bearer {JWT}
+```
+
+## 길드원 등급 변경
+
+```http
+PATCH /api/guild-members/{guildMemberId}/role
+Authorization: Bearer {JWT}
+Content-Type: application/json
+```
+
+```json
+{
+  "role": "SUB_MASTER"
+}
+```
+
+## 실제 길드원 추방
+
+```http
+DELETE /api/guild-members/{guildMemberId}/real
+Authorization: Bearer {JWT}
+```
+
+## 재가입 불가 목록 조회
+
+```http
+GET /api/guild-members/bans
+Authorization: Bearer {JWT}
+```
+
+## 재가입 불가 해제
+
+```http
+PATCH /api/guild-members/bans/{banId}/lift
+Authorization: Bearer {JWT}
+```
+
+---
+
+# 🛠️ Admin API
+
+## 길드장 가입 신청 목록 조회
+
+```http
+GET /api/admin/guild-join-requests/masters
+Authorization: Bearer {JWT}
+```
+
+## 가입 신청 승인
+
+```http
+POST /api/admin/guild-join-requests/{requestId}/approve
+Authorization: Bearer {JWT}
+```
+
+## 가입 신청 거절
+
+```http
+POST /api/admin/guild-join-requests/{requestId}/reject
+Authorization: Bearer {JWT}
+```
+
+## 닉네임 변경 요청 목록 조회
+
+```http
+GET /api/users/admin/nickname-change-requests
+Authorization: Bearer {JWT}
+```
+
+## 닉네임 변경 요청 승인
+
+```http
+POST /api/users/admin/nickname-change-requests/{requestId}/approve
+Authorization: Bearer {JWT}
+```
+
+## 닉네임 변경 요청 거절
+
+```http
+POST /api/users/admin/nickname-change-requests/{requestId}/reject
+Authorization: Bearer {JWT}
+```
+
+## 관리자 길드 목록 조회
+
+```http
+GET /api/admin/guilds
+Authorization: Bearer {JWT}
+```
+
+## 관리자 길드원 목록 조회
+
+```http
+GET /api/admin/guilds/{guildId}/members
+Authorization: Bearer {JWT}
+```
+
+## 길드원 길드 이동 이력 조회
+
+```http
+GET /api/admin/guilds/members/{guildMemberId}/history
+Authorization: Bearer {JWT}
+```
+
+## 길드원 닉네임 변경 이력 조회
+
+```http
+GET /api/admin/guilds/members/{guildMemberId}/nickname-histories
 Authorization: Bearer {JWT}
 ```
 
