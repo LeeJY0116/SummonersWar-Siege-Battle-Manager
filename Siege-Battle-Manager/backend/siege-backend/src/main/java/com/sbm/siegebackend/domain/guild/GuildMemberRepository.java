@@ -25,5 +25,17 @@ public interface GuildMemberRepository extends JpaRepository<GuildMember, Long> 
     Optional<GuildMember> findByUser(User user);
 
     List<GuildMember> findAllByGuild(Guild guild);
+
+    List<GuildMember> findAllByRoleAndStatusAndType(
+            GuildMemberRole role,
+            GuildMemberStatus status,
+            GuildMemberType type
+    );
+
+    List<GuildMember> findAllByGuildAndStatusAndType(
+            Guild guild,
+            GuildMemberStatus status,
+            GuildMemberType type
+    );
 }
 

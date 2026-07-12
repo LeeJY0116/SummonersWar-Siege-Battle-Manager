@@ -104,6 +104,7 @@ public class GuildMemberService {
         List<GuildMember> members = guildMemberRepository.findByGuild(guild);
 
         return members.stream()
+                .filter(member -> member.getStatus() == GuildMemberStatus.APPROVED)
                 .map(this::toResponse)
                 .toList();
     }
@@ -113,9 +114,13 @@ public class GuildMemberService {
         return new GuildMemberResponse(
                 member.getId(),
                 member.getUser() == null ? null : member.getUser().getId(),
+                member.getUser() == null ? null : member.getUser().getLoginId(),
+                member.getUser() == null ? null : member.getUser().getEmail(),
+                member.getUser() == null ? null : member.getUser().getNickname(),
                 member.getDisplayName(),
                 member.getRole(),
                 member.getType(),
+                member.getStatus(),
                 realUser
         );
     }

@@ -38,6 +38,10 @@ public class GuildMember {
     @Column(nullable = false)
     private GuildMemberType type; // REAL / VIRTUAL
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(20) default 'APPROVED'")
+    private GuildMemberStatus status = GuildMemberStatus.APPROVED;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
@@ -67,6 +71,15 @@ public class GuildMember {
                 role,
                 GuildMemberType.REAL
         );
+    }
+
+    public static GuildMember createReal(Guild guild,
+                                         User user,
+                                         GuildMemberRole role,
+                                         GuildMemberStatus status) {
+        GuildMember member = createReal(guild, user, role);
+        member.changeStatus(status);
+        return member;
     }
 
     public static GuildMember createVirtual(Guild guild, String displayName, GuildMemberRole role) {
@@ -104,6 +117,8 @@ public class GuildMember {
 
     public GuildMemberType getType() { return type; }
 
+    public GuildMemberStatus getStatus() { return status; }
+
     public LocalDateTime getCreatedAt() { return createdAt; }
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
@@ -118,5 +133,9 @@ public class GuildMember {
 
     public void changeDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public void changeStatus(GuildMemberStatus status) {
+        this.status = status;
     }
 }

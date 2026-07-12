@@ -3,6 +3,7 @@ import InventoryTab from "./InventoryTab.jsx";
 import DefenseDeckTab from "./DefenseDeckTab.jsx";
 import OwnerlessDefenseDeckTab from "./OwnerlessDefenseDeckTab.jsx";
 import BattleResearchTab from "./BattleResearchTab.jsx";
+import GuildMemberManagementTab from "./GuildMemberManagementTab.jsx";
 
 export default function GuildTab({
   guild,
@@ -10,73 +11,53 @@ export default function GuildTab({
   monsters,
   canManageGuild = false,
   currentGuildMemberId = null,
+  onRefreshMembers,
 }) {
   const [subTab, setSubTab] = useState("inventory");
-
   const canUse = Boolean(guild);
 
   const header = useMemo(() => {
-    if (!guild) return "길드에 가입되어 있지 않습니다.";
-    return `${guild.name} · 인원 ${guild.memberCount ?? members?.length ?? 0}`;
+    if (!guild) return "가입된 길드가 없습니다.";
+    return `${guild.name} · 인원 ${members?.length ?? guild.memberCount ?? 0}`;
   }, [guild, members]);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
-      <div className="flex items-center justify-between gap-3 mb-4">
+    <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <div>
           <div className="text-lg font-bold">길드</div>
           <div className="text-sm text-gray-600">{header}</div>
         </div>
 
-        <div className="inline-flex rounded-2xl bg-gray-100 p-1 gap-1">
-          <button
-            onClick={() => setSubTab("inventory")}
-            className={`px-3 py-1 rounded-xl text-sm ${
-              subTab === "inventory"
-                ? "bg-white shadow font-semibold"
-                : "text-gray-500"
-            }`}
-          >
+        <div className="inline-flex gap-1 rounded-2xl bg-gray-100 p-1">
+          <SubTabButton active={subTab === "inventory"} onClick={() => setSubTab("inventory")}>
             인벤토리
-          </button>
-
-          <button
+          </SubTabButton>
+          <SubTabButton
+            active={subTab === "battleResearch"}
             onClick={() => setSubTab("battleResearch")}
-            className={`px-3 py-1 rounded-xl text-sm ${
-              subTab === "battleResearch"
-                ? "bg-white shadow font-semibold"
-                : "text-gray-500"
-            }`}
           >
             전투 연구
-          </button>
-          <button
-          onClick={() => setSubTab("defenseDeck")}
-          className={`px-3 py-1 rounded-xl text-sm ${
-            subTab === "defenseDeck"
-              ? "bg-white shadow font-semibold"
-              : "text-gray-500"
-          }`}
-        >
-          방덱
-        </button>
-        <button
-        onClick={() => setSubTab("ownerless")}
-        className={`px-3 py-1 rounded-xl text-sm ${
-          subTab === "ownerless"
-            ? "bg-white shadow font-semibold"
-            : "text-gray-500"
-        }`}
-      >
-        길드 방덱
-      </button>
+          </SubTabButton>
+          <SubTabButton
+            active={subTab === "defenseDeck"}
+            onClick={() => setSubTab("defenseDeck")}
+          >
+            방덱
+          </SubTabButton>
+          <SubTabButton active={subTab === "ownerless"} onClick={() => setSubTab("ownerless")}>
+            길드 방덱
+          </SubTabButton>
+          {canManageGuild && (
+            <SubTabButton active={subTab === "members"} onClick={() => setSubTab("members")}>
+              회원 관리
+            </SubTabButton>
+          )}
         </div>
       </div>
 
       {!canUse ? (
-        <div className="text-sm text-gray-600">
-          길드를 만든 뒤 이용할 수 있어요.
-        </div>
+        <div className="text-sm text-gray-600">길드 가입 승인 후 이용할 수 있습니다.</div>
       ) : subTab === "inventory" ? (
         <InventoryTab
           members={members}
@@ -93,9 +74,25 @@ export default function GuildTab({
         />
       ) : subTab === "ownerless" ? (
         <OwnerlessDefenseDeckTab monsters={monsters} />
-        ) : subTab === "battleResearch" ? (
+      ) : subTab === "battleResearch" ? (
         <BattleResearchTab monsters={monsters} />
+      ) : subTab === "members" && canManageGuild ? (
+        <GuildMemberManagementTab members={members} onRefreshMembers={onRefreshMembers} />
       ) : null}
     </div>
+  );
+}
+
+function SubTabButton({ active, onClick, children }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-xl px-3 py-1 text-sm ${
+        active ? "bg-white font-semibold shadow" : "text-gray-500"
+      }`}
+    >
+      {children}
+    </button>
   );
 }

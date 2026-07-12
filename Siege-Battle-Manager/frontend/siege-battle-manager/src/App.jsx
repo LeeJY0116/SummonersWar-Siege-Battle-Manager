@@ -113,7 +113,7 @@ async function loadBackendMonsters() {
 }
 
 export default function SiegeBattleManager() {
-  const [activeTab, setActiveTab] = useState("manager");
+  const [activeTab, setActiveTab] = useState("guild");
   const [monsters, setMonsters] = useState([]);
   const [trios, setTrios] = useState([]);
   const [guild, setGuild] = useState(null);
@@ -155,6 +155,12 @@ export default function SiegeBattleManager() {
   .catch(() => setMembers([]));
 }, [guild]);
 
+  async function refreshMyGuildMembers() {
+    if (!guild) return;
+    const loadedMembers = await fetchMyGuildMembers();
+    setMembers(loadedMembers);
+  }
+
   const isAdmin = me?.role === "ADMIN";
   const currentGuildMember = members.find(
     (member) =>
@@ -162,15 +168,17 @@ export default function SiegeBattleManager() {
       (String(member.userId) === String(me?.id) || member.displayName === me?.nickname)
   );
   const currentGuildRole = currentGuildMember?.role ?? null;
+  const currentGuildStatus = currentGuildMember?.status ?? "APPROVED";
   const currentNickname =
     currentGuildMember?.displayName ?? me?.nickname ?? me?.loginId ?? "";
   const canManageGuild =
-    currentGuildRole === "MASTER" || currentGuildRole === "SUB_MASTER";
+    currentGuildStatus === "APPROVED" &&
+    (currentGuildRole === "MASTER" || currentGuildRole === "SUB_MASTER");
   const permissionLoaded = Boolean(me) && (!guild || members.length > 0);
 
   useEffect(() => {
     if (permissionLoaded && !isAdmin && activeTab === "review") {
-      setActiveTab("manager");
+      setActiveTab("guild");
     }
   }, [activeTab, isAdmin, permissionLoaded]);
 
@@ -353,6 +361,7 @@ export default function SiegeBattleManager() {
             monsters={monsters}
             canManageGuild={canManageGuild}
             currentGuildMemberId={currentGuildMember?.id ?? null}
+            onRefreshMembers={refreshMyGuildMembers}
           />
         )}
 

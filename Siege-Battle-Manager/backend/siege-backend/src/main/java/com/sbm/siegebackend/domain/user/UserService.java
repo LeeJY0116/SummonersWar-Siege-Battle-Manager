@@ -5,6 +5,7 @@ import com.sbm.siegebackend.domain.guild.Guild;
 import com.sbm.siegebackend.domain.guild.GuildMember;
 import com.sbm.siegebackend.domain.guild.GuildMemberRepository;
 import com.sbm.siegebackend.domain.guild.GuildMemberRole;
+import com.sbm.siegebackend.domain.guild.GuildMemberStatus;
 import com.sbm.siegebackend.domain.guild.GuildRepository;
 import com.sbm.siegebackend.domain.user.dto.UserLoginRequest;
 import com.sbm.siegebackend.domain.user.dto.UserLoginResponse;
@@ -144,7 +145,12 @@ public class UserService {
     private void registerGuildMember(String signupType, String guildName, User user) {
         if (isMasterSignUp(signupType)) {
             Guild guild = guildRepository.save(new Guild(guildName, "", user));
-            GuildMember member = GuildMember.createReal(guild, user, GuildMemberRole.MASTER);
+            GuildMember member = GuildMember.createReal(
+                    guild,
+                    user,
+                    GuildMemberRole.MASTER,
+                    GuildMemberStatus.PENDING
+            );
             guildMemberRepository.save(member);
             guild.addMember(member);
             return;
@@ -152,7 +158,12 @@ public class UserService {
 
         Guild guild = guildRepository.findByName(guildName)
                 .orElseThrow(() -> new IllegalArgumentException("입력한 길드가 아직 생성되지 않아 가입할 수 없습니다."));
-        GuildMember member = GuildMember.createReal(guild, user, GuildMemberRole.MEMBER);
+        GuildMember member = GuildMember.createReal(
+                guild,
+                user,
+                GuildMemberRole.MEMBER,
+                GuildMemberStatus.PENDING
+        );
         guildMemberRepository.save(member);
         guild.addMember(member);
     }

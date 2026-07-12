@@ -1,28 +1,41 @@
 package com.sbm.siegebackend.domain.guild.dto;
 
 import com.sbm.siegebackend.domain.guild.GuildMemberRole;
+import com.sbm.siegebackend.domain.guild.GuildMemberStatus;
 import com.sbm.siegebackend.domain.guild.GuildMemberType;
 
 public class GuildMemberResponse {
 
     private Long id;
     private Long userId;
+    private String loginId;
+    private String email;
+    private String nickname;
     private String displayName;
     private GuildMemberRole role;
     private GuildMemberType type;
-    private boolean realUser;   // 실제 사이트 계정인지 여부
+    private GuildMemberStatus status;
+    private boolean realUser;
 
     public GuildMemberResponse(Long id,
                                Long userId,
+                               String loginId,
+                               String email,
+                               String nickname,
                                String displayName,
                                GuildMemberRole role,
                                GuildMemberType type,
+                               GuildMemberStatus status,
                                boolean realUser) {
         this.id = id;
         this.userId = userId;
+        this.loginId = loginId;
+        this.email = email;
+        this.nickname = nickname;
         this.displayName = displayName;
         this.role = role;
         this.type = type;
+        this.status = status;
         this.realUser = realUser;
     }
 
@@ -32,6 +45,18 @@ public class GuildMemberResponse {
 
     public Long getUserId() {
         return userId;
+    }
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getNickname() {
+        return nickname;
     }
 
     public String getDisplayName() {
@@ -44,6 +69,10 @@ public class GuildMemberResponse {
 
     public GuildMemberType getType() {
         return type;
+    }
+
+    public GuildMemberStatus getStatus() {
+        return status;
     }
 
     public boolean isRealUser() {

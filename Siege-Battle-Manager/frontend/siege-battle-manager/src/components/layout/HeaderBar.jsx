@@ -1,8 +1,6 @@
 import React from "react";
 
 const TABS = [
-  { key: "manager", label: "조합 매니저" },
-  { key: "siege", label: "도감" },
   { key: "guild", label: "길드" },
   { key: "review", label: "몬스터 검수" },
 ];

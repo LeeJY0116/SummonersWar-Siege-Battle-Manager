@@ -126,12 +126,17 @@ public class GuildService {
 
         return guildMemberRepository.findAllByGuild(guild)
                 .stream()
+                .filter(m -> m.getStatus() == GuildMemberStatus.APPROVED)
                 .map(m -> new GuildMemberResponse(
                         m.getId(),
                         m.getUser() == null ? null : m.getUser().getId(),
+                        m.getUser() == null ? null : m.getUser().getLoginId(),
+                        m.getUser() == null ? null : m.getUser().getEmail(),
+                        m.getUser() == null ? null : m.getUser().getNickname(),
                         m.getDisplayName(),
                         m.getRole(),
                         m.getType(),
+                        m.getStatus(),
                         m.isRealUser() // 네 필드에 맞게
                 ))
                 .toList();
