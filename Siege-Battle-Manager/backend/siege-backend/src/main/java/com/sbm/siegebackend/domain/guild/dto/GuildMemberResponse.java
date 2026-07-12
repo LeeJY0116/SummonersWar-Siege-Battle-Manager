@@ -6,17 +6,20 @@ import com.sbm.siegebackend.domain.guild.GuildMemberType;
 public class GuildMemberResponse {
 
     private Long id;
+    private Long userId;
     private String displayName;
     private GuildMemberRole role;
     private GuildMemberType type;
     private boolean realUser;   // 실제 사이트 계정인지 여부
 
     public GuildMemberResponse(Long id,
+                               Long userId,
                                String displayName,
                                GuildMemberRole role,
                                GuildMemberType type,
                                boolean realUser) {
         this.id = id;
+        this.userId = userId;
         this.displayName = displayName;
         this.role = role;
         this.type = type;
@@ -25,6 +28,10 @@ public class GuildMemberResponse {
 
     public Long getId() {
         return id;
+    }
+
+    public Long getUserId() {
+        return userId;
     }
 
     public String getDisplayName() {

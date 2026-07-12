@@ -3807,7 +3807,7 @@
     "aliases" : [ "뱀파이어", "암뱀" ]
   },
   "sw_14722" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : null,
     "englishName" : "Imperfect Vampire",
     "attribute" : "FIRE",
@@ -3816,7 +3816,7 @@
     "aliases" : [ "불완전한 뱀파이어", "불완전뱀", "불불완전뱀" ]
   },
   "sw_14723" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : null,
     "englishName" : "Imperfect Vampire",
     "attribute" : "WIND",
@@ -4100,8 +4100,8 @@
     "englishName" : "Mina",
     "attribute" : "WATER",
     "naturalStars" : 3,
-    "koreanName" : "무도가",
-    "aliases" : [ "무도가", "물무도가" ]
+    "koreanName" : "마샬캣",
+    "aliases" : [ "마샬캣", "물마샬캣" ]
   },
   "sw_15032" : {
     "enabled" : true,
@@ -4109,8 +4109,8 @@
     "englishName" : "Mei",
     "attribute" : "FIRE",
     "naturalStars" : 3,
-    "koreanName" : "무도가",
-    "aliases" : [ "무도가", "불무도가" ]
+    "koreanName" : "마샬캣",
+    "aliases" : [ "마샬캣", "불마샬캣" ]
   },
   "sw_15033" : {
     "enabled" : true,
@@ -4118,8 +4118,8 @@
     "englishName" : "Naomi",
     "attribute" : "WIND",
     "naturalStars" : 3,
-    "koreanName" : "무도가",
-    "aliases" : [ "무도가", "풍무도가" ]
+    "koreanName" : "마샬캣",
+    "aliases" : [ "마샬캣", "풍마샬캣" ]
   },
   "sw_15034" : {
     "enabled" : true,
@@ -4127,8 +4127,8 @@
     "englishName" : "Xiao Ling",
     "attribute" : "LIGHT",
     "naturalStars" : 3,
-    "koreanName" : "무도가",
-    "aliases" : [ "무도가", "빛무도가" ]
+    "koreanName" : "마샬캣",
+    "aliases" : [ "마샬캣", "빛마샬캣" ]
   },
   "sw_15035" : {
     "enabled" : true,
@@ -4136,8 +4136,8 @@
     "englishName" : "Miho",
     "attribute" : "DARK",
     "naturalStars" : 3,
-    "koreanName" : "무도가",
-    "aliases" : [ "무도가", "암무도가" ]
+    "koreanName" : "마샬캣",
+    "aliases" : [ "마샬캣", "암마샬캣" ]
   },
   "sw_15201" : {
     "enabled" : false,
@@ -10422,7 +10422,7 @@
     "aliases" : [ "광전사", "암광전사" ]
   },
   "sw_22513" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Skogul",
     "attribute" : "WIND",
@@ -10431,7 +10431,7 @@
     "aliases" : [ "스코굴", "광전사", "풍스코굴", "풍광전사" ]
   },
   "sw_22515" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Trasar",
     "attribute" : "DARK",
@@ -11871,7 +11871,7 @@
     "aliases" : [ "스트라이커", "류", "스커", "암스트라이커", "암류", "암스커" ]
   },
   "sw_24511" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Moore",
     "attribute" : "WATER",
@@ -11880,7 +11880,7 @@
     "aliases" : [ "스트라이커", "물스트라이커", "류", "스커", "물류", "물스커" ]
   },
   "sw_24512" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Douglas",
     "attribute" : "FIRE",
@@ -11889,7 +11889,7 @@
     "aliases" : [ "스트라이커", "불스트라이커", "류", "스커", "불류", "불스커", "더글라스" ]
   },
   "sw_24513" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Kashmir",
     "attribute" : "WIND",
@@ -11898,7 +11898,7 @@
     "aliases" : [ "스트라이커", "풍스트라이커", "류", "스커", "풍류", "풍스커" ]
   },
   "sw_24514" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Talisman",
     "attribute" : "LIGHT",
@@ -11907,7 +11907,7 @@
     "aliases" : [ "스트라이커", "빛스트라이커", "류", "스커", "빛류", "빛스커" ]
   },
   "sw_24515" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Vancliffe",
     "attribute" : "DARK",
@@ -11979,7 +11979,7 @@
     "aliases" : [ "슬레이어", "바이슨", "암슬레이어", "암바이슨" ]
   },
   "sw_24711" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Borgnine",
     "attribute" : "WATER",
@@ -11988,7 +11988,7 @@
     "aliases" : [ "슬레이어", "물슬레이어", "바이슨", "물바이슨" ]
   },
   "sw_24712" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Karnal",
     "attribute" : "FIRE",
@@ -11997,7 +11997,7 @@
     "aliases" : [ "슬레이어", "불슬레이어", "바이슨", "불바이슨" ]
   },
   "sw_24713" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Sagar",
     "attribute" : "WIND",
@@ -12006,7 +12006,7 @@
     "aliases" : [ "슬레이어", "풍슬레이어", "바이슨", "풍바이슨" ]
   },
   "sw_24714" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Craig",
     "attribute" : "LIGHT",
@@ -12015,7 +12015,7 @@
     "aliases" : [ "슬레이어", "빛슬레이어", "바이슨", "빛바이슨" ]
   },
   "sw_24715" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Gurkha",
     "attribute" : "DARK",
@@ -12069,7 +12069,7 @@
     "aliases" : [ "포이즌마스터", "달심", "포마", "암포이즌마스터", "암달심", "암포마" ]
   },
   "sw_24811" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Kyle",
     "attribute" : "WATER",
@@ -12078,7 +12078,7 @@
     "aliases" : [ "포이즌 마스터", "물포이즌 마스터", "포이즌마스터", "달심", "포마", "물포이즌마스터", "물달심", "물포마" ]
   },
   "sw_24812" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Todd",
     "attribute" : "FIRE",
@@ -12087,7 +12087,7 @@
     "aliases" : [ "포이즌 마스터", "불포이즌 마스터", "포이즌마스터", "달심", "포마", "불포이즌마스터", "불달심", "불포마" ]
   },
   "sw_24813" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Jarrett",
     "attribute" : "WIND",
@@ -12096,7 +12096,7 @@
     "aliases" : [ "포이즌 마스터", "풍포이즌 마스터", "포이즌마스터", "달심", "포마", "풍포이즌마스터", "풍달심", "풍포마" ]
   },
   "sw_24814" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Hekerson",
     "attribute" : "LIGHT",
@@ -12105,7 +12105,7 @@
     "aliases" : [ "포이즌 마스터", "빛포이즌 마스터", "포이즌마스터", "달심", "포마", "빛포이즌마스터", "빛달심", "빛포마" ]
   },
   "sw_24815" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Cayde",
     "attribute" : "DARK",
@@ -12159,7 +12159,7 @@
     "aliases" : [ "블레이드댄서", "춘리", "블댄", "암블레이드댄서", "암춘리", "암블댄" ]
   },
   "sw_24911" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Lariel",
     "attribute" : "WATER",
@@ -12168,7 +12168,7 @@
     "aliases" : [ "블레이드 댄서", "물블레이드 댄서", "블레이드댄서", "춘리", "블댄", "물블레이드댄서", "물춘리", "물블댄" ]
   },
   "sw_24912" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Berenice",
     "attribute" : "FIRE",
@@ -12177,7 +12177,7 @@
     "aliases" : [ "블레이드 댄서", "불블레이드 댄서", "블레이드댄서", "춘리", "블댄", "불블레이드댄서", "불춘리", "불블댄" ]
   },
   "sw_24913" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Cordelia",
     "attribute" : "WIND",
@@ -12186,7 +12186,7 @@
     "aliases" : [ "블레이드 댄서", "풍블레이드 댄서", "블레이드댄서", "춘리", "블댄", "풍블레이드댄서", "풍춘리", "풍블댄" ]
   },
   "sw_24914" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Leah",
     "attribute" : "LIGHT",
@@ -12195,7 +12195,7 @@
     "aliases" : [ "블레이드 댄서", "빛블레이드 댄서", "블레이드댄서", "춘리", "블댄", "빛블레이드댄서", "빛춘리", "빛블댄" ]
   },
   "sw_24915" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Vereesa",
     "attribute" : "DARK",
@@ -13608,7 +13608,7 @@
     "aliases" : [ "롤리팝 용사", "용감한 쿠키", "용쿠", "풍롤리팝 용사", "풍용감한 쿠키", "풍용쿠" ]
   },
   "sw_26713" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Thomas",
     "attribute" : "WIND",
@@ -13662,7 +13662,7 @@
     "aliases" : [ "푸딩공주", "퓨어 바닐라 쿠키", "퓨바", "푸딩", "암푸딩공주", "암퓨어 바닐라 쿠키", "암퓨바", "암푸딩" ]
   },
   "sw_26811" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Adriana",
     "attribute" : "WATER",
@@ -13671,7 +13671,7 @@
     "aliases" : [ "푸딩 공주", "물푸딩 공주", "푸딩공주", "퓨어 바닐라 쿠키", "퓨바", "푸딩", "물푸딩공주", "물퓨어 바닐라 쿠키", "물퓨바", "물푸딩" ]
   },
   "sw_26812" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Lucia",
     "attribute" : "FIRE",
@@ -13680,7 +13680,7 @@
     "aliases" : [ "푸딩 공주", "불푸딩 공주", "푸딩공주", "퓨어 바닐라 쿠키", "퓨바", "푸딩", "불푸딩공주", "불퓨어 바닐라 쿠키", "불퓨바", "불푸딩" ]
   },
   "sw_26813" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Angela",
     "attribute" : "WIND",
@@ -13689,7 +13689,7 @@
     "aliases" : [ "푸딩 공주", "풍푸딩 공주", "푸딩공주", "퓨어 바닐라 쿠키", "퓨바", "푸딩", "풍푸딩공주", "풍퓨어 바닐라 쿠키", "풍퓨바", "풍푸딩" ]
   },
   "sw_26814" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Ariana",
     "attribute" : "LIGHT",
@@ -13698,7 +13698,7 @@
     "aliases" : [ "푸딩 공주", "빛푸딩 공주", "푸딩공주", "퓨어 바닐라 쿠키", "퓨바", "푸딩", "빛푸딩공주", "빛퓨어 바닐라 쿠키", "빛퓨바", "빛푸딩" ]
   },
   "sw_26815" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Elena",
     "attribute" : "DARK",
@@ -13752,7 +13752,7 @@
     "aliases" : [ "마카롱 친위대", "홀리베리 쿠키", "홀베", "마카롱", "암마카롱 친위대", "암홀리베리 쿠키", "암홀베", "암마카롱" ]
   },
   "sw_26911" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Manon",
     "attribute" : "WATER",
@@ -13761,7 +13761,7 @@
     "aliases" : [ "마카롱 친위대", "물마카롱 친위대", "홀리베리 쿠키", "홀베", "마카롱", "물홀리베리 쿠키", "물홀베", "물마카롱" ]
   },
   "sw_26912" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Alice",
     "attribute" : "FIRE",
@@ -13770,7 +13770,7 @@
     "aliases" : [ "마카롱 친위대", "불마카롱 친위대", "홀리베리 쿠키", "홀베", "마카롱", "불홀리베리 쿠키", "불홀베", "불마카롱" ]
   },
   "sw_26913" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Jade",
     "attribute" : "WIND",
@@ -13779,7 +13779,7 @@
     "aliases" : [ "마카롱 친위대", "풍마카롱 친위대", "홀리베리 쿠키", "홀베", "마카롱", "풍홀리베리 쿠키", "풍홀베", "풍마카롱" ]
   },
   "sw_26914" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Audrey",
     "attribute" : "LIGHT",
@@ -13788,7 +13788,7 @@
     "aliases" : [ "마카롱 친위대", "빛마카롱 친위대", "홀리베리 쿠키", "홀베", "마카롱", "빛홀리베리 쿠키", "빛홀베", "빛마카롱" ]
   },
   "sw_26915" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Giselle",
     "attribute" : "DARK",
@@ -13842,7 +13842,7 @@
     "aliases" : [ "홍차 레이디", "에스프레소 쿠키", "홍차", "암홍차 레이디", "암에스프레소 쿠키", "암홍차" ]
   },
   "sw_27011" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Rosemary",
     "attribute" : "WATER",
@@ -13851,7 +13851,7 @@
     "aliases" : [ "홍차 토끼", "물홍차 토끼", "홍차 레이디", "에스프레소 쿠키", "홍차", "물홍차 레이디", "물에스프레소 쿠키", "물홍차" ]
   },
   "sw_27012" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Hibiscus",
     "attribute" : "FIRE",
@@ -13860,7 +13860,7 @@
     "aliases" : [ "홍차 토끼", "불홍차 토끼", "홍차 레이디", "에스프레소 쿠키", "홍차", "불홍차 레이디", "불에스프레소 쿠키", "불홍차" ]
   },
   "sw_27013" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Chamomile",
     "attribute" : "WIND",
@@ -13869,7 +13869,7 @@
     "aliases" : [ "홍차 토끼", "풍홍차 토끼", "홍차 레이디", "에스프레소 쿠키", "홍차", "풍홍차 레이디", "풍에스프레소 쿠키", "풍홍차" ]
   },
   "sw_27014" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Jasmine",
     "attribute" : "LIGHT",
@@ -13878,7 +13878,7 @@
     "aliases" : [ "홍차 토끼", "빛홍차 토끼", "홍차 레이디", "에스프레소 쿠키", "홍차", "빛홍차 레이디", "빛에스프레소 쿠키", "빛홍차" ]
   },
   "sw_27015" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Lavender",
     "attribute" : "DARK",
@@ -13932,7 +13932,7 @@
     "aliases" : [ "초코 기사", "마들렌맛 쿠키", "마들렌", "초코", "암초코 기사", "암마들렌맛 쿠키", "암마들렌", "암초코" ]
   },
   "sw_27111" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Ganache",
     "attribute" : "WATER",
@@ -13941,7 +13941,7 @@
     "aliases" : [ "초코 기사", "물초코 기사", "마들렌맛 쿠키", "마들렌", "초코", "물마들렌맛 쿠키", "물마들렌", "물초코" ]
   },
   "sw_27112" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Pav챕",
     "attribute" : "FIRE",
@@ -13950,7 +13950,7 @@
     "aliases" : [ "초코 기사", "불초코 기사", "마들렌맛 쿠키", "마들렌", "초코", "불마들렌맛 쿠키", "불마들렌", "불초코" ]
   },
   "sw_27113" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Praline",
     "attribute" : "WIND",
@@ -13959,7 +13959,7 @@
     "aliases" : [ "초코 기사", "풍초코 기사", "마들렌맛 쿠키", "마들렌", "초코", "풍마들렌맛 쿠키", "풍마들렌", "풍초코" ]
   },
   "sw_27114" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Fudge",
     "attribute" : "LIGHT",
@@ -13968,7 +13968,7 @@
     "aliases" : [ "초코 기사", "빛초코 기사", "마들렌맛 쿠키", "마들렌", "초코", "빛마들렌맛 쿠키", "빛마들렌", "빛초코" ]
   },
   "sw_27115" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Truffle",
     "attribute" : "DARK",
@@ -14454,7 +14454,7 @@
     "aliases" : [ "듀얼 블레이드", "알타이어", "알타", "듀블", "빛듀얼 블레이드", "빛알타이어", "빛알타", "빛듀블" ]
   },
   "sw_27814" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Frederic",
     "attribute" : "LIGHT",
@@ -14508,7 +14508,7 @@
     "aliases" : [ "강철 기사단장", "에지오", "강기", "암강철 기사단장", "암에지오", "암강기" ]
   },
   "sw_27911" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Lionel",
     "attribute" : "WATER",
@@ -14517,7 +14517,7 @@
     "aliases" : [ "강철 사령관", "물강철 사령관", "강철 기사단장", "에지오", "강기", "물강철 기사단장", "물에지오", "물강기" ]
   },
   "sw_27912" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Patrick",
     "attribute" : "FIRE",
@@ -14526,7 +14526,7 @@
     "aliases" : [ "강철 사령관", "불강철 사령관", "강철 기사단장", "에지오", "강기", "불강철 기사단장", "불에지오", "불강기" ]
   },
   "sw_27913" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Hector",
     "attribute" : "WIND",
@@ -14535,7 +14535,7 @@
     "aliases" : [ "강철 사령관", "풍강철 사령관", "강철 기사단장", "에지오", "강기", "풍강철 기사단장", "풍에지오", "풍강기" ]
   },
   "sw_27914" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Ian",
     "attribute" : "LIGHT",
@@ -14544,7 +14544,7 @@
     "aliases" : [ "강철 사령관", "빛강철 사령관", "강철 기사단장", "에지오", "강기", "빛강철 기사단장", "빛에지오", "빛강기" ]
   },
   "sw_27915" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Evan",
     "attribute" : "DARK",
@@ -14598,7 +14598,7 @@
     "aliases" : [ "사막 전사", "바예크", "사전", "암사막 전사", "암바예크", "암사전" ]
   },
   "sw_28011" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Omar",
     "attribute" : "WATER",
@@ -14607,7 +14607,7 @@
     "aliases" : [ "사막 전사", "물사막 전사", "바예크", "사전", "물바예크", "물사전" ]
   },
   "sw_28012" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Ashour",
     "attribute" : "FIRE",
@@ -14616,7 +14616,7 @@
     "aliases" : [ "사막 전사", "불사막 전사", "바예크", "사전", "불바예크", "불사전" ]
   },
   "sw_28013" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Shahat",
     "attribute" : "WIND",
@@ -14625,7 +14625,7 @@
     "aliases" : [ "사막 전사", "풍사막 전사", "바예크", "사전", "풍바예크", "풍사전" ]
   },
   "sw_28014" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Ahmed",
     "attribute" : "LIGHT",
@@ -14634,7 +14634,7 @@
     "aliases" : [ "사막 전사", "빛사막 전사", "바예크", "사전", "빛바예크", "빛사전" ]
   },
   "sw_28015" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Salah",
     "attribute" : "DARK",
@@ -14688,7 +14688,7 @@
     "aliases" : [ "검투사", "카산드라", "카산", "암검투사", "암카산드라", "암카산" ]
   },
   "sw_28111" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Kalantatze",
     "attribute" : "WATER",
@@ -14697,7 +14697,7 @@
     "aliases" : [ "글라디아트릭스", "물글라디아트릭스", "검투사", "카산드라", "카산", "물검투사", "물카산드라", "물카산" ]
   },
   "sw_28112" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Federica",
     "attribute" : "FIRE",
@@ -14706,7 +14706,7 @@
     "aliases" : [ "글라디아트릭스", "불글라디아트릭스", "검투사", "카산드라", "카산", "불검투사", "불카산드라", "불카산" ]
   },
   "sw_28113" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Eleni",
     "attribute" : "WIND",
@@ -14715,7 +14715,7 @@
     "aliases" : [ "글라디아트릭스", "풍글라디아트릭스", "검투사", "카산드라", "카산", "풍검투사", "풍카산드라", "풍카산" ]
   },
   "sw_28114" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Aurelia",
     "attribute" : "LIGHT",
@@ -14724,7 +14724,7 @@
     "aliases" : [ "글라디아트릭스", "빛글라디아트릭스", "검투사", "카산드라", "카산", "빛검투사", "빛카산드라", "빛카산" ]
   },
   "sw_28115" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Kiara",
     "attribute" : "DARK",
@@ -14778,7 +14778,7 @@
     "aliases" : [ "용병왕", "에이보르", "에보", "암용병왕", "암에이보르", "암에보" ]
   },
   "sw_28211" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Brita",
     "attribute" : "WATER",
@@ -14787,7 +14787,7 @@
     "aliases" : [ "용병 여왕", "물용병 여왕", "용병왕", "에이보르", "에보", "물용병왕", "물에이보르", "물에보" ]
   },
   "sw_28212" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Solveig",
     "attribute" : "FIRE",
@@ -14796,7 +14796,7 @@
     "aliases" : [ "용병 여왕", "불용병 여왕", "용병왕", "에이보르", "에보", "불용병왕", "불에이보르", "불에보" ]
   },
   "sw_28213" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Astrid",
     "attribute" : "WIND",
@@ -14805,7 +14805,7 @@
     "aliases" : [ "용병 여왕", "풍용병 여왕", "용병왕", "에이보르", "에보", "풍용병왕", "풍에이보르", "풍에보" ]
   },
   "sw_28214" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Berghild",
     "attribute" : "LIGHT",
@@ -14814,7 +14814,7 @@
     "aliases" : [ "용병 여왕", "빛용병 여왕", "용병왕", "에이보르", "에보", "빛용병왕", "빛에이보르", "빛에보" ]
   },
   "sw_28215" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Sigrid",
     "attribute" : "DARK",
@@ -15840,7 +15840,7 @@
     "aliases" : [ "마법교단 수호자", "게롤트", "게트롤", "개트롤", "암마법교단 수호자", "암게롤트", "암게트롤", "암개트롤" ]
   },
   "sw_29611" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Anders",
     "attribute" : "WATER",
@@ -15849,7 +15849,7 @@
     "aliases" : [ "마법교단 가디언", "물마법교단 가디언", "마법교단 수호자", "게롤트", "게트롤", "개트롤", "물마법교단 수호자", "물게롤트", "물게트롤", "물개트롤" ]
   },
   "sw_29612" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Magnus",
     "attribute" : "FIRE",
@@ -15858,7 +15858,7 @@
     "aliases" : [ "마법교단 가디언", "불마법교단 가디언", "마법교단 수호자", "게롤트", "게트롤", "개트롤", "불마법교단 수호자", "불게롤트", "불게트롤", "불개트롤" ]
   },
   "sw_29613" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Henrik",
     "attribute" : "WIND",
@@ -15867,7 +15867,7 @@
     "aliases" : [ "마법교단 가디언", "풍마법교단 가디언", "마법교단 수호자", "게롤트", "게트롤", "개트롤", "풍마법교단 수호자", "풍게롤트", "풍게트롤", "풍개트롤" ]
   },
   "sw_29614" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Lars",
     "attribute" : "LIGHT",
@@ -15876,7 +15876,7 @@
     "aliases" : [ "마법교단 가디언", "빛마법교단 가디언", "마법교단 수호자", "게롤트", "게트롤", "개트롤", "빛마법교단 수호자", "빛게롤트", "빛게트롤", "빛개트롤" ]
   },
   "sw_29615" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Valdemar",
     "attribute" : "DARK",
@@ -15930,7 +15930,7 @@
     "aliases" : [ "마법교단 검술사", "시리", "암마법교단 검술사", "암시리" ]
   },
   "sw_29711" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Rigna",
     "attribute" : "WATER",
@@ -15939,7 +15939,7 @@
     "aliases" : [ "마법교단 소드싱어", "물마법교단 소드싱어", "마법교단 검술사", "시리", "물마법교단 검술사", "물시리" ]
   },
   "sw_29712" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Reyka",
     "attribute" : "FIRE",
@@ -15948,7 +15948,7 @@
     "aliases" : [ "마법교단 소드싱어", "불마법교단 소드싱어", "마법교단 검술사", "시리", "불마법교단 검술사", "불시리" ]
   },
   "sw_29713" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Tirsa",
     "attribute" : "WIND",
@@ -15957,7 +15957,7 @@
     "aliases" : [ "마법교단 소드싱어", "풍마법교단 소드싱어", "마법교단 검술사", "시리", "풍마법교단 검술사", "풍시리" ]
   },
   "sw_29714" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Birgitta",
     "attribute" : "LIGHT",
@@ -15966,7 +15966,7 @@
     "aliases" : [ "마법교단 소드싱어", "빛마법교단 소드싱어", "마법교단 검술사", "시리", "빛마법교단 검술사", "빛시리" ]
   },
   "sw_29715" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Fiona",
     "attribute" : "DARK",
@@ -16020,7 +16020,7 @@
     "aliases" : [ "마법교단 요술사", "예니퍼", "예니스", "암마법교단 요술사", "암예니퍼", "암예니스" ]
   },
   "sw_29811" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Johanna",
     "attribute" : "WATER",
@@ -16029,7 +16029,7 @@
     "aliases" : [ "마법교단 인챈트리스", "물마법교단 인챈트리스", "마법교단 요술사", "예니퍼", "예니스", "물마법교단 요술사", "물예니퍼", "물예니스" ]
   },
   "sw_29812" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Tarnisha",
     "attribute" : "FIRE",
@@ -16038,7 +16038,7 @@
     "aliases" : [ "마법교단 인챈트리스", "불마법교단 인챈트리스", "마법교단 요술사", "예니퍼", "예니스", "불마법교단 요술사", "불예니퍼", "불예니스" ]
   },
   "sw_29813" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Hexarina",
     "attribute" : "WIND",
@@ -16047,7 +16047,7 @@
     "aliases" : [ "마법교단 인챈트리스", "풍마법교단 인챈트리스", "마법교단 요술사", "예니퍼", "예니스", "풍마법교단 요술사", "풍예니퍼", "풍예니스" ]
   },
   "sw_29814" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Arcana",
     "attribute" : "LIGHT",
@@ -16056,7 +16056,7 @@
     "aliases" : [ "마법교단 인챈트리스", "빛마법교단 인챈트리스", "마법교단 요술사", "예니퍼", "예니스", "빛마법교단 요술사", "빛예니퍼", "빛예니스" ]
   },
   "sw_29815" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Hilda",
     "attribute" : "DARK",
@@ -16110,7 +16110,7 @@
     "aliases" : [ "마법교단 원소술사", "트리스", "암마법교단 원소술사", "암트리스" ]
   },
   "sw_29911" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Lumina",
     "attribute" : "WATER",
@@ -16119,7 +16119,7 @@
     "aliases" : [ "마법교단 엘리멘탈리스트", "물마법교단 엘리멘탈리스트", "마법교단 원소술사", "트리스", "물마법교단 원소술사", "물트리스" ]
   },
   "sw_29912" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Enshia",
     "attribute" : "FIRE",
@@ -16128,7 +16128,7 @@
     "aliases" : [ "마법교단 엘리멘탈리스트", "불마법교단 엘리멘탈리스트", "마법교단 원소술사", "트리스", "불마법교단 원소술사", "불트리스" ]
   },
   "sw_29913" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Nobella",
     "attribute" : "WIND",
@@ -16137,7 +16137,7 @@
     "aliases" : [ "마법교단 엘리멘탈리스트", "풍마법교단 엘리멘탈리스트", "마법교단 원소술사", "트리스", "풍마법교단 원소술사", "풍트리스" ]
   },
   "sw_29914" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Groa",
     "attribute" : "LIGHT",
@@ -16146,7 +16146,7 @@
     "aliases" : [ "마법교단 엘리멘탈리스트", "빛마법교단 엘리멘탈리스트", "마법교단 원소술사", "트리스", "빛마법교단 원소술사", "빛트리스" ]
   },
   "sw_29915" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Celestara",
     "attribute" : "DARK",
@@ -16812,7 +16812,7 @@
     "aliases" : [ "하야토", "양면 스쿠나", "스쿠나", "암하야토", "암양면 스쿠나", "암스쿠나" ]
   },
   "sw_30815" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Hayato",
     "attribute" : "DARK",
@@ -16866,7 +16866,7 @@
     "aliases" : [ "베르너", "고죠 사토루", "고죠", "암베르너", "암고죠 사토루", "암고죠" ]
   },
   "sw_30911" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Werner",
     "attribute" : "WATER",
@@ -16875,7 +16875,7 @@
     "aliases" : [ "베르너", "물베르너", "고죠 사토루", "고죠", "물고죠 사토루", "물고죠" ]
   },
   "sw_30912" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Werner",
     "attribute" : "FIRE",
@@ -16884,7 +16884,7 @@
     "aliases" : [ "베르너", "불베르너", "고죠 사토루", "고죠", "불고죠 사토루", "불고죠" ]
   },
   "sw_30913" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Werner",
     "attribute" : "WIND",
@@ -16893,7 +16893,7 @@
     "aliases" : [ "베르너", "풍베르너", "고죠 사토루", "고죠", "풍고죠 사토루", "풍고죠" ]
   },
   "sw_30914" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Werner",
     "attribute" : "LIGHT",
@@ -16902,7 +16902,7 @@
     "aliases" : [ "베르너", "빛베르너", "고죠 사토루", "고죠", "빛고죠 사토루", "빛고죠" ]
   },
   "sw_30915" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Werner",
     "attribute" : "DARK",
@@ -16956,7 +16956,7 @@
     "aliases" : [ "릭", "이타도리 유지", "이타", "이타도리", "암릭", "암이타도리 유지", "암이타", "암이타도리" ]
   },
   "sw_31011" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Rick",
     "attribute" : "WATER",
@@ -16965,7 +16965,7 @@
     "aliases" : [ "릭", "물릭", "이타도리 유지", "이타", "이타도리", "물이타도리 유지", "물이타", "물이타도리" ]
   },
   "sw_31012" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Rick",
     "attribute" : "FIRE",
@@ -16974,7 +16974,7 @@
     "aliases" : [ "릭", "불릭", "이타도리 유지", "이타", "이타도리", "불이타도리 유지", "불이타", "불이타도리" ]
   },
   "sw_31013" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Rick",
     "attribute" : "WIND",
@@ -16983,7 +16983,7 @@
     "aliases" : [ "릭", "풍릭", "이타도리 유지", "이타", "이타도리", "풍이타도리 유지", "풍이타", "풍이타도리" ]
   },
   "sw_31014" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Rick",
     "attribute" : "LIGHT",
@@ -16992,7 +16992,7 @@
     "aliases" : [ "릭", "빛릭", "이타도리 유지", "이타", "이타도리", "빛이타도리 유지", "빛이타", "빛이타도리" ]
   },
   "sw_31015" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Rick",
     "attribute" : "DARK",
@@ -17046,7 +17046,7 @@
     "aliases" : [ "테츠야", "후시구로 메구미", "메구미", "암테츠야", "암후시구로 메구미", "암메구미" ]
   },
   "sw_31111" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Tetsuya",
     "attribute" : "WATER",
@@ -17055,7 +17055,7 @@
     "aliases" : [ "테츠야", "물테츠야", "후시구로 메구미", "메구미", "물후시구로 메구미", "물메구미" ]
   },
   "sw_31112" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Tetsuya",
     "attribute" : "FIRE",
@@ -17064,7 +17064,7 @@
     "aliases" : [ "테츠야", "불테츠야", "후시구로 메구미", "메구미", "불후시구로 메구미", "불메구미" ]
   },
   "sw_31113" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Tetsuya",
     "attribute" : "WIND",
@@ -17073,7 +17073,7 @@
     "aliases" : [ "테츠야", "풍테츠야", "후시구로 메구미", "메구미", "풍후시구로 메구미", "풍메구미" ]
   },
   "sw_31114" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Tetsuya",
     "attribute" : "LIGHT",
@@ -17082,7 +17082,7 @@
     "aliases" : [ "테츠야", "빛테츠야", "후시구로 메구미", "메구미", "빛후시구로 메구미", "빛메구미" ]
   },
   "sw_31115" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Tetsuya",
     "attribute" : "DARK",
@@ -17136,7 +17136,7 @@
     "aliases" : [ "아야", "쿠기사키 노바라", "노바라", "암아야", "암쿠기사키 노바라", "암노바라" ]
   },
   "sw_31211" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Aya",
     "attribute" : "WATER",
@@ -17145,7 +17145,7 @@
     "aliases" : [ "아야", "물아야", "쿠기사키 노바라", "노바라", "물쿠기사키 노바라", "물노바라" ]
   },
   "sw_31212" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Aya",
     "attribute" : "FIRE",
@@ -17154,7 +17154,7 @@
     "aliases" : [ "아야", "불아야", "쿠기사키 노바라", "노바라", "불쿠기사키 노바라", "불노바라" ]
   },
   "sw_31213" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Aya",
     "attribute" : "WIND",
@@ -17163,7 +17163,7 @@
     "aliases" : [ "아야", "풍아야", "쿠기사키 노바라", "노바라", "풍쿠기사키 노바라", "풍노바라" ]
   },
   "sw_31214" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Aya",
     "attribute" : "LIGHT",
@@ -17172,7 +17172,7 @@
     "aliases" : [ "아야", "빛아야", "쿠기사키 노바라", "노바라", "빛쿠기사키 노바라", "빛노바라" ]
   },
   "sw_31215" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Aya",
     "attribute" : "DARK",
@@ -17559,7 +17559,7 @@
     "aliases" : [ "카마도 네즈코", "네즈코", "암네즈코", "주작 무희", "암카마도 네즈코", "암주작 무희" ]
   },
   "sw_32011" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Nezuko Kamado",
     "attribute" : "WATER",
@@ -17568,7 +17568,7 @@
     "aliases" : [ "카마도 네즈코", "네즈코", "물네즈코", "주작 무희", "물카마도 네즈코", "물주작 무희" ]
   },
   "sw_32012" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Nezuko Kamado",
     "attribute" : "FIRE",
@@ -17577,7 +17577,7 @@
     "aliases" : [ "카마도 네즈코", "네즈코", "불네즈코", "주작 무희", "불카마도 네즈코", "불주작 무희" ]
   },
   "sw_32013" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Nezuko Kamado",
     "attribute" : "WIND",
@@ -17586,7 +17586,7 @@
     "aliases" : [ "카마도 네즈코", "네즈코", "풍네즈코", "주작 무희", "풍카마도 네즈코", "풍주작 무희" ]
   },
   "sw_32014" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Nezuko Kamado",
     "attribute" : "LIGHT",
@@ -17595,7 +17595,7 @@
     "aliases" : [ "카마도 네즈코", "네즈코", "빛네즈코", "주작 무희", "빛카마도 네즈코", "빛주작 무희" ]
   },
   "sw_32015" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Nezuko Kamado",
     "attribute" : "DARK",
@@ -17883,7 +17883,7 @@
     "aliases" : [ "현무 투사", "히메지마 교메이", "교메이", "풍현무 투사", "풍히메지마 교메이", "풍교메이" ]
   },
   "sw_32413" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Black Tortoise Champion",
     "attribute" : "WIND",
@@ -17937,7 +17937,7 @@
     "aliases" : [ "청룡 검사", "카마도 탄지로", "탄지로", "암청룡 검사", "암카마도 탄지로", "암탄지로" ]
   },
   "sw_32511" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Azure Dragon Swordsman",
     "attribute" : "WATER",
@@ -17946,7 +17946,7 @@
     "aliases" : [ "청룡 검사", "물청룡 검사", "카마도 탄지로", "탄지로", "물카마도 탄지로", "물탄지로" ]
   },
   "sw_32512" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Azure Dragon Swordsman",
     "attribute" : "FIRE",
@@ -17955,7 +17955,7 @@
     "aliases" : [ "청룡 검사", "불청룡 검사", "카마도 탄지로", "탄지로", "불카마도 탄지로", "불탄지로" ]
   },
   "sw_32513" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Azure Dragon Swordsman",
     "attribute" : "WIND",
@@ -17964,7 +17964,7 @@
     "aliases" : [ "청룡 검사", "풍청룡 검사", "카마도 탄지로", "탄지로", "풍카마도 탄지로", "풍탄지로" ]
   },
   "sw_32514" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Azure Dragon Swordsman",
     "attribute" : "LIGHT",
@@ -17973,7 +17973,7 @@
     "aliases" : [ "청룡 검사", "빛청룡 검사", "카마도 탄지로", "탄지로", "빛카마도 탄지로", "빛탄지로" ]
   },
   "sw_32515" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Azure Dragon Swordsman",
     "attribute" : "DARK",
@@ -18027,7 +18027,7 @@
     "aliases" : [ "주작 무희", "카마도 네즈코", "네즈코", "암주작 무희", "암카마도 네즈코", "암네즈코" ]
   },
   "sw_32611" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Vermilion Bird Dancer",
     "attribute" : "WATER",
@@ -18036,7 +18036,7 @@
     "aliases" : [ "주작 무희", "물주작 무희", "카마도 네즈코", "네즈코", "물카마도 네즈코", "물네즈코" ]
   },
   "sw_32612" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Vermilion Bird Dancer",
     "attribute" : "FIRE",
@@ -18045,7 +18045,7 @@
     "aliases" : [ "주작 무희", "불주작 무희", "카마도 네즈코", "네즈코", "불카마도 네즈코", "불네즈코" ]
   },
   "sw_32613" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Vermilion Bird Dancer",
     "attribute" : "WIND",
@@ -18054,7 +18054,7 @@
     "aliases" : [ "주작 무희", "풍주작 무희", "카마도 네즈코", "네즈코", "풍카마도 네즈코", "풍네즈코" ]
   },
   "sw_32614" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Vermilion Bird Dancer",
     "attribute" : "LIGHT",
@@ -18063,7 +18063,7 @@
     "aliases" : [ "주작 무희", "빛주작 무희", "카마도 네즈코", "네즈코", "빛카마도 네즈코", "빛네즈코" ]
   },
   "sw_32615" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Vermilion Bird Dancer",
     "attribute" : "DARK",
@@ -18117,7 +18117,7 @@
     "aliases" : [ "백호 무사", "암백호 무사", "하시비라 이노스케", "이노스케", "암하시비라 이노스케", "암이노스케" ]
   },
   "sw_32811" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "White Tiger Blade Master",
     "attribute" : "WATER",
@@ -18126,7 +18126,7 @@
     "aliases" : [ "백호 무사", "물백호 무사", "하시비라 이노스케", "이노스케", "물하시비라 이노스케", "물이노스케" ]
   },
   "sw_32812" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "White Tiger Blade Master",
     "attribute" : "FIRE",
@@ -18135,7 +18135,7 @@
     "aliases" : [ "백호 무사", "불백호 무사", "하시비라 이노스케", "이노스케", "불하시비라 이노스케", "불이노스케" ]
   },
   "sw_32813" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "White Tiger Blade Master",
     "attribute" : "WIND",
@@ -18144,7 +18144,7 @@
     "aliases" : [ "백호 무사", "풍백호 무사", "하시비라 이노스케", "이노스케", "풍하시비라 이노스케", "풍이노스케" ]
   },
   "sw_32814" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "White Tiger Blade Master",
     "attribute" : "LIGHT",
@@ -18153,7 +18153,7 @@
     "aliases" : [ "백호 무사", "빛백호 무사", "하시비라 이노스케", "이노스케", "빛하시비라 이노스케", "빛이노스케" ]
   },
   "sw_32815" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "White Tiger Blade Master",
     "attribute" : "DARK",
@@ -18207,7 +18207,7 @@
     "aliases" : [ "기린 검객", "아가츠마 젠이츠", "젠이츠", "암기린 검객", "암아가츠마 젠이츠", "암젠이츠" ]
   },
   "sw_32911" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Qilin Slasher",
     "attribute" : "WATER",
@@ -18216,7 +18216,7 @@
     "aliases" : [ "기린 검사", "물기린 검사", "기린 검객", "아가츠마 젠이츠", "젠이츠", "물기린 검객", "물아가츠마 젠이츠", "물젠이츠" ]
   },
   "sw_32912" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Qilin Slasher",
     "attribute" : "FIRE",
@@ -18225,7 +18225,7 @@
     "aliases" : [ "기린 검사", "불기린 검사", "기린 검객", "아가츠마 젠이츠", "젠이츠", "불기린 검객", "불아가츠마 젠이츠", "불젠이츠" ]
   },
   "sw_32913" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Qilin Slasher",
     "attribute" : "WIND",
@@ -18234,7 +18234,7 @@
     "aliases" : [ "기린 검사", "풍기린 검사", "기린 검객", "아가츠마 젠이츠", "젠이츠", "풍기린 검객", "풍아가츠마 젠이츠", "풍젠이츠" ]
   },
   "sw_32914" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Qilin Slasher",
     "attribute" : "LIGHT",
@@ -18243,7 +18243,7 @@
     "aliases" : [ "기린 검사", "빛기린 검사", "기린 검객", "아가츠마 젠이츠", "젠이츠", "빛기린 검객", "빛아가츠마 젠이츠", "빛젠이츠" ]
   },
   "sw_32915" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Qilin Slasher",
     "attribute" : "DARK",
@@ -18639,7 +18639,7 @@
     "aliases" : [ "다이몬", "미시마 헤이아치", "헤이아치", "불다이몬", "불미시마 헤이아치", "불헤이아치" ]
   },
   "sw_33512" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Daimon",
     "attribute" : "FIRE",
@@ -18693,7 +18693,7 @@
     "aliases" : [ "카이", "카자마 진", "진", "암카이", "암카자마 진", "암진" ]
   },
   "sw_33611" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Kai",
     "attribute" : "WATER",
@@ -18702,7 +18702,7 @@
     "aliases" : [ "카이", "물카이", "카자마 진", "진", "물카자마 진", "물진" ]
   },
   "sw_33612" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Kai",
     "attribute" : "FIRE",
@@ -18711,7 +18711,7 @@
     "aliases" : [ "카이", "불카이", "카자마 진", "진", "불카자마 진", "불진" ]
   },
   "sw_33613" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Kai",
     "attribute" : "WIND",
@@ -18720,7 +18720,7 @@
     "aliases" : [ "카이", "풍카이", "카자마 진", "진", "풍카자마 진", "풍진" ]
   },
   "sw_33614" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Kai",
     "attribute" : "LIGHT",
@@ -18729,7 +18729,7 @@
     "aliases" : [ "카이", "빛카이", "카자마 진", "진", "빛카자마 진", "빛진" ]
   },
   "sw_33615" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Kai",
     "attribute" : "DARK",
@@ -18783,7 +18783,7 @@
     "aliases" : [ "태백", "화랑", "암태백", "암화랑" ]
   },
   "sw_33711" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Taebaek",
     "attribute" : "WATER",
@@ -18792,7 +18792,7 @@
     "aliases" : [ "태백", "물태백", "화랑", "물화랑" ]
   },
   "sw_33712" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Taebaek",
     "attribute" : "FIRE",
@@ -18801,7 +18801,7 @@
     "aliases" : [ "태백", "불태백", "화랑", "불화랑" ]
   },
   "sw_33713" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Taebaek",
     "attribute" : "WIND",
@@ -18810,7 +18810,7 @@
     "aliases" : [ "태백", "풍태백", "화랑", "풍화랑" ]
   },
   "sw_33714" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Taebaek",
     "attribute" : "LIGHT",
@@ -18819,7 +18819,7 @@
     "aliases" : [ "태백", "빛태백", "화랑", "빛화랑" ]
   },
   "sw_33715" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Taebaek",
     "attribute" : "DARK",
@@ -18873,7 +18873,7 @@
     "aliases" : [ "듀크", "폴 피닉스", "폴", "암듀크", "암폴 피닉스", "암폴" ]
   },
   "sw_33811" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Duke",
     "attribute" : "WATER",
@@ -18882,7 +18882,7 @@
     "aliases" : [ "듀크", "물듀크", "폴 피닉스", "폴", "물폴 피닉스", "물폴" ]
   },
   "sw_33812" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Duke",
     "attribute" : "FIRE",
@@ -18891,7 +18891,7 @@
     "aliases" : [ "듀크", "불듀크", "폴 피닉스", "폴", "불폴 피닉스", "불폴" ]
   },
   "sw_33813" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Duke",
     "attribute" : "WIND",
@@ -18900,7 +18900,7 @@
     "aliases" : [ "듀크", "풍듀크", "폴 피닉스", "폴", "풍폴 피닉스", "풍폴" ]
   },
   "sw_33814" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Duke",
     "attribute" : "LIGHT",
@@ -18909,7 +18909,7 @@
     "aliases" : [ "듀크", "빛듀크", "폴 피닉스", "폴", "빛폴 피닉스", "빛폴" ]
   },
   "sw_33815" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Duke",
     "attribute" : "DARK",
@@ -18963,7 +18963,7 @@
     "aliases" : [ "샤샤", "니나 윌리엄스", "니나", "암샤샤", "암니나 윌리엄스", "암니나" ]
   },
   "sw_33911" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Shasha",
     "attribute" : "WATER",
@@ -18972,7 +18972,7 @@
     "aliases" : [ "샤샤", "물샤샤", "니나 윌리엄스", "니나", "물니나 윌리엄스", "물니나" ]
   },
   "sw_33912" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Shasha",
     "attribute" : "FIRE",
@@ -18981,7 +18981,7 @@
     "aliases" : [ "샤샤", "불샤샤", "니나 윌리엄스", "니나", "불니나 윌리엄스", "불니나" ]
   },
   "sw_33913" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Shasha",
     "attribute" : "WIND",
@@ -18990,7 +18990,7 @@
     "aliases" : [ "샤샤", "풍샤샤", "니나 윌리엄스", "니나", "풍니나 윌리엄스", "풍니나" ]
   },
   "sw_33914" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Shasha",
     "attribute" : "LIGHT",
@@ -18999,7 +18999,7 @@
     "aliases" : [ "샤샤", "빛샤샤", "니나 윌리엄스", "니나", "빛니나 윌리엄스", "빛니나" ]
   },
   "sw_33915" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Shasha",
     "attribute" : "DARK",
@@ -19683,7 +19683,7 @@
     "aliases" : [ "실버테일", "프로도", "물실버테일", "물프로도" ]
   },
   "sw_34911" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Silver Tail",
     "attribute" : "WATER",
@@ -19737,7 +19737,7 @@
     "aliases" : [ "올드 우드", "간달프", "암올드 우드", "암간달프" ]
   },
   "sw_35011" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Old Wood",
     "attribute" : "WATER",
@@ -19746,7 +19746,7 @@
     "aliases" : [ "올드 우드", "물올드 우드", "간달프", "물간달프" ]
   },
   "sw_35012" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Old Wood",
     "attribute" : "FIRE",
@@ -19755,7 +19755,7 @@
     "aliases" : [ "올드 우드", "불올드 우드", "간달프", "불간달프" ]
   },
   "sw_35013" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Old Wood",
     "attribute" : "WIND",
@@ -19764,7 +19764,7 @@
     "aliases" : [ "올드 우드", "풍올드 우드", "간달프", "풍간달프" ]
   },
   "sw_35014" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Old Wood",
     "attribute" : "LIGHT",
@@ -19773,7 +19773,7 @@
     "aliases" : [ "올드 우드", "빛올드 우드", "간달프", "빛간달프" ]
   },
   "sw_35015" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Old Wood",
     "attribute" : "DARK",
@@ -19782,7 +19782,7 @@
     "aliases" : [ "올드 우드", "암올드 우드", "간달프", "암간달프" ]
   },
   "sw_35114" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Old Wood",
     "attribute" : "LIGHT",
@@ -19836,7 +19836,7 @@
     "aliases" : [ "나이트 팽", "아라곤", "암나이트 팽", "암아라곤" ]
   },
   "sw_35211" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Night Fang",
     "attribute" : "WATER",
@@ -19845,7 +19845,7 @@
     "aliases" : [ "나이트 팽", "물나이트 팽", "아라곤", "물아라곤" ]
   },
   "sw_35212" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Night Fang",
     "attribute" : "FIRE",
@@ -19854,7 +19854,7 @@
     "aliases" : [ "나이트 팽", "불나이트 팽", "아라곤", "불아라곤" ]
   },
   "sw_35213" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Night Fang",
     "attribute" : "WIND",
@@ -19863,7 +19863,7 @@
     "aliases" : [ "나이트 팽", "풍나이트 팽", "아라곤", "풍아라곤" ]
   },
   "sw_35214" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Night Fang",
     "attribute" : "LIGHT",
@@ -19872,7 +19872,7 @@
     "aliases" : [ "나이트 팽", "빛나이트 팽", "아라곤", "빛아라곤" ]
   },
   "sw_35215" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Night Fang",
     "attribute" : "DARK",
@@ -19926,7 +19926,7 @@
     "aliases" : [ "엘더 혼", "레골라스", "암엘더 혼", "암레골라스" ]
   },
   "sw_35311" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Elder Horn",
     "attribute" : "WATER",
@@ -19935,7 +19935,7 @@
     "aliases" : [ "엘더 혼", "물엘더 혼", "레골라스", "물레골라스" ]
   },
   "sw_35312" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Elder Horn",
     "attribute" : "FIRE",
@@ -19944,7 +19944,7 @@
     "aliases" : [ "엘더 혼", "불엘더 혼", "레골라스", "불레골라스" ]
   },
   "sw_35313" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Elder Horn",
     "attribute" : "WIND",
@@ -19953,7 +19953,7 @@
     "aliases" : [ "엘더 혼", "풍엘더 혼", "레골라스", "풍레골라스" ]
   },
   "sw_35314" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Elder Horn",
     "attribute" : "LIGHT",
@@ -19962,7 +19962,7 @@
     "aliases" : [ "엘더 혼", "빛엘더 혼", "레골라스", "빛레골라스" ]
   },
   "sw_35315" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Elder Horn",
     "attribute" : "DARK",
@@ -20016,7 +20016,7 @@
     "aliases" : [ "롭 이어", "골룸", "암롭 이어", "암골룸" ]
   },
   "sw_35411" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Lob Ear",
     "attribute" : "WATER",
@@ -20025,7 +20025,7 @@
     "aliases" : [ "롭 이어", "물롭 이어", "골룸", "물골룸" ]
   },
   "sw_35412" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Lob Ear",
     "attribute" : "FIRE",
@@ -20034,7 +20034,7 @@
     "aliases" : [ "롭 이어", "불롭 이어", "골룸", "불골룸" ]
   },
   "sw_35413" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Lob Ear",
     "attribute" : "WIND",
@@ -20043,7 +20043,7 @@
     "aliases" : [ "롭 이어", "풍롭 이어", "골룸", "풍골룸" ]
   },
   "sw_35414" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Lob Ear",
     "attribute" : "LIGHT",
@@ -20052,7 +20052,7 @@
     "aliases" : [ "롭 이어", "빛롭 이어", "골룸", "빛골룸" ]
   },
   "sw_35415" : {
-    "enabled" : true,
+    "enabled" : false,
     "awakeningLevel" : 1,
     "englishName" : "Lob Ear",
     "attribute" : "DARK",

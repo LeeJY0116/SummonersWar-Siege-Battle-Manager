@@ -128,6 +128,7 @@ public class GuildService {
                 .stream()
                 .map(m -> new GuildMemberResponse(
                         m.getId(),
+                        m.getUser() == null ? null : m.getUser().getId(),
                         m.getDisplayName(),
                         m.getRole(),
                         m.getType(),

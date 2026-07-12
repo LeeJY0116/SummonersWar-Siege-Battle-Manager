@@ -6,6 +6,9 @@ import {
  } from "../../lib/ownerlessDefenseDeck.js";
 import DeckMonsterSlot from "./DeckMonsterSlot.jsx";
 import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
+import MonsterFilterControls, {
+  matchesMonsterPickerFilters,
+} from "../monsters/MonsterFilterControls.jsx";
 
 export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
   const [decks, setDecks] = useState([]);
@@ -16,6 +19,8 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
   const [selectedMonsterCodes, setSelectedMonsterCodes] = useState(["", "", ""]);
   const [activeSlotIndex, setActiveSlotIndex] = useState(0);
   const [monsterSearch, setMonsterSearch] = useState("");
+  const [monsterStarFilter, setMonsterStarFilter] = useState(5);
+  const [monsterElementFilter, setMonsterElementFilter] = useState("");
 
 
   const selectedMonsters = selectedMonsterCodes.map((code) =>
@@ -23,7 +28,14 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
   );
 
   const filteredMonsters = monsters.filter((m) => {
-    return matchesMonsterSearch(m, monsterSearch);
+    return (
+      matchesMonsterSearch(m, monsterSearch) &&
+      matchesMonsterPickerFilters(m, {
+        query: monsterSearch,
+        starFilter: monsterStarFilter,
+        elementFilter: monsterElementFilter,
+      })
+    );
   });
 
   function selectMonster(code) {
@@ -159,6 +171,14 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
               onChange={(e) => setMonsterSearch(e.target.value)}
               placeholder="몬스터 검색"
               className="mb-3 w-full rounded-xl border px-3 py-2"
+            />
+
+            <MonsterFilterControls
+              starFilter={monsterStarFilter}
+              onChangeStarFilter={setMonsterStarFilter}
+              elementFilter={monsterElementFilter}
+              onChangeElementFilter={setMonsterElementFilter}
+              disabled={Boolean(monsterSearch.trim())}
             />
 
             <div className="mb-4 grid max-h-72 grid-cols-4 gap-2 overflow-y-auto rounded-2xl border p-3">

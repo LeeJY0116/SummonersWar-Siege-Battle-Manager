@@ -157,7 +157,9 @@ export default function SiegeBattleManager() {
 
   const isAdmin = me?.role === "ADMIN";
   const currentGuildMember = members.find(
-    (member) => member.realUser && member.displayName === me?.nickname
+    (member) =>
+      member.realUser &&
+      (String(member.userId) === String(me?.id) || member.displayName === me?.nickname)
   );
   const currentGuildRole = currentGuildMember?.role ?? null;
   const canManageGuild =

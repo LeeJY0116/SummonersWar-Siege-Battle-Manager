@@ -112,6 +112,7 @@ public class GuildMemberService {
         boolean realUser = member.getType() == GuildMemberType.REAL;
         return new GuildMemberResponse(
                 member.getId(),
+                member.getUser() == null ? null : member.getUser().getId(),
                 member.getDisplayName(),
                 member.getRole(),
                 member.getType(),

@@ -7,6 +7,9 @@ import {
 } from "../../lib/battleResearch.js";
 import DeckMonsterSlot from "./DeckMonsterSlot.jsx";
 import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
+import MonsterFilterControls, {
+  matchesMonsterPickerFilters,
+} from "../monsters/MonsterFilterControls.jsx";
 
 export default function BattleResearchTab({ monsters = []}) {
   const [posts, setPosts] = useState([]);
@@ -19,9 +22,13 @@ export default function BattleResearchTab({ monsters = []}) {
   const [commentAttackMonsterCodesMap, setCommentAttackMonsterCodesMap] = useState({});
   const [commentActiveSlotMap, setCommentActiveSlotMap] = useState({});
   const [commentMonsterSearchMap, setCommentMonsterSearchMap] = useState({});
+  const [commentMonsterStarFilterMap, setCommentMonsterStarFilterMap] = useState({});
+  const [commentMonsterElementFilterMap, setCommentMonsterElementFilterMap] = useState({});
   const [selectedMonsterCodes, setSelectedMonsterCodes] = useState(["", "", ""]);
   const [activeSlotIndex, setActiveSlotIndex] = useState(0);
   const [monsterSearch, setMonsterSearch] = useState("");
+  const [monsterStarFilter, setMonsterStarFilter] = useState(5);
+  const [monsterElementFilter, setMonsterElementFilter] = useState("");
 
 
   const selectedMonsters = selectedMonsterCodes.map((code) =>
@@ -29,7 +36,14 @@ export default function BattleResearchTab({ monsters = []}) {
   );
 
   const filteredMonsters = monsters.filter((m) => {
-    return matchesMonsterSearch(m, monsterSearch);
+    return (
+      matchesMonsterSearch(m, monsterSearch) &&
+      matchesMonsterPickerFilters(m, {
+        query: monsterSearch,
+        starFilter: monsterStarFilter,
+        elementFilter: monsterElementFilter,
+      })
+    );
   });
 
   function findMonsterByResearchItem(item) {
@@ -96,8 +110,18 @@ export default function BattleResearchTab({ monsters = []}) {
 
   function getCommentFilteredMonsters(postId) {
     const query = commentMonsterSearchMap[postId] ?? "";
+    const starFilter = commentMonsterStarFilterMap[postId] ?? 5;
+    const elementFilter = commentMonsterElementFilterMap[postId] ?? "";
 
-    return monsters.filter((m) => matchesMonsterSearch(m, query));
+    return monsters.filter(
+      (m) =>
+        matchesMonsterSearch(m, query) &&
+        matchesMonsterPickerFilters(m, {
+          query,
+          starFilter,
+          elementFilter,
+        }),
+    );
   }
 
   function selectCommentAttackMonster(postId, code) {
@@ -244,6 +268,16 @@ async function handleCreateComment(postId) {
       [postId]: "",
     }));
 
+    setCommentMonsterStarFilterMap((prev) => ({
+      ...prev,
+      [postId]: 5,
+    }));
+
+    setCommentMonsterElementFilterMap((prev) => ({
+      ...prev,
+      [postId]: "",
+    }));
+
     const detail = await fetchBattleResearchPostDetail(postId);
 
     setDetailMap((prev) => ({
@@ -315,6 +349,14 @@ async function handleCreateComment(postId) {
             onChange={(e) => setMonsterSearch(e.target.value)}
             placeholder="몬스터 검색"
             className="mb-3 w-full rounded-xl border px-3 py-2"
+          />
+
+          <MonsterFilterControls
+            starFilter={monsterStarFilter}
+            onChangeStarFilter={setMonsterStarFilter}
+            elementFilter={monsterElementFilter}
+            onChangeElementFilter={setMonsterElementFilter}
+            disabled={Boolean(monsterSearch.trim())}
           />
 
           <div className="grid max-h-72 grid-cols-4 gap-2 overflow-y-auto rounded-2xl border p-3">
@@ -488,6 +530,24 @@ async function handleCreateComment(postId) {
                         }
                         placeholder="Search attack monsters"
                         className="mb-3 w-full rounded-xl border px-3 py-2 text-sm"
+                      />
+
+                      <MonsterFilterControls
+                        starFilter={commentMonsterStarFilterMap[postId] ?? 5}
+                        onChangeStarFilter={(value) =>
+                          setCommentMonsterStarFilterMap((prev) => ({
+                            ...prev,
+                            [postId]: value,
+                          }))
+                        }
+                        elementFilter={commentMonsterElementFilterMap[postId] ?? ""}
+                        onChangeElementFilter={(value) =>
+                          setCommentMonsterElementFilterMap((prev) => ({
+                            ...prev,
+                            [postId]: value,
+                          }))
+                        }
+                        disabled={Boolean((commentMonsterSearchMap[postId] ?? "").trim())}
                       />
 
                       <div className="mb-3 grid max-h-52 grid-cols-4 gap-2 overflow-y-auto rounded-2xl border p-3">

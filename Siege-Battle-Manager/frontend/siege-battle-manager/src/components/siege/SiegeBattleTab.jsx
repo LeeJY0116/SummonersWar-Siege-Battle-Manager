@@ -1,18 +1,10 @@
 import React, { useMemo, useState } from "react";
 import TrioSlot from "../trios/TrioSlot.jsx";
 import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
-import { getElementLabel, getLeaderEffectLabel, isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
-
-// Element filter labels
-const ELEMENT_META = {
-  fire: { label: getElementLabel("fire") },
-  water: { label: getElementLabel("water") },
-  wind: { label: getElementLabel("wind") },
-  light: { label: getElementLabel("light") },
-  dark: { label: getElementLabel("dark") },
-};
-
-const ELEMENT_ORDER = ["fire", "water", "wind", "light", "dark"];
+import { getLeaderEffectLabel, isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
+import MonsterFilterControls, {
+  matchesMonsterPickerFilters,
+} from "../monsters/MonsterFilterControls.jsx";
 
 export default function SiegeBattleTab({
   monsters,
@@ -23,8 +15,8 @@ export default function SiegeBattleTab({
   const [name, setName] = useState("");                 // 점령전 조합 이름
 
   const [search, setSearch] = useState("");             // 도감 이름 검색
-  // ❗ 기본 속성: 불 (전체 보기 옵션 없음)
-  const [elementFilter, setElementFilter] = useState("fire");
+  const [starFilter, setStarFilter] = useState(5);
+  const [elementFilter, setElementFilter] = useState("");
   const [leaderEffectFilter, setLeaderEffectFilter] = useState("all");
   const [sortKey, setSortKey] = useState("sequence");       // "name" | "sequence"
 
@@ -50,13 +42,17 @@ export default function SiegeBattleTab({
   const catalog = useMemo(() => {
     let list = [...baseCatalog];
 
-    // 이름 검색
     if (search.trim()) {
       list = list.filter((m) => matchesMonsterSearch(m, search));
-  }
+    }
 
-    // 속성 필터 (항상 필터됨, 전체 없음)
-    list = list.filter((m) => m.element === elementFilter);
+    list = list.filter((m) =>
+      matchesMonsterPickerFilters(m, {
+        query: search,
+        starFilter,
+        elementFilter,
+      }),
+    );
 
     // 리더 효과 필터
     if (leaderEffectFilter !== "all") {
@@ -84,7 +80,7 @@ export default function SiegeBattleTab({
     });
 
     return list;
-  }, [baseCatalog, search, elementFilter, leaderEffectFilter, sortKey, fourStarDefenseOnly,]);
+  }, [baseCatalog, search, starFilter, elementFilter, leaderEffectFilter, sortKey, fourStarDefenseOnly,]);
 
   function handleClickMonster(monsterId) {
     setSelected((prev) => {
@@ -129,9 +125,6 @@ export default function SiegeBattleTab({
                 4성 방덱
                 </button>
             </div>
-                <p className="text-xs text-gray-600">
-                오른쪽 속성 아이콘을 눌러 원하는 속성만 볼 수 있습니다.
-                </p>
           {/* 검색 / 리더효과 / 정렬 (PC) */}
           <div className="hidden md:flex flex-col items-end gap-2 mt-1">
             <div className="flex flex-wrap gap-2 justify-end">
@@ -187,15 +180,20 @@ export default function SiegeBattleTab({
           </select>
         </div>
 
+        <MonsterFilterControls
+          starFilter={starFilter}
+          onChangeStarFilter={setStarFilter}
+          elementFilter={elementFilter}
+          onChangeElementFilter={setElementFilter}
+          disabled={Boolean(search.trim())}
+        />
+
         {catalog.length === 0 ? (
           <p className="text-sm text-gray-600">
             선택한 속성/리더 효과에 해당하는 몬스터가 없습니다.
           </p>
         ) : (
           <div className="flex-1 overflow-auto max-h-[520px] mt-2">
-            <div className="flex gap-3">
-              {/* 카드 그리드 */}
-              <div className="flex-1">
                 <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-7 gap-2">
                   {catalog.map((m) => {
                     const hasLeaderEffect = isGuildBattleLeaderEffect(m);
@@ -260,32 +258,6 @@ export default function SiegeBattleTab({
                     );
                   })}
                 </div>
-              </div>
-
-              {/* 우측 속성 아이콘 바 */}
-              <div className="flex flex-col items-center gap-3 pr-1 mt-8">
-                {ELEMENT_ORDER.map((key) => {
-                  const meta = ELEMENT_META[key];
-                  const active = elementFilter === key;
-                  return (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setElementFilter(key)}
-                      className={
-                        "w-9 h-9 rounded-full border bg-white flex items-center justify-center text-[13px] font-bold text-gray-950 shadow-sm transition " +
-                        (active
-                          ? "border-blue-500 ring-2 ring-offset-2 ring-blue-500 scale-105"
-                          : "border-gray-300 opacity-70 hover:opacity-100 hover:border-gray-500")
-                      }
-                      title={meta.label + " 속성"}
-                    >
-                      <span>{meta.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
           </div>
         )}
       </section>
