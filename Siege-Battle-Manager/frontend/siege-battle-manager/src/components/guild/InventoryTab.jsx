@@ -17,7 +17,13 @@ function getMemberDisplayName(member) {
   return member?.displayName ?? member?.nickname ?? member?.name ?? `멤버 ${member?.id}`;
 }
 
-const STAR_FILTERS = [5, 4, 3, 2];
+const STAR_FILTERS = [
+  { value: "", label: "전체" },
+  { value: 5, label: "5성" },
+  { value: 4, label: "4성" },
+  { value: 3, label: "3성" },
+  { value: 2, label: "2성" },
+];
 const ELEMENT_FILTERS = [
   { value: "", label: "전체" },
   { value: "fire", label: "불" },
@@ -170,7 +176,7 @@ export default function InventoryTab({
         return matchesInventorySearch(monster, keyword);
       }
 
-      if (stars !== Number(starFilter)) {
+      if (starFilter !== "" && starFilter != null && stars !== Number(starFilter)) {
         return false;
       }
 
@@ -280,20 +286,20 @@ export default function InventoryTab({
       </div>
 
       {!query.trim() && (
-        <div className="space-y-2 rounded-2xl border border-gray-200 bg-gray-50 p-3">
+        <div className="space-y-2 rounded-xl border border-[#8b6a2e] bg-[#3a2a1d] p-3 shadow-inner">
           <div className="flex flex-wrap gap-2">
-            {STAR_FILTERS.map((stars) => (
+            {STAR_FILTERS.map((filter) => (
               <button
-                key={stars}
+                key={filter.value || "all-stars"}
                 type="button"
-                onClick={() => setStarFilter(stars)}
-                className={`rounded-full border px-3 py-1 text-sm ${
-                  starFilter === stars
-                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-gray-200 bg-white text-gray-600"
+                onClick={() => setStarFilter(filter.value)}
+                className={`rounded-full border px-3 py-1 text-sm font-semibold transition ${
+                  starFilter === filter.value
+                    ? "border-[#f6c44f] bg-[#f3d37b] text-[#2f1f13] shadow-[0_0_0_1px_rgba(255,244,178,0.45)]"
+                    : "border-[#9b743a] bg-[#221913] text-[#f8e0ad] hover:border-[#f6c44f] hover:bg-[#2f241b]"
                 }`}
               >
-                {stars}성
+                {filter.label}
               </button>
             ))}
           </div>
@@ -304,10 +310,10 @@ export default function InventoryTab({
                 key={element.value || "all"}
                 type="button"
                 onClick={() => setElementFilter(element.value)}
-                className={`rounded-full border px-3 py-1 text-sm ${
+                className={`rounded-full border px-3 py-1 text-sm font-semibold transition ${
                   elementFilter === element.value
-                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-gray-200 bg-white text-gray-600"
+                    ? "border-[#f6c44f] bg-[#f3d37b] text-[#2f1f13] shadow-[0_0_0_1px_rgba(255,244,178,0.45)]"
+                    : "border-[#9b743a] bg-[#221913] text-[#f8e0ad] hover:border-[#f6c44f] hover:bg-[#2f241b]"
                 }`}
               >
                 {element.label}
@@ -320,7 +326,7 @@ export default function InventoryTab({
       {loading ? (
         <div className="text-sm text-gray-600">불러오는 중...</div>
       ) : (
-        <div className="grid max-h-[560px] grid-cols-1 gap-2 overflow-y-auto rounded-2xl border border-gray-200 p-3 md:grid-cols-2">
+        <div className="grid max-h-[560px] grid-cols-1 gap-2 overflow-y-auto rounded-xl border border-[#745320] bg-[#211813] p-3 [scrollbar-color:#9b743a_#2f241b] [scrollbar-width:thin] md:grid-cols-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#9b743a] [&::-webkit-scrollbar-track]:bg-[#2f241b]">
           {(filteredMonsters || []).map((m) => {
             const mid = String(m.id);
             const count = clampNonNegative(inventoryMap[mid] ?? 0);
@@ -328,21 +334,21 @@ export default function InventoryTab({
             return (
               <div
                 key={mid}
-                className="flex items-center justify-between gap-3 border border-gray-200 rounded-2xl p-3"
+                className="flex items-center justify-between gap-3 rounded-md border-2 border-[#b79148] bg-[#4b3421] p-3 shadow-[inset_0_0_0_1px_rgba(255,237,169,0.25)]"
               >
                 <div className="flex items-center gap-3">
                   {m.iconDataUrl ? (
                     <img
                       src={m.iconDataUrl}
                       alt={m.name}
-                      className="w-10 h-10 rounded-xl object-cover border"
+                      className="h-12 w-12 rounded-sm border border-[#3c2414] object-cover"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-xl bg-gray-100 border" />
+                    <div className="h-12 w-12 rounded-sm border border-[#3c2414] bg-[#2f241b]" />
                   )}
                   <div>
-                    <div className="font-semibold">{m.name}</div>
-                    <div className="text-xs text-gray-500">
+                    <div className="font-semibold leading-snug text-[#f6deb0] antialiased">{m.name}</div>
+                    <div className="text-xs font-semibold text-[#c8a96a]">
                       {getMonsterStars(m)}성 · {ELEMENT_FILTERS.find((element) => element.value === getMonsterElement(m))?.label ?? m.element}
                     </div>
                   </div>
@@ -352,7 +358,7 @@ export default function InventoryTab({
                   <button
                     onClick={() => bump(mid, -1)}
                     disabled={!canEditSelected}
-                    className="px-3 py-1 rounded-xl bg-gray-100 hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 font-semibold text-[#f8e0ad] hover:border-[#f6c44f] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     -
                   </button>
@@ -361,13 +367,13 @@ export default function InventoryTab({
                     value={String(count)}
                     onChange={(e) => changeCount(mid, e.target.value)}
                     readOnly={!canEditSelected}
-                    className="w-16 text-center px-2 py-1 rounded-xl border border-gray-200"
+                    className="w-16 rounded-xl border border-[#9b743a] bg-[#221913] px-2 py-1 text-center font-semibold text-[#f8e0ad] read-only:bg-[#2f241b] read-only:text-[#8f7a58]"
                   />
 
                   <button
                     onClick={() => bump(mid, +1)}
                     disabled={!canEditSelected}
-                    className="px-3 py-1 rounded-xl bg-gray-100 hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 font-semibold text-[#f8e0ad] hover:border-[#f6c44f] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     +
                   </button>

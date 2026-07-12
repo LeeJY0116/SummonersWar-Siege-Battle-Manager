@@ -1,4 +1,10 @@
-const STAR_FILTERS = [5, 4, 3, 2];
+const STAR_FILTERS = [
+  { value: "", label: "전체" },
+  { value: 5, label: "5성" },
+  { value: 4, label: "4성" },
+  { value: 3, label: "3성" },
+  { value: 2, label: "2성" },
+];
 
 const ELEMENT_FILTERS = [
   { value: "", label: "전체" },
@@ -36,7 +42,7 @@ export function matchesMonsterPickerFilters(monster, { query, starFilter, elemen
     return true;
   }
 
-  if (stars !== Number(starFilter)) {
+  if (starFilter !== "" && starFilter != null && stars !== Number(starFilter)) {
     return false;
   }
 
@@ -53,23 +59,38 @@ export default function MonsterFilterControls({
   elementFilter,
   onChangeElementFilter,
   disabled = false,
+  variant = "light",
 }) {
+  const isDark = variant === "dark";
+
+  const panelClass = isDark
+    ? "mb-3 space-y-2 rounded-xl border border-[#8b6a2e] bg-[#3a2a1d] p-3 shadow-inner"
+    : "mb-3 space-y-2 rounded-2xl border border-gray-200 bg-gray-50 p-3";
+
+  const activeButtonClass = isDark
+    ? "border-[#f6c44f] bg-[#f3d37b] text-[#2f1f13] shadow-[0_0_0_1px_rgba(255,244,178,0.45)]"
+    : "border-blue-500 bg-blue-50 text-blue-700";
+
+  const inactiveButtonClass = isDark
+    ? "border-[#9b743a] bg-[#221913] text-[#f8e0ad] hover:border-[#f6c44f] hover:bg-[#2f241b]"
+    : "border-gray-200 bg-white text-gray-600";
+
   return (
-    <div className="mb-3 space-y-2 rounded-2xl border border-gray-200 bg-gray-50 p-3">
+    <div className={panelClass}>
       <div className="flex flex-wrap gap-2">
-        {STAR_FILTERS.map((stars) => (
+        {STAR_FILTERS.map((filter) => (
           <button
-            key={stars}
+            key={filter.value || "all-stars"}
             type="button"
             disabled={disabled}
-            onClick={() => onChangeStarFilter(stars)}
-            className={`rounded-full border px-3 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50 ${
-              starFilter === stars
-                ? "border-blue-500 bg-blue-50 text-blue-700"
-                : "border-gray-200 bg-white text-gray-600"
+            onClick={() => onChangeStarFilter(filter.value)}
+            className={`rounded-full border px-3 py-1 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
+              starFilter === filter.value
+                ? activeButtonClass
+                : inactiveButtonClass
             }`}
           >
-            {stars}성
+            {filter.label}
           </button>
         ))}
       </div>
@@ -81,10 +102,10 @@ export default function MonsterFilterControls({
             type="button"
             disabled={disabled}
             onClick={() => onChangeElementFilter(element.value)}
-            className={`rounded-full border px-3 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`rounded-full border px-3 py-1 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
               elementFilter === element.value
-                ? "border-blue-500 bg-blue-50 text-blue-700"
-                : "border-gray-200 bg-white text-gray-600"
+                ? activeButtonClass
+                : inactiveButtonClass
             }`}
           >
             {element.label}

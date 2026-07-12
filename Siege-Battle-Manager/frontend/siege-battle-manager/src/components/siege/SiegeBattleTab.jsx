@@ -104,11 +104,14 @@ export default function SiegeBattleTab({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* 도감 영역 */}
-      <section className="lg:col-span-2 bg-white rounded-2xl shadow p-4 md:p-5 flex flex-col">
+      <section
+        className="lg:col-span-2 rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 font-sans shadow-[0_10px_24px_rgba(31,20,10,0.25)] md:p-5 flex flex-col"
+        style={{ fontFamily: "Pretendard, 'Noto Sans KR', 'Malgun Gothic', sans-serif" }}
+      >
         {/* 제목 + 4성 방덱 버튼 + 설명 */}
-        <div className ="mb-3">
-            <div className="flex items-center gap-3 mb-1">
-                <h2 className="text-lg font-bold">점령전 도감</h2>
+        <div className="mb-3 rounded-xl border border-[#745320] bg-gradient-to-b from-[#6b4d23] to-[#3d2b19] px-3 py-3 shadow-inner">
+            <div className="flex items-center gap-3 mb-2">
+                <h2 className="text-xl font-extrabold tracking-normal text-[#ffe2a0] drop-shadow">점령전 도감</h2>
             {/* 4성 방덱 토글 버튼 */}
                 <button
                 type="button"
@@ -116,10 +119,10 @@ export default function SiegeBattleTab({
                     setFourStarDefenseOnly((prev) => !prev)
                 }
                 className={
-                    "px-3 py-1 rounded-full text-xs font-semibold border transition " +
+                    "rounded-full border px-3 py-1.5 text-sm font-bold transition " +
                     (fourStarDefenseOnly
-                    ? "bg-gray-900 text-white border-gray-900"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100")
+                    ? "border-[#f6c44f] bg-[#1f160f] text-[#ffd96a]"
+                    : "border-[#b98a39] bg-[#f5d891] text-[#3a2514] hover:bg-[#ffe4a5]")
                 }
                 >
                 4성 방덱
@@ -129,13 +132,13 @@ export default function SiegeBattleTab({
           <div className="hidden md:flex flex-col items-end gap-2 mt-1">
             <div className="flex flex-wrap gap-2 justify-end">
               <input
-                className="px-2 py-1 rounded-xl border border-gray-200 text-xs"
+                className="rounded-lg border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
                 placeholder="이름 검색"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
               <select
-                className="px-2 py-1 rounded-xl border border-gray-200 text-xs bg-white"
+                className="rounded-lg border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] outline-none focus:border-[#f6c44f]"
                 value={leaderEffectFilter}
                 onChange={(e) => setLeaderEffectFilter(e.target.value)}
               >
@@ -147,7 +150,7 @@ export default function SiegeBattleTab({
                 ))}
               </select>
               <select
-                className="px-2 py-1 rounded-xl border border-gray-200 text-xs bg-white"
+                className="rounded-lg border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] outline-none focus:border-[#f6c44f]"
                 value={sortKey}
                 onChange={(e) => setSortKey(e.target.value)}
               >
@@ -161,13 +164,13 @@ export default function SiegeBattleTab({
         {/* 모바일용 검색 & 리더효과 필터 */}
         <div className="md:hidden mb-3 flex flex-wrap gap-2">
           <input
-            className="px-2 py-1 rounded-xl border border-gray-200 text-xs flex-1"
+            className="flex-1 rounded-lg border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
             placeholder="이름 검색"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
           <select
-            className="px-2 py-1 rounded-xl border border-gray-200 text-xs bg-white"
+            className="rounded-lg border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] outline-none focus:border-[#f6c44f]"
             value={leaderEffectFilter}
             onChange={(e) => setLeaderEffectFilter(e.target.value)}
           >
@@ -186,15 +189,16 @@ export default function SiegeBattleTab({
           elementFilter={elementFilter}
           onChangeElementFilter={setElementFilter}
           disabled={Boolean(search.trim())}
+          variant="dark"
         />
 
         {catalog.length === 0 ? (
-          <p className="text-sm text-gray-600">
+          <p className="rounded-xl border border-[#745320] bg-[#241a13] p-4 text-sm text-[#f9e6bf]">
             선택한 속성/리더 효과에 해당하는 몬스터가 없습니다.
           </p>
         ) : (
-          <div className="flex-1 overflow-auto max-h-[520px] mt-2">
-                <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-7 gap-2">
+          <div className="mt-2 max-h-[560px] flex-1 overflow-auto rounded-xl border border-[#745320] bg-[#211813] p-3 [scrollbar-color:#9b743a_#2f241b] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#9b743a] [&::-webkit-scrollbar-track]:bg-[#2f241b]">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6">
                   {catalog.map((m) => {
                     const hasLeaderEffect = isGuildBattleLeaderEffect(m);
                     const isDefault = m.isDefault;
@@ -221,13 +225,13 @@ export default function SiegeBattleTab({
                       <div
                         key={m.id}
                         onClick={handleCardClick}
-                        className="relative border border-gray-200 rounded-xl p-1 bg-gray-50 hover:bg-gray-100 flex flex-col items-center cursor-pointer"
+                        className="relative flex cursor-pointer flex-col items-center rounded-md border-2 border-[#b79148] bg-[#4b3421] p-1.5 shadow-[inset_0_0_0_1px_rgba(255,237,169,0.35)] transition hover:border-[#ffd86a] hover:brightness-110"
                       >
 
                         {/* 리더 효과 뱃지 (좌하단) */}
                         {hasLeaderEffect && (
                           <div
-                            className="absolute left-1 bottom-6 rounded-full bg-gray-900/80 px-1.5 py-[1px] text-[9px] font-semibold text-white"
+                            className="absolute left-2 top-2 rounded bg-black/60 px-1.5 py-[1px] text-[10px] font-bold text-[#ffd96a]"
                             title={m.leaderEffectText || getLeaderEffectLabel(m.leaderEffectType)}
                           >
                             L
@@ -239,7 +243,7 @@ export default function SiegeBattleTab({
                           <button
                             type="button"
                             onClick={handleDeleteClick}
-                            className="absolute right-1 top-1 w-4 h-4 rounded-full bg-black/70 text-[10px] text-white flex items-center justify-center hover:bg-red-600"
+                            className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-black/70 text-[10px] text-white hover:bg-red-600"
                             title="이 몬스터 삭제"
                           >
                             ×
@@ -249,9 +253,9 @@ export default function SiegeBattleTab({
                         <img
                           src={m.iconDataUrl}
                           alt={m.name}
-                          className="w-full aspect-square rounded-lg object-cover"
+                          className="aspect-square w-full rounded-sm border border-[#3c2414] object-cover"
                         />
-                        <div className="text-[10px] mt-1 text-center truncate px-1">
+                        <div className="mt-1.5 flex min-h-[32px] w-full items-center justify-center px-1 text-center text-xs font-semibold leading-snug text-[#f6deb0] antialiased">
                           {m.name}
                         </div>
                       </div>

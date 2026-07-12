@@ -11,7 +11,7 @@ import DefenseDeckFilterBar from "./DefenseDeckFilterBar.jsx";
 import Toast from "../common/Toast.jsx";
 import { useToast } from "../../hooks/useToast.js";
 import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
-import { isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
+import { getElementLabel, isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
 
 function getDeckGroupKey(deck) {
   return (deck.monsters || [])
@@ -337,16 +337,16 @@ const filteredMonsters = monsters.filter((m) => {
     <div className="space-y-4">
       <Toast message={toastMessage} />
       {canEditDisplayedDecks && (
-        <section className="border rounded-2xl p-4 bg-white">
+        <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
           <h3 className="font-bold text-lg mb-3">방덱 생성</h3>
 
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-semibold mb-1">방덱 소유 길드원</label>
+              <label className="block text-sm font-semibold mb-1 text-[#f6deb0]">방덱 소유 길드원</label>
               <select
                 value={ownerMemberId}
                 onChange={(e) => setOwnerMemberId(e.target.value)}
-                className="border rounded-xl px-3 py-2 w-full"
+                className="w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] outline-none focus:border-[#f6c44f]"
               >
                 {manageableMembers.map((m) => (
                   <option key={m.id} value={m.id}>
@@ -357,7 +357,8 @@ const filteredMonsters = monsters.filter((m) => {
             </div>
 
           <div>
-  <div className="mb-2 text-sm font-semibold">방덱 몬스터 선택</div>
+  <div className="mb-2 text-sm font-semibold text-[#f6deb0]">방덱 몬스터 선택</div>
+  <div className="rounded-xl border border-[#745320] bg-[#211813] p-3">
 
     <div className="mb-4 flex gap-3">
         {[0, 1, 2].map((index) => (
@@ -371,7 +372,7 @@ const filteredMonsters = monsters.filter((m) => {
         ))}
     </div>
 
-    <div className="mb-2 text-sm text-gray-600">
+    <div className="mb-2 text-sm text-[#d7be80]">
         현재 선택 슬롯:{" "}
         <span className="font-semibold">
         {activeSlotIndex === 0 ? "리더" : `${activeSlotIndex + 1}번`}
@@ -382,10 +383,10 @@ const filteredMonsters = monsters.filter((m) => {
         value={monsterSearch}
         onChange={(e) => setMonsterSearch(e.target.value)}
         placeholder="몬스터 검색"
-        className="mb-3 w-full rounded-xl border px-3 py-2"
+        className="mb-3 w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
     />
 
-    <div className="grid max-h-72 grid-cols-4 gap-2 overflow-y-auto rounded-2xl border p-3">
+    <div className="grid max-h-72 grid-cols-4 gap-2 overflow-y-auto rounded-xl border border-[#745320] bg-[#211813] p-3 [scrollbar-color:#9b743a_#2f241b] [scrollbar-width:thin] sm:grid-cols-6 md:grid-cols-8 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#9b743a] [&::-webkit-scrollbar-track]:bg-[#2f241b]">
         {filteredMonsters.map((m) => {
         const selected = selectedMonsterCodes.includes(m.id);
 
@@ -395,23 +396,27 @@ const filteredMonsters = monsters.filter((m) => {
             type="button"
             onClick={() => selectMonster(m.id)}
             disabled={selected}
-            className={`rounded-xl border p-2 text-center text-xs transition hover:bg-gray-50 disabled:opacity-40 ${
-                selected ? "bg-gray-100" : "bg-white"
+            className={`rounded-md border-2 p-1.5 text-center text-[11px] transition hover:border-[#ffd86a] hover:brightness-110 disabled:opacity-45 ${
+                selected
+                  ? "border-[#f6c44f] bg-[#2a170c] ring-2 ring-[#f6c44f]/40"
+                  : "border-[#b79148] bg-[#4b3421]"
             }`}
             >
             {m.iconDataUrl ? (
                 <img
                 src={m.iconDataUrl}
                 alt={m.name}
-                className="mx-auto mb-1 h-12 w-12 rounded-lg object-cover"
+                className="mx-auto h-14 w-14 rounded-sm border border-[#3c2414] object-cover"
                 />
             ) : (
-                <div className="mx-auto mb-1 h-12 w-12 rounded-lg bg-gray-200" />
+                <div className="mx-auto h-14 w-14 rounded-sm border border-[#3c2414] bg-[#2f241b]" />
             )}
 
-            <div className="truncate font-semibold">{m.name}</div>
-            <div className="truncate text-[10px] text-gray-400">{m.element}</div>
-            <div className="text-[10px] text-gray-500">
+            <div className="mt-1 flex min-h-[28px] items-center justify-center px-1 font-semibold leading-tight text-[#f6deb0] antialiased">{m.name}</div>
+            <div className="truncate text-[10px] font-semibold text-[#c8a96a]">
+              {getElementLabel(m.element ?? m.attribute)}
+            </div>
+            <div className="text-[10px] font-semibold text-[#d7be80]">
             가능 {ownerInventoryMap[m.id] - (usedCountMap[m.id] ?? 0)} / 보유 {ownerInventoryMap[m.id]}
             </div>
             </button>
@@ -419,10 +424,11 @@ const filteredMonsters = monsters.filter((m) => {
         })}
     </div>
   </div>
+  </div>
           <button
             onClick={handleCreateDeck}
             disabled={loading}
-            className="px-4 py-2 rounded-xl bg-black text-white disabled:bg-gray-400"
+            className="rounded-xl bg-black px-4 py-2 font-semibold text-white disabled:bg-gray-400"
           >
             방덱 생성
           </button>
@@ -430,17 +436,19 @@ const filteredMonsters = monsters.filter((m) => {
         </section>
       )}
 
-      <section className="border rounded-2xl p-4 bg-white">
-        <div className="flex justify-between items-center mb-3">
+      <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
+        <div className="mb-3 flex items-center justify-between">
           <h3 className="font-bold text-lg">방덱 목록</h3>
           <button
             onClick={loadDecks}
             disabled={loading}
-            className="px-3 py-1 rounded-xl border"
+            className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
           >
             새로고침
           </button>
+        </div>
 
+        <div className="mb-3 rounded-xl border border-[#745320] bg-[#211813] p-3">
           <DefenseDeckFilterBar
             members={canManageGuild ? members : manageableMembers}
             monsters={monsters}
@@ -457,10 +465,10 @@ const filteredMonsters = monsters.filter((m) => {
             monsterFilterCodes={monsterFilterCodes}
             setMonsterFilterCodes={setMonsterFilterCodes}
           />
-            </div>
+        </div>
             
         {groupedVisibleDecks.length === 0 ? (
-          <p className="text-sm text-gray-500">등록된 방덱이 없습니다.</p>
+          <p className="text-sm text-[#d7be80]">등록된 방덱이 없습니다.</p>
         ) : (
           <div className="space-y-3">
             {groupedVisibleDecks.map((group) => (

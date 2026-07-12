@@ -93,7 +93,7 @@ export default function DefenseDeckFilterBar({
         onChange={(e) =>
           setOwnerFilterId(e.target.value)
         }
-        className="w-full rounded-xl border px-3 py-2"
+        className="w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] outline-none focus:border-[#f6c44f]"
       >
         <option value="">전체 길드원</option>
 
@@ -107,7 +107,7 @@ export default function DefenseDeckFilterBar({
       {/* 리더효과 */}
       <div className="space-y-2">
 
-        <div className="text-sm font-semibold">
+        <div className="text-sm font-semibold text-[#f6deb0]">
           리더효과 필터
         </div>
 
@@ -118,10 +118,10 @@ export default function DefenseDeckFilterBar({
             onClick={() =>
               setLeaderEffectFilter("")
             }
-            className={`rounded-full border px-3 py-1 text-sm ${
+            className={`rounded-full border px-3 py-1 text-sm font-semibold transition ${
               !leaderEffectFilter
-                ? "border-blue-500 bg-blue-50 text-blue-700"
-                : "border-gray-200 bg-white text-gray-600"
+                ? "border-[#f6c44f] bg-[#f3d37b] text-[#2f1f13]"
+                : "border-[#9b743a] bg-[#221913] text-[#f8e0ad] hover:border-[#f6c44f]"
             }`}
           >
             전체
@@ -135,10 +135,10 @@ export default function DefenseDeckFilterBar({
               onClick={() =>
                 setLeaderEffectFilter(effect)
               }
-              className={`rounded-full border px-3 py-1 text-sm ${
+              className={`rounded-full border px-3 py-1 text-sm font-semibold transition ${
                 leaderEffectFilter === effect
-                  ? "border-blue-500 bg-blue-50 text-blue-700"
-                  : "border-gray-200 bg-white text-gray-600"
+                  ? "border-[#f6c44f] bg-[#f3d37b] text-[#2f1f13]"
+                  : "border-[#9b743a] bg-[#221913] text-[#f8e0ad] hover:border-[#f6c44f]"
               }`}
             >
               {getLeaderEffectLabel(effect)}
@@ -159,13 +159,13 @@ export default function DefenseDeckFilterBar({
             setMonsterFilterKeyword(e.target.value)
           }
           placeholder="몬스터 이름 검색"
-          className="w-full rounded-xl border px-3 py-2"
+          className="w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
         />
 
         {monsterFilterKeyword.trim() &&
           deckFilterMonsters.length > 0 && (
 
-          <div className="flex gap-2 overflow-x-auto rounded-2xl border p-2">
+          <div className="flex gap-3 overflow-x-auto rounded-xl border border-[#745320] bg-[#211813] p-3 [scrollbar-color:#9b743a_#2f241b] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#9b743a] [&::-webkit-scrollbar-track]:bg-[#2f241b]">
 
             {deckFilterMonsters.map((m) => {
 
@@ -180,10 +180,10 @@ export default function DefenseDeckFilterBar({
                   onClick={() =>
                     toggleMonsterFilter(m.id)
                   }
-                  className={`min-w-[72px] rounded-2xl border p-2 text-xs transition ${
+                  className={`min-w-[84px] rounded-md border-2 p-1.5 text-[11px] transition hover:border-[#ffd86a] hover:brightness-110 ${
                     selected
-                      ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
-                      : "border-gray-200 bg-white"
+                      ? "border-[#f6c44f] bg-[#2a170c] ring-2 ring-[#f6c44f]/40"
+                      : "border-[#b79148] bg-[#4b3421]"
                   }`}
                 >
 
@@ -191,13 +191,13 @@ export default function DefenseDeckFilterBar({
                     <img
                       src={m.iconDataUrl}
                       alt={m.name}
-                      className="mx-auto mb-1 h-12 w-12 rounded-xl object-cover"
+                      className="mx-auto h-14 w-14 rounded-sm border border-[#3c2414] object-cover"
                     />
                   ) : (
-                    <div className="mx-auto mb-1 h-12 w-12 rounded-xl bg-gray-200" />
+                    <div className="mx-auto h-14 w-14 rounded-sm border border-[#3c2414] bg-[#2f241b]" />
                   )}
 
-                  <div className="truncate font-semibold">
+                  <div className="mt-1 flex min-h-[28px] items-center justify-center px-1 text-center font-semibold leading-tight text-[#f6deb0] antialiased">
                     {m.name}
                   </div>
 
@@ -216,9 +216,9 @@ export default function DefenseDeckFilterBar({
       {/* 활성 필터 */}
       {hasActiveFilters && (
 
-        <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-gray-50 p-3 text-sm">
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[#745320] bg-[#2f241b] p-3 text-sm">
 
-          <span className="font-semibold text-gray-700">
+          <span className="font-semibold text-[#f6deb0]">
             적용 중인 필터:
           </span>
 
@@ -229,7 +229,7 @@ export default function DefenseDeckFilterBar({
               onClick={() =>
                 setOwnerFilterId("")
               }
-              className="rounded-full border bg-white px-3 py-1 text-blue-600"
+              className="rounded-full border border-[#9b743a] bg-[#221913] px-3 py-1 font-semibold text-[#f8e0ad]"
             >
               {selectedOwnerFilter.displayName} ✕
             </button>
@@ -243,7 +243,7 @@ export default function DefenseDeckFilterBar({
               onClick={() =>
                 setLeaderEffectFilter("")
               }
-              className="rounded-full border bg-white px-3 py-1 text-blue-600"
+              className="rounded-full border border-[#9b743a] bg-[#221913] px-3 py-1 font-semibold text-[#f8e0ad]"
             >
               리더효과: {getLeaderEffectLabel(leaderEffectFilter)} ✕
             </button>
@@ -266,7 +266,7 @@ export default function DefenseDeckFilterBar({
                 onClick={() =>
                   toggleMonsterFilter(code)
                 }
-                className="rounded-full border bg-white px-3 py-1 text-blue-600"
+                className="rounded-full border border-[#9b743a] bg-[#221913] px-3 py-1 font-semibold text-[#f8e0ad]"
               >
                 {monster.name} ✕
               </button>

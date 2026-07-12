@@ -51,15 +51,15 @@ export default function DefenseDeckCard({
   }
 
   return (
-    <div className="rounded-2xl border bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-[#745320] bg-[#211813] p-4 shadow-[inset_0_0_0_1px_rgba(255,237,169,0.12)]">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex flex-wrap items-center gap-2">
           {ownedCount > 1 && (
-            <span className="rounded-full bg-gray-900 px-2 py-0.5 text-xs font-semibold text-white">
+            <span className="rounded-full bg-[#07142a] px-2 py-0.5 text-xs font-semibold text-white">
               x{ownedCount} 보유
             </span>
           )}
-          <div className="text-sm text-gray-500">
+          <div className="text-sm font-semibold text-[#d7be80]">
             {TEXT.leaderEffect}: {leaderEffect}
           </div>
         </div>
@@ -67,13 +67,13 @@ export default function DefenseDeckCard({
         <button
           type="button"
           onClick={() => setExpanded((prev) => !prev)}
-          className="rounded-xl border px-3 py-1 text-sm"
+          className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
         >
           {expanded ? "접기" : "펼치기"}
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="flex flex-wrap justify-start gap-2">
         {representativeDeck.monsters?.map((item, index) => {
           const monster = findMonster(item.monsterCode);
           const isLeader = index === 0;
@@ -83,37 +83,37 @@ export default function DefenseDeckCard({
           return (
             <div
               key={item.monsterCode ?? item.monsterId}
-              className={`relative rounded-2xl border p-2 text-center ${
+              className={`relative w-24 rounded-md border-2 p-1.5 text-center shadow-[inset_0_0_0_1px_rgba(255,237,169,0.25)] ${
                 isLeader
-                  ? "border-blue-500 bg-blue-50 shadow"
-                  : "border-gray-200 bg-gray-50"
+                  ? "border-[#f6c44f] bg-[#2a170c]"
+                  : "border-[#b79148] bg-[#4b3421]"
               }`}
             >
               {isLeader && (
-                <div className="absolute left-1/2 top-1 -translate-x-1/2 rounded-full bg-blue-600 px-2 py-0.5 text-[10px] font-bold text-white">
-                  {TEXT.leader}
+                <div className="absolute left-1 top-1 rounded bg-black/60 px-1.5 py-[1px] text-[10px] font-bold text-[#ffd96a]">
+                  L
                 </div>
               )}
 
-              <div className="pt-4">
+              <div>
                 {monster?.iconDataUrl ? (
                   <img
                     src={monster.iconDataUrl}
                     alt={monsterName}
-                    className="mx-auto h-16 w-16 rounded-xl object-cover"
+                    className="mx-auto h-14 w-14 rounded-sm border border-[#3c2414] object-cover"
                   />
                 ) : (
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-xl bg-gray-200 text-xs text-gray-500">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-sm border border-[#3c2414] bg-[#2f241b] text-[10px] text-[#c8a96a]">
                     {TEXT.noImage}
                   </div>
                 )}
 
-                <div className="mt-2 text-sm font-semibold">
+                <div className="mt-1 flex min-h-[28px] items-center justify-center px-1 text-xs font-semibold leading-tight text-[#f6deb0] antialiased">
                   {monsterName}
                 </div>
 
                 {elementLabel && (
-                  <div className="text-xs text-gray-500">
+                  <div className="text-[10px] font-semibold text-[#c8a96a]">
                     {elementLabel}
                   </div>
                 )}
@@ -124,13 +124,13 @@ export default function DefenseDeckCard({
       </div>
 
       {expanded && (
-        <div className="mt-3 rounded-2xl bg-gray-50 p-3 text-sm">
-          <div className="mb-2 font-semibold text-gray-700">보유 길드원</div>
+        <div className="mt-3 rounded-xl border border-[#745320] bg-[#2f241b] p-3 text-sm">
+          <div className="mb-2 font-semibold text-[#f6deb0]">보유 길드원</div>
           <div className="space-y-2">
             {groupDecks.map((ownedDeck) => (
               <div
                 key={ownedDeck.deckId}
-                className="flex items-center justify-between rounded-xl bg-white px-3 py-2"
+                className="flex items-center justify-between rounded-xl border border-[#745320] bg-[#211813] px-3 py-2 text-[#f6deb0]"
               >
                 <span>{ownedDeck.ownerName}</span>
                 {canDeleteDeck(ownedDeck) && (

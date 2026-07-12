@@ -10,6 +10,7 @@ import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
 import MonsterFilterControls, {
   matchesMonsterPickerFilters,
 } from "../monsters/MonsterFilterControls.jsx";
+import { getElementLabel } from "../../lib/monsterLabels.js";
 
 export default function BattleResearchTab({ monsters = []}) {
   const [posts, setPosts] = useState([]);
@@ -56,13 +57,14 @@ export default function BattleResearchTab({ monsters = []}) {
         {items.map((item, index) => {
           const monster = findMonsterByResearchItem(item);
           const monsterName = monster?.name ?? item.monsterName;
+          const elementLabel = getElementLabel(monster?.element ?? monster?.attribute);
 
           return (
             <div
               key={`${item.monsterCode ?? item.monsterId}-${index}`}
-              className="w-20 rounded-xl bg-gray-50 p-2 text-center"
+              className="w-20 rounded-md border-2 border-[#b79148] bg-[#4b3421] p-1.5 text-center shadow-[inset_0_0_0_1px_rgba(255,237,169,0.25)]"
             >
-              <div className="mb-1 text-[10px] text-gray-400">
+              <div className="mb-1 text-[10px] font-semibold text-[#c8a96a]">
                 {index === 0 ? "리더" : `${index + 1}번`}
               </div>
 
@@ -70,15 +72,20 @@ export default function BattleResearchTab({ monsters = []}) {
                 <img
                   src={monster.iconDataUrl}
                   alt={monsterName}
-                  className="mx-auto h-12 w-12 rounded-lg object-cover"
+                  className="mx-auto h-12 w-12 rounded-sm border border-[#3c2414] object-cover"
                 />
               ) : (
-                <div className="mx-auto h-12 w-12 rounded-lg bg-gray-200" />
+                <div className="mx-auto h-12 w-12 rounded-sm border border-[#3c2414] bg-[#2f241b]" />
               )}
 
-              <div className="mt-1 truncate text-xs font-semibold">
+              <div className="mt-1 truncate text-xs font-semibold text-[#f6deb0] antialiased">
                 {monsterName}
               </div>
+              {elementLabel && (
+                <div className="text-[10px] font-semibold text-[#c8a96a]">
+                  {elementLabel}
+                </div>
+              )}
             </div>
           );
         })}
@@ -312,18 +319,18 @@ async function handleCreateComment(postId) {
         </button>
       </div>
 
-      <section className="rounded-2xl border bg-white p-4">
+        <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
         <h4 className="mb-3 font-bold">전투 연구 작성</h4>
 
         <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="제목"
-            className="mb-3 w-full rounded-xl border px-3 py-2"
+            className="mb-3 w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
         />
 
-        <div className="mb-4">
-          <div className="mb-2 text-sm font-semibold">연구 대상 방덱</div>
+        <div className="mb-4 rounded-xl border border-[#745320] bg-[#211813] p-3">
+          <div className="mb-2 text-sm font-semibold text-[#f6deb0]">연구 대상 방덱</div>
 
           <div className="mb-4 flex gap-3">
             {[0, 1, 2].map((index) => (
@@ -337,7 +344,7 @@ async function handleCreateComment(postId) {
             ))}
           </div>
 
-          <div className="mb-2 text-sm text-gray-600">
+          <div className="mb-2 text-sm text-[#d7be80]">
             현재 선택 슬롯:{" "}
             <span className="font-semibold">
               {activeSlotIndex === 0 ? "리더" : `${activeSlotIndex + 1}번`}
@@ -348,7 +355,7 @@ async function handleCreateComment(postId) {
             value={monsterSearch}
             onChange={(e) => setMonsterSearch(e.target.value)}
             placeholder="몬스터 검색"
-            className="mb-3 w-full rounded-xl border px-3 py-2"
+            className="mb-3 w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
           />
 
           <MonsterFilterControls
@@ -357,9 +364,10 @@ async function handleCreateComment(postId) {
             elementFilter={monsterElementFilter}
             onChangeElementFilter={setMonsterElementFilter}
             disabled={Boolean(monsterSearch.trim())}
+            variant="dark"
           />
 
-          <div className="grid max-h-72 grid-cols-4 gap-2 overflow-y-auto rounded-2xl border p-3">
+          <div className="grid max-h-72 grid-cols-4 gap-2 overflow-y-auto rounded-xl border border-[#745320] bg-[#211813] p-3 [scrollbar-color:#9b743a_#2f241b] [scrollbar-width:thin] sm:grid-cols-6 md:grid-cols-8 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#9b743a] [&::-webkit-scrollbar-track]:bg-[#2f241b]">
             {filteredMonsters.map((m) => {
               const selected = selectedMonsterCodes.includes(m.id);
 
@@ -369,22 +377,28 @@ async function handleCreateComment(postId) {
                   type="button"
                   onClick={() => selectMonster(m.id)}
                   disabled={selected}
-                  className={`rounded-xl border p-2 text-center text-xs transition hover:bg-gray-50 disabled:opacity-40 ${
-                    selected ? "bg-gray-100" : "bg-white"
+                  className={`rounded-md border-2 p-1.5 text-center text-[11px] transition hover:border-[#ffd86a] hover:brightness-110 disabled:opacity-45 ${
+                    selected
+                      ? "border-[#f6c44f] bg-[#2a170c] ring-2 ring-[#f6c44f]/40"
+                      : "border-[#b79148] bg-[#4b3421]"
                   }`}
                 >
                   {m.iconDataUrl ? (
                     <img
                       src={m.iconDataUrl}
                       alt={m.name}
-                      className="mx-auto mb-1 h-12 w-12 rounded-lg object-cover"
+                      className="mx-auto h-14 w-14 rounded-sm border border-[#3c2414] object-cover"
                     />
                   ) : (
-                    <div className="mx-auto mb-1 h-12 w-12 rounded-lg bg-gray-200" />
+                    <div className="mx-auto h-14 w-14 rounded-sm border border-[#3c2414] bg-[#2f241b]" />
                   )}
 
-                  <div className="truncate font-semibold">{m.name}</div>
-                  <div className="truncate text-[10px] text-gray-400">{m.element}</div>
+                  <div className="mt-1 flex min-h-[28px] items-center justify-center px-1 font-semibold leading-tight text-[#f6deb0] antialiased">
+                    {m.name}
+                  </div>
+                  <div className="truncate text-[10px] font-semibold text-[#c8a96a]">
+                    {getElementLabel(m.element ?? m.attribute)}
+                  </div>
                 </button>
               );
             })}
@@ -395,7 +409,7 @@ async function handleCreateComment(postId) {
             onChange={(e) => setContent(e.target.value)}
             placeholder="연구 내용"
             rows={4}
-            className="mb-3 w-full rounded-xl border px-3 py-2"
+            className="mb-3 w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
         />
 
         <button
@@ -410,7 +424,7 @@ async function handleCreateComment(postId) {
         
 
       {posts.length === 0 ? (
-        <div className="rounded-2xl border border-dashed p-6 text-center text-sm text-gray-500">
+        <div className="rounded-xl border border-dashed border-[#745320] bg-[#211813] p-6 text-center text-sm text-[#d7be80]">
           등록된 전투 연구가 없습니다.
         </div>
       ) : (
@@ -428,7 +442,7 @@ async function handleCreateComment(postId) {
             return (
               <div
                 key={postId}
-                className="rounded-2xl border bg-white p-4 shadow-sm"
+                className="rounded-xl border border-[#745320] bg-[#211813] p-4 text-[#f6deb0] shadow-[inset_0_0_0_1px_rgba(255,237,169,0.12)]"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -436,27 +450,27 @@ async function handleCreateComment(postId) {
                       {post.title ?? "제목 없는 연구"}
                     </div>
 
-                    <div className="mt-1 text-sm text-gray-500">
+                    <div className="mt-1 text-sm font-semibold text-[#d7be80]">
                       작성자: {post.authorName ?? post.writerName ?? "-"}
                     </div>
 
                     {renderResearchMonsterDeck(post.defenseMonsters ?? [])}
                     
-                    <div className="mt-1 text-xs text-gray-400">
+                    <div className="mt-1 text-xs font-semibold text-[#c8a96a]">
                       댓글 {post.commentCount ?? 0}개
                     </div>
                   </div>
 
                   <button
                     onClick={() => toggleDetail(postId)}
-                    className="rounded-xl border px-3 py-1 text-sm"
+                    className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
                   >
                     {openedPostId === postId ? "닫기" : "상세 보기"}
                   </button>
                 </div>
 
                 {openedPostId === postId && detail && (
-                  <div className="mt-4 rounded-2xl bg-gray-50 p-4">
+                  <div className="mt-4 rounded-xl border border-[#745320] bg-[#2f241b] p-4">
 
 
 
@@ -469,7 +483,7 @@ async function handleCreateComment(postId) {
                     <div className="mb-3 text-sm font-semibold">
                       연구 내용
                     </div>
-                    <p className="whitespace-pre-wrap text-sm text-gray-700">
+                    <p className="whitespace-pre-wrap text-sm text-[#f6deb0]">
                       {detail.content ?? detail.description ?? "내용 없음"}
                     </p>
                     <div className="mt-4 text-sm font-semibold">
@@ -478,19 +492,19 @@ async function handleCreateComment(postId) {
 
                     <div className="mt-2 space-y-2">
                       {(detail.comments ?? []).length === 0 ? (
-                        <div className="text-sm text-gray-400">
+                          <div className="text-sm text-[#c8a96a]">
                           등록된 댓글이 없습니다.
                         </div>
                       ) : (
                         detail.comments.map((comment) => (
                           <div
                             key={comment.commentId ?? comment.id}
-                            className="rounded-xl bg-white px-3 py-2 text-sm"
+                            className="rounded-xl border border-[#745320] bg-[#211813] px-3 py-2 text-sm text-[#f6deb0]"
                           >
                             <div className="font-semibold">
                               {comment.authorName ?? comment.writerName ?? "-"}
                             </div>
-                            <div className="mt-1 text-gray-700">
+                            <div className="mt-1 text-[#f6deb0]">
                               {comment.content}
                             </div>
                             {renderResearchMonsterDeck(comment.attackMonsters ?? [])}
@@ -498,9 +512,9 @@ async function handleCreateComment(postId) {
                         ))
                       )}
                     </div>
-                    <div className="mt-4 rounded-xl bg-white p-3">
+                    <div className="mt-4 rounded-xl border border-[#745320] bg-[#211813] p-3">
                       <div className="mb-3 text-sm font-semibold">
-                        Attack deck monsters
+                        댓글 공격덱
                       </div>
 
                       <div className="mb-3 flex gap-3">
@@ -528,8 +542,8 @@ async function handleCreateComment(postId) {
                             [postId]: e.target.value,
                           }))
                         }
-                        placeholder="Search attack monsters"
-                        className="mb-3 w-full rounded-xl border px-3 py-2 text-sm"
+                        placeholder="공격 몬스터 검색"
+                        className="mb-3 w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
                       />
 
                       <MonsterFilterControls
@@ -548,9 +562,10 @@ async function handleCreateComment(postId) {
                           }))
                         }
                         disabled={Boolean((commentMonsterSearchMap[postId] ?? "").trim())}
+                        variant="dark"
                       />
 
-                      <div className="mb-3 grid max-h-52 grid-cols-4 gap-2 overflow-y-auto rounded-2xl border p-3">
+                      <div className="mb-3 grid max-h-60 grid-cols-4 gap-2 overflow-y-auto rounded-xl border border-[#745320] bg-[#211813] p-3 [scrollbar-color:#9b743a_#2f241b] [scrollbar-width:thin] sm:grid-cols-6 md:grid-cols-8 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#9b743a] [&::-webkit-scrollbar-track]:bg-[#2f241b]">
                         {commentFilteredMonsters.map((m) => {
                           const selected = commentAttackMonsterCodes.includes(m.id);
 
@@ -560,22 +575,28 @@ async function handleCreateComment(postId) {
                               type="button"
                               onClick={() => selectCommentAttackMonster(postId, m.id)}
                               disabled={selected}
-                              className={`rounded-xl border p-2 text-center text-xs transition hover:bg-gray-50 disabled:opacity-40 ${
-                                selected ? "bg-gray-100" : "bg-white"
+                              className={`rounded-md border-2 p-1.5 text-center text-[11px] transition hover:border-[#ffd86a] hover:brightness-110 disabled:opacity-45 ${
+                                selected
+                                  ? "border-[#f6c44f] bg-[#2a170c] ring-2 ring-[#f6c44f]/40"
+                                  : "border-[#b79148] bg-[#4b3421]"
                               }`}
                             >
                               {m.iconDataUrl ? (
                                 <img
                                   src={m.iconDataUrl}
                                   alt={m.name}
-                                  className="mx-auto mb-1 h-10 w-10 rounded-lg object-cover"
+                                  className="mx-auto h-14 w-14 rounded-sm border border-[#3c2414] object-cover"
                                 />
                               ) : (
-                                <div className="mx-auto mb-1 h-10 w-10 rounded-lg bg-gray-200" />
+                                <div className="mx-auto h-14 w-14 rounded-sm border border-[#3c2414] bg-[#2f241b]" />
                               )}
 
-                              <div className="truncate font-semibold">{m.name}</div>
-                              <div className="truncate text-[10px] text-gray-400">{m.element}</div>
+                              <div className="mt-1 flex min-h-[28px] items-center justify-center px-1 font-semibold leading-tight text-[#f6deb0] antialiased">
+                                {m.name}
+                              </div>
+                              <div className="truncate text-[10px] font-semibold text-[#c8a96a]">
+                                {getElementLabel(m.element ?? m.attribute)}
+                              </div>
                             </button>
                           );
                         })}
@@ -591,7 +612,7 @@ async function handleCreateComment(postId) {
                         }
                         placeholder="댓글 내용을 입력하세요"
                         rows={3}
-                        className="mb-2 w-full rounded-xl border px-3 py-2 text-sm"
+                        className="mb-2 w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
                       />
 
                       <button
