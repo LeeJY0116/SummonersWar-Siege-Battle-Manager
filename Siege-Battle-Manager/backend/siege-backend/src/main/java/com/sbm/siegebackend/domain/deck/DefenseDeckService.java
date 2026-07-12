@@ -59,8 +59,7 @@ public class DefenseDeckService {
         }
 
         boolean isSelf = actor.getId().equals(owner.getId());
-        boolean isManager = actor.getRole() == GuildMemberRole.MASTER
-                || actor.getRole() == GuildMemberRole.SUB_MASTER;
+        boolean isManager = isGuildManager(actor);
 
         if (!isSelf && !isManager) {
             throw new IllegalStateException("본인 또는 마스터/부마스터만 방덱을 생성할 수 있습니다.");
@@ -130,8 +129,7 @@ public class DefenseDeckService {
         }
 
         boolean isSelf = actor.getId().equals(owner.getId());
-        boolean isManager = actor.getRole() == GuildMemberRole.MASTER
-                || actor.getRole() == GuildMemberRole.SUB_MASTER;
+        boolean isManager = isGuildManager(actor);
 
         if (!isSelf && !isManager) {
             throw new IllegalStateException("방덱을 삭제할 권한이 없습니다.");
@@ -153,12 +151,21 @@ public class DefenseDeckService {
                 .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
         Long guildId = me.getGuild().getId();
+        boolean isManager = isGuildManager(me);
 
         List<DefenseDeck> decks = defenseDeckRepository.findByGuildIdWithOwnerAndMonsters(guildId);
 
         Stream<DefenseDeck> stream = decks.stream();
 
+        if (!isManager) {
+            stream = stream.filter(d -> d.getOwner().getId().equals(me.getId()));
+        }
+
         if (ownerMemberId != null) {
+            if (!isManager && !ownerMemberId.equals(me.getId())) {
+                throw new IllegalStateException("본인 방덱만 조회할 수 있습니다.");
+            }
+
             stream = stream.filter(d ->
                     d.getOwner().getId().equals(ownerMemberId));
         }
@@ -201,6 +208,11 @@ public class DefenseDeckService {
                 || "Element".equals(monster.getLeaderEffectArea())
                 || "Attribute".equals(monster.getLeaderEffectArea())
                 || (monster.getLeaderEffectArea() == null && monster.getLeaderEffectElement() != null);
+    }
+
+    private boolean isGuildManager(GuildMember member) {
+        return member.getRole() == GuildMemberRole.MASTER
+                || member.getRole() == GuildMemberRole.SUB_MASTER;
     }
 
     private DefenseDeckResponse toResponse(DefenseDeck deck) {

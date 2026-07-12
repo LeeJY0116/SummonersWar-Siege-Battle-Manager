@@ -53,6 +53,13 @@ public class GuildMemberInventoryService {
             throw new IllegalStateException("다른 길드원의 인벤토리는 조회할 수 없습니다.");
         }
 
+        boolean isSelf = actor.getId().equals(target.getId());
+        boolean isManager = isGuildManager(actor);
+
+        if (!isSelf && !isManager) {
+            throw new IllegalStateException("본인 또는 길드 마스터/부마스터만 인벤토리를 조회할 수 있습니다.");
+        }
+
         List<GuildMemberInventory> list = inventoryRepository.findByGuildMember(target);
 
         return list.stream()
@@ -87,12 +94,8 @@ public class GuildMemberInventoryService {
             throw new IllegalStateException("다른 길드의 인벤토리는 수정할 수 없습니다.");
         }
 
-        // 권한 체크
         boolean isSelf = actor.getId().equals(target.getId());
-
-        boolean isManager =
-                actor.getRole() == GuildMemberRole.MASTER
-                        || actor.getRole() == GuildMemberRole.SUB_MASTER;
+        boolean isManager = isGuildManager(actor);
 
         if (!isSelf && !isManager) {
             throw new IllegalStateException(
@@ -178,5 +181,10 @@ public class GuildMemberInventoryService {
 
             inventoryRepository.save(inv);
         }
+    }
+
+    private boolean isGuildManager(GuildMember member) {
+        return member.getRole() == GuildMemberRole.MASTER
+                || member.getRole() == GuildMemberRole.SUB_MASTER;
     }
 }

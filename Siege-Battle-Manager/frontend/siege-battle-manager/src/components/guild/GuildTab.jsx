@@ -4,7 +4,13 @@ import DefenseDeckTab from "./DefenseDeckTab.jsx";
 import OwnerlessDefenseDeckTab from "./OwnerlessDefenseDeckTab.jsx";
 import BattleResearchTab from "./BattleResearchTab.jsx";
 
-export default function GuildTab({ guild, members, monsters }) {
+export default function GuildTab({
+  guild,
+  members,
+  monsters,
+  canManageGuild = false,
+  currentGuildMemberId = null,
+}) {
   const [subTab, setSubTab] = useState("inventory");
 
   const canUse = Boolean(guild);
@@ -72,9 +78,19 @@ export default function GuildTab({ guild, members, monsters }) {
           길드를 만든 뒤 이용할 수 있어요.
         </div>
       ) : subTab === "inventory" ? (
-        <InventoryTab members={members} monsters={monsters} />
+        <InventoryTab
+          members={members}
+          monsters={monsters}
+          canManageGuild={canManageGuild}
+          currentGuildMemberId={currentGuildMemberId}
+        />
       ) : subTab === "defenseDeck" ? (
-        <DefenseDeckTab members={members} monsters={monsters} />
+        <DefenseDeckTab
+          members={members}
+          monsters={monsters}
+          canManageGuild={canManageGuild}
+          currentGuildMemberId={currentGuildMemberId}
+        />
       ) : subTab === "ownerless" ? (
         <OwnerlessDefenseDeckTab monsters={monsters} />
         ) : subTab === "battleResearch" ? (

@@ -13,7 +13,43 @@ import { useToast } from "../../hooks/useToast.js";
 import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
 import { isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
 
-export default function DefenseDeckTab({ members = [], monsters = [] }) {
+function getDeckGroupKey(deck) {
+  return (deck.monsters || [])
+    .map((monster) => monster.monsterCode)
+    .filter(Boolean)
+    .sort()
+    .join("|");
+}
+
+function groupDecksByMonsterSet(decks) {
+  const groupMap = new Map();
+
+  for (const deck of decks) {
+    const key = getDeckGroupKey(deck);
+    if (!key) continue;
+
+    const existing = groupMap.get(key);
+    if (existing) {
+      existing.decks.push(deck);
+      continue;
+    }
+
+    groupMap.set(key, {
+      key,
+      representative: deck,
+      decks: [deck],
+    });
+  }
+
+  return [...groupMap.values()];
+}
+
+export default function DefenseDeckTab({
+  members = [],
+  monsters = [],
+  canManageGuild = false,
+  currentGuildMemberId = null,
+}) {
   const [ownerMemberId, setOwnerMemberId] = useState("");
   const [selectedMonsterCodes, setSelectedMonsterCodes] = useState(["", "", ""]);
   const [decks, setDecks] = useState([]);
@@ -24,6 +60,15 @@ export default function DefenseDeckTab({ members = [], monsters = [] }) {
   const [monsterFilterCodes, setMonsterFilterCodes] = useState([]);
   const [monsterFilterKeyword, setMonsterFilterKeyword] = useState("");
   const { toastMessage, showToast } = useToast(1000);
+  const manageableMembers = useMemo(() => {
+    if (canManageGuild) return members;
+
+    return members.filter(
+      (member) => String(member.id) === String(currentGuildMemberId)
+    );
+  }, [canManageGuild, currentGuildMemberId, members]);
+  const canManageOwnDeck = Boolean(currentGuildMemberId);
+  const canEditDisplayedDecks = canManageGuild || canManageOwnDeck;
   
 
   const visibleDecks = useMemo(() => {
@@ -57,6 +102,11 @@ export default function DefenseDeckTab({ members = [], monsters = [] }) {
     });
   }, [decks, ownerFilterId, leaderEffectFilter, monsterFilterCodes, monsters]);
 
+  const groupedVisibleDecks = useMemo(
+    () => groupDecksByMonsterSet(visibleDecks),
+    [visibleDecks]
+  );
+
   const selectedMonsters = selectedMonsterCodes.map((code) =>
   monsters.find((m) => m.id === code)
 );
@@ -77,8 +127,8 @@ const leaderEffectOptions = useMemo(() => {
 
   // 필터 선택된 길드원 계산 추가
 const selectedOwnerFilter = useMemo(() => {
-  return members.find((m) => String(m.id) === String(ownerFilterId));
-}, [members, ownerFilterId]);
+  return manageableMembers.find((m) => String(m.id) === String(ownerFilterId));
+}, [manageableMembers, ownerFilterId]);
 
 const hasActiveFilters =
   Boolean(ownerFilterId) ||
@@ -146,10 +196,14 @@ function selectMonster(code) {
   );
 
   useEffect(() => {
-    if (!ownerMemberId && members.length > 0) {
-      setOwnerMemberId(String(members[0].id));
+    if (!manageableMembers.length) return;
+
+    if (manageableMembers.some((member) => String(member.id) === String(ownerMemberId))) {
+      return;
     }
-  }, [members, ownerMemberId]);
+
+    setOwnerMemberId(String(manageableMembers[0].id));
+  }, [manageableMembers, ownerMemberId]);
 
   // 길드원 인벤토리 로드
   useEffect(() => {
@@ -282,25 +336,25 @@ const filteredMonsters = monsters.filter((m) => {
   return (
     <div className="space-y-4">
       <Toast message={toastMessage} />
-      <section className="border rounded-2xl p-4 bg-white">
-        <h3 className="font-bold text-lg mb-3">방덱 생성</h3>
+      {canEditDisplayedDecks && (
+        <section className="border rounded-2xl p-4 bg-white">
+          <h3 className="font-bold text-lg mb-3">방덱 생성</h3>
 
-        <div className="space-y-3">
-          <div>
-            <label className="block text-sm font-semibold mb-1">방덱 소유 길드원</label>
-            <select
-              value={ownerMemberId}
-              onChange={(e) => setOwnerMemberId(e.target.value)}
-              className="border rounded-xl px-3 py-2 w-full"
-            >
-              {members.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.displayName ?? m.nickname ?? m.name ?? `멤버 ${m.id}`}
-                  {m.role ? ` · ${m.role}` : ""}
-                </option>
-              ))}
-            </select>
-          </div>
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-semibold mb-1">방덱 소유 길드원</label>
+              <select
+                value={ownerMemberId}
+                onChange={(e) => setOwnerMemberId(e.target.value)}
+                className="border rounded-xl px-3 py-2 w-full"
+              >
+                {manageableMembers.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.displayName ?? m.nickname ?? m.name ?? `멤버 ${m.id}`}
+                  </option>
+                ))}
+              </select>
+            </div>
 
           <div>
   <div className="mb-2 text-sm font-semibold">방덱 몬스터 선택</div>
@@ -372,8 +426,9 @@ const filteredMonsters = monsters.filter((m) => {
           >
             방덱 생성
           </button>
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       <section className="border rounded-2xl p-4 bg-white">
         <div className="flex justify-between items-center mb-3">
@@ -387,7 +442,7 @@ const filteredMonsters = monsters.filter((m) => {
           </button>
 
           <DefenseDeckFilterBar
-            members={members}
+            members={canManageGuild ? members : manageableMembers}
             monsters={monsters}
 
             ownerFilterId={ownerFilterId}
@@ -404,17 +459,19 @@ const filteredMonsters = monsters.filter((m) => {
           />
             </div>
             
-        {visibleDecks.length === 0 ? (
+        {groupedVisibleDecks.length === 0 ? (
           <p className="text-sm text-gray-500">등록된 방덱이 없습니다.</p>
         ) : (
           <div className="space-y-3">
-            {visibleDecks.map((deck) => (
+            {groupedVisibleDecks.map((group) => (
               <DefenseDeckCard
-              key={deck.deckId}
-              deck={deck}
-              monsters={monsters}
-              onDelete={handleDeleteDeck}
-                />
+                key={group.key}
+                group={group}
+                monsters={monsters}
+                onDelete={handleDeleteDeck}
+                canManageGuild={canManageGuild}
+                currentGuildMemberId={currentGuildMemberId}
+              />
             ))}
           </div>
         )}

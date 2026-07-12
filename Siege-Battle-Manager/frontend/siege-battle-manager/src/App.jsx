@@ -156,6 +156,12 @@ export default function SiegeBattleManager() {
 }, [guild]);
 
   const isAdmin = me?.role === "ADMIN";
+  const currentGuildMember = members.find(
+    (member) => member.realUser && member.displayName === me?.nickname
+  );
+  const currentGuildRole = currentGuildMember?.role ?? null;
+  const canManageGuild =
+    currentGuildRole === "MASTER" || currentGuildRole === "SUB_MASTER";
   const permissionLoaded = Boolean(me) && (!guild || members.length > 0);
 
   useEffect(() => {
@@ -336,7 +342,13 @@ export default function SiegeBattleManager() {
         ) : activeTab === "review" ? (
           <MonsterReviewTab />
         ) : (
-          <GuildTab guild={guild} members={members} monsters={monsters} />
+          <GuildTab
+            guild={guild}
+            members={members}
+            monsters={monsters}
+            canManageGuild={canManageGuild}
+            currentGuildMemberId={currentGuildMember?.id ?? null}
+          />
         )}
 
         <FooterBar />
