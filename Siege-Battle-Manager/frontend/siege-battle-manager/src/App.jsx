@@ -162,6 +162,8 @@ export default function SiegeBattleManager() {
       (String(member.userId) === String(me?.id) || member.displayName === me?.nickname)
   );
   const currentGuildRole = currentGuildMember?.role ?? null;
+  const currentNickname =
+    currentGuildMember?.displayName ?? me?.nickname ?? me?.loginId ?? "";
   const canManageGuild =
     currentGuildRole === "MASTER" || currentGuildRole === "SUB_MASTER";
   const permissionLoaded = Boolean(me) && (!guild || members.length > 0);
@@ -318,8 +320,9 @@ export default function SiegeBattleManager() {
           guild={guild}
           members={members}
           isAdmin={isAdmin}
+          currentNickname={currentNickname}
           activeTab={activeTab}
-          onChangeTab={setActiveTab}
+          onChangeTab={setActiveTab}
           onSyncSwarfarmMonsters={handleSyncSwarfarmMonsters}
           syncingMonsters={syncingMonsters}
           onApplyMonsterLocalization={handleApplyMonsterLocalization}

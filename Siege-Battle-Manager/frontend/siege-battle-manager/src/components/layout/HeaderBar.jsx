@@ -16,6 +16,7 @@ export default function HeaderBar({
   syncingMonsters = false,
   onApplyMonsterLocalization,
   applyingLocalization = false,
+  currentNickname = "",
 }) {
   const tabs = isAdmin
     ? TABS
@@ -54,7 +55,7 @@ export default function HeaderBar({
           <div className="text-xs text-gray-500">
             길드:{" "}
             {guild
-              ? `${guild.name} | 마스터: ${guild.masterNickname} | 인원: ${guild.memberCount}`
+              ? `${guild.name} | 마스터: ${guild.masterNickname} | 내 닉네임: ${currentNickname || "-"} | 인원: ${guild.memberCount}`
               : "없음"}
           </div>
 

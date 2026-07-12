@@ -5,9 +5,10 @@ import { getLeaderEffectLabel, isGuildBattleLeaderEffect } from "../../lib/monst
 export default function DefenseDeckFilterBar({
   members = [],
   monsters = [],
+  showOwnerFilter = true,
 
-  ownerFilterId,
-  setOwnerFilterId,
+  ownerFilterId = "",
+  setOwnerFilterId = () => {},
 
   leaderEffectFilter,
   setLeaderEffectFilter,
@@ -80,29 +81,30 @@ export default function DefenseDeckFilterBar({
   }, [members, ownerFilterId]);
 
   const hasActiveFilters =
-    Boolean(ownerFilterId) ||
+    (showOwnerFilter && Boolean(ownerFilterId)) ||
     Boolean(leaderEffectFilter) ||
     monsterFilterCodes.length > 0;
 
   return (
     <div className="space-y-4">
 
-      {/* 길드원 필터 */}
-      <select
-        value={ownerFilterId}
-        onChange={(e) =>
-          setOwnerFilterId(e.target.value)
-        }
-        className="w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] outline-none focus:border-[#f6c44f]"
-      >
-        <option value="">전체 길드원</option>
+      {showOwnerFilter && (
+        <select
+          value={ownerFilterId}
+          onChange={(e) =>
+            setOwnerFilterId(e.target.value)
+          }
+          className="w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] outline-none focus:border-[#f6c44f]"
+        >
+          <option value="">전체 길드원</option>
 
-        {members.map((m) => (
-          <option key={m.id} value={m.id}>
-            {m.displayName}
-          </option>
-        ))}
-      </select>
+          {members.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.displayName}
+            </option>
+          ))}
+        </select>
+      )}
 
       {/* 리더효과 */}
       <div className="space-y-2">
@@ -222,7 +224,7 @@ export default function DefenseDeckFilterBar({
             적용 중인 필터:
           </span>
 
-          {selectedOwnerFilter && (
+          {showOwnerFilter && selectedOwnerFilter && (
 
             <button
               type="button"

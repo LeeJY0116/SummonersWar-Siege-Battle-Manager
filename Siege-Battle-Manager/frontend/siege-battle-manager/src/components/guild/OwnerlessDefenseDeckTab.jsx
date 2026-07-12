@@ -5,11 +5,12 @@ import {
   createOwnerlessDefenseDeck,
  } from "../../lib/ownerlessDefenseDeck.js";
 import DeckMonsterSlot from "./DeckMonsterSlot.jsx";
+import DefenseDeckFilterBar from "./DefenseDeckFilterBar.jsx";
 import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
 import MonsterFilterControls, {
   matchesMonsterPickerFilters,
 } from "../monsters/MonsterFilterControls.jsx";
-import { getElementLabel } from "../../lib/monsterLabels.js";
+import { getElementLabel, getLeaderEffectLabel, isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
 
 export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
   const [decks, setDecks] = useState([]);
@@ -22,6 +23,9 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
   const [monsterSearch, setMonsterSearch] = useState("");
   const [monsterStarFilter, setMonsterStarFilter] = useState(5);
   const [monsterElementFilter, setMonsterElementFilter] = useState("");
+  const [leaderEffectFilter, setLeaderEffectFilter] = useState("");
+  const [monsterFilterKeyword, setMonsterFilterKeyword] = useState("");
+  const [monsterFilterCodes, setMonsterFilterCodes] = useState([]);
 
 
   const selectedMonsters = selectedMonsterCodes.map((code) =>
@@ -56,7 +60,34 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
     });
   }
   function findMonster(code) {
-    return monsters.find((m) => m.id === code);
+    return monsters.find((m) => m.id === code || m.monsterCode === code || m.code === code);
+  }
+
+  function getDeckMonsterCode(item) {
+    return typeof item === "string"
+      ? item
+      : item?.monsterCode ?? item?.code;
+  }
+
+  function getDeckMonsterCodes(deck) {
+    return (deck.monsters ?? deck.monsterCodes ?? [])
+      .map(getDeckMonsterCode)
+      .filter(Boolean);
+  }
+
+  function getLeaderMonsterFromDeck(deck) {
+    return findMonster(getDeckMonsterCode((deck.monsters ?? deck.monsterCodes ?? [])[0]));
+  }
+
+  function getLeaderEffectText(deck) {
+    const leaderMonster = getLeaderMonsterFromDeck(deck);
+
+    return (
+      leaderMonster?.leaderEffectText ||
+      getLeaderEffectLabel(leaderMonster?.leaderEffectType) ||
+      leaderMonster?.leaderEffectType ||
+      "없음"
+    );
   }
 
   async function loadDecks() {
@@ -140,19 +171,31 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
     loadDecks();
   }, []);
 
+  const visibleDecks = decks.filter((deck) => {
+    const leaderMonster = getLeaderMonsterFromDeck(deck);
+
+    if (leaderEffectFilter) {
+      const effect = isGuildBattleLeaderEffect(leaderMonster)
+        ? leaderMonster?.leaderEffectType
+        : "";
+
+      if (effect !== leaderEffectFilter) {
+        return false;
+      }
+    }
+
+    if (monsterFilterCodes.length > 0) {
+      const deckCodes = getDeckMonsterCodes(deck);
+      return monsterFilterCodes.every((code) => deckCodes.includes(code));
+    }
+
+    return true;
+  });
+
   return (
     <div className="space-y-4">
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold">길드 방덱</h3>
-          <button
-            onClick={loadDecks}
-            disabled={loading}
-            className="rounded-xl border px-3 py-1 text-sm"
-          >
-            새로고침
-          </button>
-        </div>
+        <h3 className="text-lg font-bold">길드 방덱</h3>
 
           <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
             <h3 className="mb-3 text-lg font-bold">길드 방덱 등록</h3>
@@ -241,27 +284,74 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
           </section>
       </div>
 
-      {decks.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[#745320] bg-[#211813] p-6 text-center text-sm text-[#d7be80]">
-          등록된 길드 방덱이 없습니다.
+      <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-lg font-bold">길드 방덱 목록</h3>
+          <button
+            onClick={loadDecks}
+            disabled={loading}
+            className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
+          >
+            새로고침
+          </button>
         </div>
-      ) : (
-        <div className="space-y-3">
-          {decks.map((deck) => (
+
+        <div className="mb-3 rounded-xl border border-[#745320] bg-[#211813] p-3">
+          <DefenseDeckFilterBar
+            monsters={monsters}
+            showOwnerFilter={false}
+            leaderEffectFilter={leaderEffectFilter}
+            setLeaderEffectFilter={setLeaderEffectFilter}
+            monsterFilterKeyword={monsterFilterKeyword}
+            setMonsterFilterKeyword={setMonsterFilterKeyword}
+            monsterFilterCodes={monsterFilterCodes}
+            setMonsterFilterCodes={setMonsterFilterCodes}
+          />
+        </div>
+
+        {visibleDecks.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-[#745320] bg-[#211813] p-6 text-center text-sm text-[#d7be80]">
+            등록된 길드 방덱이 없습니다.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {visibleDecks.map((deck) => (
             <div
               key={deck.id ?? deck.deckId}
               className="rounded-xl border border-[#745320] bg-[#211813] p-4 text-[#f6deb0] shadow-[inset_0_0_0_1px_rgba(255,237,169,0.12)]"
             >
-              <div className="mb-3 font-semibold">
-                {deck.title ?? "이름 없는 길드 방덱"}
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <div>
+                  <div className="font-semibold">
+                    {deck.title ?? "이름 없는 길드 방덱"}
+                  </div>
+                  <div className="mt-1 text-sm font-semibold text-[#d7be80]">
+                    리더 효과: {getLeaderEffectText(deck)}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {deck.availableMemberCount != null && (
+                    <span className="text-xs font-semibold text-[#c8a96a]">
+                      생성 가능 길드원: {deck.availableMemberCount}명
+                    </span>
+                  )}
+                  <button
+                    onClick={() =>
+                      handleToggleDetail(deck.deckId ?? deck.id)
+                    }
+                    className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
+                  >
+                    {openedDeckId === (deck.deckId ?? deck.id)
+                      ? "상세 닫기"
+                      : "상세 보기"}
+                  </button>
+                </div>
               </div>
 
               <div className="flex flex-wrap justify-start gap-2">
                 {(deck.monsters ?? deck.monsterCodes ?? []).map((item, index) => {
-                  const code =
-                    typeof item === "string"
-                      ? item
-                      : item.monsterCode ?? item.code;
+                  const code = getDeckMonsterCode(item);
 
                   const monster = findMonster(code);
 
@@ -303,16 +393,6 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
                 })}
               </div>
 
-        <button
-          onClick={() =>
-            handleToggleDetail(deck.deckId ?? deck.id)
-          }
-          className="mt-3 rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
-        >
-          {openedDeckId === (deck.deckId ?? deck.id)
-            ? "상세 닫기"
-            : "상세 보기"}
-        </button>
         {openedDeckId === (deck.deckId ?? deck.id) &&
           detailMap[deck.deckId ?? deck.id] && (
 
@@ -354,15 +434,11 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
 
         )}
 
-              {deck.availableMemberCount != null && (
-                <div className="mt-3 text-sm font-semibold text-[#d7be80]">
-                  생성 가능 길드원: {deck.availableMemberCount}명
-                </div>
-              )}
             </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

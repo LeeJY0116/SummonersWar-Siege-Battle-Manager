@@ -244,12 +244,12 @@ export default function InventoryTab({
   return (
       <>
     <Toast message={toastMessage} />
-    <div className="space-y-3">
+    <section className="space-y-3 rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
       <div className="flex flex-col md:flex-row md:items-center gap-2">
         <select
           value={selectedMemberId}
           onChange={(e) => setSelectedMemberId(e.target.value)}
-          className="px-3 py-2 rounded-xl border border-gray-200 bg-white"
+          className="rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] outline-none focus:border-[#f6c44f]"
         >
           {selectableMembers.map((m) => (
             <option key={m.id} value={String(m.id)}>
@@ -262,7 +262,7 @@ export default function InventoryTab({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="몬스터 검색 (이름/별칭)"
-          className="flex-1 px-3 py-2 rounded-xl border border-gray-200 bg-white"
+          className="flex-1 rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
         />
 
         <button
@@ -276,9 +276,9 @@ export default function InventoryTab({
         </button>
       </div>
 
-      <div className="text-sm text-gray-600">
+      <div className="text-sm font-semibold text-[#d7be80]">
         선택된 길드원:{" "}
-        <span className="font-semibold text-gray-900">
+        <span className="font-semibold text-[#f6deb0]">
           {selectedMember ? getMemberDisplayName(selectedMember) : selectedMemberId}
         </span>
         {dirty ? " · (변경됨)" : ""}
@@ -324,7 +324,7 @@ export default function InventoryTab({
       )}
 
       {loading ? (
-        <div className="text-sm text-gray-600">불러오는 중...</div>
+        <div className="text-sm text-[#d7be80]">불러오는 중...</div>
       ) : (
         <div className="grid max-h-[560px] grid-cols-1 gap-2 overflow-y-auto rounded-xl border border-[#745320] bg-[#211813] p-3 [scrollbar-color:#9b743a_#2f241b] [scrollbar-width:thin] md:grid-cols-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#9b743a] [&::-webkit-scrollbar-track]:bg-[#2f241b]">
           {(filteredMonsters || []).map((m) => {
@@ -383,7 +383,7 @@ export default function InventoryTab({
           })}
         </div>
       )}
-    </div>
+    </section>
     </>
   );
 }

@@ -6,11 +6,12 @@ import {
   createBattleResearchComment,
 } from "../../lib/battleResearch.js";
 import DeckMonsterSlot from "./DeckMonsterSlot.jsx";
+import DefenseDeckFilterBar from "./DefenseDeckFilterBar.jsx";
 import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
 import MonsterFilterControls, {
   matchesMonsterPickerFilters,
 } from "../monsters/MonsterFilterControls.jsx";
-import { getElementLabel } from "../../lib/monsterLabels.js";
+import { getElementLabel, getLeaderEffectLabel, isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
 
 export default function BattleResearchTab({ monsters = []}) {
   const [posts, setPosts] = useState([]);
@@ -30,6 +31,9 @@ export default function BattleResearchTab({ monsters = []}) {
   const [monsterSearch, setMonsterSearch] = useState("");
   const [monsterStarFilter, setMonsterStarFilter] = useState(5);
   const [monsterElementFilter, setMonsterElementFilter] = useState("");
+  const [leaderEffectFilter, setLeaderEffectFilter] = useState("");
+  const [monsterFilterKeyword, setMonsterFilterKeyword] = useState("");
+  const [monsterFilterCodes, setMonsterFilterCodes] = useState([]);
 
 
   const selectedMonsters = selectedMonsterCodes.map((code) =>
@@ -48,7 +52,28 @@ export default function BattleResearchTab({ monsters = []}) {
   });
 
   function findMonsterByResearchItem(item) {
-    return monsters.find((m) => m.id === item.monsterCode);
+    return monsters.find((m) => m.id === item.monsterCode || m.monsterCode === item.monsterCode || m.code === item.monsterCode);
+  }
+
+  function getLeaderMonsterFromItems(items = []) {
+    return findMonsterByResearchItem(items[0] ?? {});
+  }
+
+  function getLeaderEffectTextFromItems(items = []) {
+    const leaderMonster = getLeaderMonsterFromItems(items);
+
+    return (
+      leaderMonster?.leaderEffectText ||
+      getLeaderEffectLabel(leaderMonster?.leaderEffectType) ||
+      leaderMonster?.leaderEffectType ||
+      "없음"
+    );
+  }
+
+  function getResearchMonsterCodes(items = []) {
+    return items
+      .map((item) => item.monsterCode ?? item.code)
+      .filter(Boolean);
   }
 
   function renderResearchMonsterDeck(items = []) {
@@ -114,6 +139,28 @@ export default function BattleResearchTab({ monsters = []}) {
   function getCommentAttackMonsterCodes(postId) {
     return commentAttackMonsterCodesMap[postId] ?? ["", "", ""];
   }
+
+  const visiblePosts = posts.filter((post) => {
+    const defenseMonsters = post.defenseMonsters ?? [];
+    const leaderMonster = getLeaderMonsterFromItems(defenseMonsters);
+
+    if (leaderEffectFilter) {
+      const effect = isGuildBattleLeaderEffect(leaderMonster)
+        ? leaderMonster?.leaderEffectType
+        : "";
+
+      if (effect !== leaderEffectFilter) {
+        return false;
+      }
+    }
+
+    if (monsterFilterCodes.length > 0) {
+      const deckCodes = getResearchMonsterCodes(defenseMonsters);
+      return monsterFilterCodes.every((code) => deckCodes.includes(code));
+    }
+
+    return true;
+  });
 
   function getCommentFilteredMonsters(postId) {
     const query = commentMonsterSearchMap[postId] ?? "";
@@ -307,17 +354,7 @@ async function handleCreateComment(postId) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold">전투 연구</h3>
-
-        <button
-          onClick={loadPosts}
-          disabled={loading}
-          className="rounded-xl border px-3 py-1 text-sm"
-        >
-          새로고침
-        </button>
-      </div>
+      <h3 className="text-lg font-bold">전투 연구</h3>
 
         <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
         <h4 className="mb-3 font-bold">전투 연구 작성</h4>
@@ -423,13 +460,38 @@ async function handleCreateComment(postId) {
 
         
 
-      {posts.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[#745320] bg-[#211813] p-6 text-center text-sm text-[#d7be80]">
-          등록된 전투 연구가 없습니다.
+      <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-lg font-bold">전투 연구 목록</h3>
+          <button
+            onClick={loadPosts}
+            disabled={loading}
+            className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
+          >
+            새로고침
+          </button>
         </div>
-      ) : (
-        <div className="space-y-3">
-          {posts.map((post) => {
+
+        <div className="mb-3 rounded-xl border border-[#745320] bg-[#211813] p-3">
+          <DefenseDeckFilterBar
+            monsters={monsters}
+            showOwnerFilter={false}
+            leaderEffectFilter={leaderEffectFilter}
+            setLeaderEffectFilter={setLeaderEffectFilter}
+            monsterFilterKeyword={monsterFilterKeyword}
+            setMonsterFilterKeyword={setMonsterFilterKeyword}
+            monsterFilterCodes={monsterFilterCodes}
+            setMonsterFilterCodes={setMonsterFilterCodes}
+          />
+        </div>
+
+        {visiblePosts.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-[#745320] bg-[#211813] p-6 text-center text-sm text-[#d7be80]">
+            등록된 전투 연구가 없습니다.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {visiblePosts.map((post) => {
             const postId = post.postId ?? post.id;
             const detail = detailMap[postId];
             const commentAttackMonsterCodes = getCommentAttackMonsterCodes(postId);
@@ -453,20 +515,24 @@ async function handleCreateComment(postId) {
                     <div className="mt-1 text-sm font-semibold text-[#d7be80]">
                       작성자: {post.authorName ?? post.writerName ?? "-"}
                     </div>
+                    <div className="mt-1 text-sm font-semibold text-[#d7be80]">
+                      리더 효과: {getLeaderEffectTextFromItems(post.defenseMonsters ?? [])}
+                    </div>
 
                     {renderResearchMonsterDeck(post.defenseMonsters ?? [])}
-                    
-                    <div className="mt-1 text-xs font-semibold text-[#c8a96a]">
-                      댓글 {post.commentCount ?? 0}개
-                    </div>
                   </div>
 
-                  <button
-                    onClick={() => toggleDetail(postId)}
-                    className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
-                  >
-                    {openedPostId === postId ? "닫기" : "상세 보기"}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-[#c8a96a]">
+                      댓글 {post.commentCount ?? 0}개
+                    </span>
+                    <button
+                      onClick={() => toggleDetail(postId)}
+                      className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
+                    >
+                      {openedPostId === postId ? "닫기" : "상세 보기"}
+                    </button>
+                  </div>
                 </div>
 
                 {openedPostId === postId && detail && (
@@ -476,6 +542,9 @@ async function handleCreateComment(postId) {
 
                     <div className="mt-4 text-sm font-semibold">
                       연구 대상 방덱
+                    </div>
+                    <div className="mt-1 text-sm font-semibold text-[#d7be80]">
+                      리더 효과: {getLeaderEffectTextFromItems(post.defenseMonsters ?? [])}
                     </div>
 
                     {renderResearchMonsterDeck(post.defenseMonsters ?? [])}
@@ -503,6 +572,9 @@ async function handleCreateComment(postId) {
                           >
                             <div className="font-semibold">
                               {comment.authorName ?? comment.writerName ?? "-"}
+                            </div>
+                            <div className="mt-1 text-xs font-semibold text-[#d7be80]">
+                              리더 효과: {getLeaderEffectTextFromItems(comment.attackMonsters ?? [])}
                             </div>
                             <div className="mt-1 text-[#f6deb0]">
                               {comment.content}
@@ -627,9 +699,10 @@ async function handleCreateComment(postId) {
                 )}
               </div>
             );
-          })}
-        </div>
-      )}
+            })}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
