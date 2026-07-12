@@ -44,6 +44,10 @@ function groupDecksByMonsterSet(decks) {
   return [...groupMap.values()];
 }
 
+function getMonsterStars(monster) {
+  return Number(monster?.naturalStars ?? monster?.grade ?? 0);
+}
+
 export default function DefenseDeckTab({
   members = [],
   monsters = [],
@@ -59,6 +63,7 @@ export default function DefenseDeckTab({
   const [leaderEffectFilter, setLeaderEffectFilter] = useState("");
   const [monsterFilterCodes, setMonsterFilterCodes] = useState([]);
   const [monsterFilterKeyword, setMonsterFilterKeyword] = useState("");
+  const [fourStarDeckOnly, setFourStarDeckOnly] = useState(false);
   const { toastMessage, showToast } = useToast(1000);
   const manageableMembers = useMemo(() => {
     if (canManageGuild) return members;
@@ -95,12 +100,28 @@ export default function DefenseDeckTab({
 
       if (monsterFilterCodes.length > 0) {
         const deckCodes = (deck.monsters || []).map((m) => m.monsterCode);
-        return monsterFilterCodes.every((code) => deckCodes.includes(code));
+        if (!monsterFilterCodes.every((code) => deckCodes.includes(code))) {
+          return false;
+        }
+      }
+
+      if (fourStarDeckOnly) {
+        const hasFiveStarMonster = (deck.monsters || []).some((deckMonster) => {
+          const monster = monsters.find(
+            (m) => m.id === deckMonster.monsterCode || m.monsterCode === deckMonster.monsterCode || m.code === deckMonster.monsterCode
+          );
+
+          return getMonsterStars(monster) >= 5;
+        });
+
+        if (hasFiveStarMonster) {
+          return false;
+        }
       }
 
       return true;
     });
-  }, [decks, ownerFilterId, leaderEffectFilter, monsterFilterCodes, monsters]);
+  }, [decks, ownerFilterId, leaderEffectFilter, monsterFilterCodes, fourStarDeckOnly, monsters]);
 
   const groupedVisibleDecks = useMemo(
     () => groupDecksByMonsterSet(visibleDecks),
@@ -437,12 +458,23 @@ const filteredMonsters = monsters.filter((m) => {
       )}
 
       <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
-        <div className="mb-3 flex items-center justify-between">
+        <div className="mb-3 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
           <h3 className="font-bold text-lg">방덱 목록</h3>
+          <button
+            type="button"
+            onClick={() => setFourStarDeckOnly((prev) => !prev)}
+            className={`rounded-full border px-3 py-1 text-sm font-semibold transition ${
+              fourStarDeckOnly
+                ? "border-[#f6c44f] bg-[#f3d37b] text-[#2f1f13]"
+                : "border-[#9b743a] bg-[#221913] text-[#f8e0ad] hover:border-[#f6c44f]"
+            }`}
+          >
+            4성 방덱
+          </button>
           <button
             onClick={loadDecks}
             disabled={loading}
-            className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
+            className="justify-self-end rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
           >
             새로고침
           </button>

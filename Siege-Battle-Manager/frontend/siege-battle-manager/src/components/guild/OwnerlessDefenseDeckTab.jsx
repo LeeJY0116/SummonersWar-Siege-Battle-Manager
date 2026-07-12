@@ -26,6 +26,7 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
   const [leaderEffectFilter, setLeaderEffectFilter] = useState("");
   const [monsterFilterKeyword, setMonsterFilterKeyword] = useState("");
   const [monsterFilterCodes, setMonsterFilterCodes] = useState([]);
+  const [fourStarDeckOnly, setFourStarDeckOnly] = useState(false);
 
 
   const selectedMonsters = selectedMonsterCodes.map((code) =>
@@ -88,6 +89,14 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
       leaderMonster?.leaderEffectType ||
       "없음"
     );
+  }
+
+  function getMonsterStars(monster) {
+    return Number(monster?.naturalStars ?? monster?.grade ?? 0);
+  }
+
+  function hasFiveStarMonster(deck) {
+    return getDeckMonsterCodes(deck).some((code) => getMonsterStars(findMonster(code)) >= 5);
   }
 
   async function loadDecks() {
@@ -186,7 +195,13 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
 
     if (monsterFilterCodes.length > 0) {
       const deckCodes = getDeckMonsterCodes(deck);
-      return monsterFilterCodes.every((code) => deckCodes.includes(code));
+      if (!monsterFilterCodes.every((code) => deckCodes.includes(code))) {
+        return false;
+      }
+    }
+
+    if (fourStarDeckOnly && hasFiveStarMonster(deck)) {
+      return false;
     }
 
     return true;
@@ -285,12 +300,23 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
       </div>
 
       <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
-        <div className="mb-3 flex items-center justify-between">
+        <div className="mb-3 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
           <h3 className="text-lg font-bold">길드 방덱 목록</h3>
+          <button
+            type="button"
+            onClick={() => setFourStarDeckOnly((prev) => !prev)}
+            className={`rounded-full border px-3 py-1 text-sm font-semibold transition ${
+              fourStarDeckOnly
+                ? "border-[#f6c44f] bg-[#f3d37b] text-[#2f1f13]"
+                : "border-[#9b743a] bg-[#221913] text-[#f8e0ad] hover:border-[#f6c44f]"
+            }`}
+          >
+            4성 방덱
+          </button>
           <button
             onClick={loadDecks}
             disabled={loading}
-            className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
+            className="justify-self-end rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
           >
             새로고침
           </button>
@@ -315,7 +341,10 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
           </div>
         ) : (
           <div className="space-y-3">
-            {visibleDecks.map((deck) => (
+            {visibleDecks.map((deck) => {
+              const deckHasFiveStarMonster = hasFiveStarMonster(deck);
+
+              return (
             <div
               key={deck.id ?? deck.deckId}
               className="rounded-xl border border-[#745320] bg-[#211813] p-4 text-[#f6deb0] shadow-[inset_0_0_0_1px_rgba(255,237,169,0.12)]"
@@ -325,6 +354,15 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
                   <div className="font-semibold">
                     {deck.title ?? "이름 없는 길드 방덱"}
                   </div>
+                  <span
+                    className={`mt-2 inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
+                      deckHasFiveStarMonster
+                        ? "bg-[#3c1f1a] text-[#ffcf9d]"
+                        : "bg-[#f3d37b] text-[#2f1f13]"
+                    }`}
+                  >
+                    {deckHasFiveStarMonster ? "5성" : "4성"}
+                  </span>
                   <div className="mt-1 text-sm font-semibold text-[#d7be80]">
                     리더 효과: {getLeaderEffectText(deck)}
                   </div>
@@ -435,7 +473,8 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
         )}
 
             </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>

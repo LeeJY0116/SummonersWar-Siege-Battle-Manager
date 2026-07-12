@@ -24,6 +24,10 @@ function getMonsterDisplayName(monster, item) {
   return monster?.name || monster?.koreanName || item.monsterName || item.monsterCode;
 }
 
+function getMonsterStars(monster) {
+  return Number(monster?.naturalStars ?? monster?.grade ?? 0);
+}
+
 export default function DefenseDeckCard({
   deck,
   group = null,
@@ -41,6 +45,10 @@ export default function DefenseDeckCard({
   const ownedCount = groupDecks.length;
   const leaderMonster = findMonster(representativeDeck.leaderMonsterCode);
   const leaderEffect = getLeaderEffectText(representativeDeck, leaderMonster);
+  const hasFiveStarMonster = (representativeDeck.monsters ?? []).some((item) =>
+    getMonsterStars(findMonster(item.monsterCode)) >= 5
+  );
+  const deckGradeLabel = hasFiveStarMonster ? "5성" : "4성";
   const [expanded, setExpanded] = useState(false);
 
   function canDeleteDeck(deckItem) {
@@ -59,6 +67,15 @@ export default function DefenseDeckCard({
               x{ownedCount} 보유
             </span>
           )}
+          <span
+            className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+              hasFiveStarMonster
+                ? "bg-[#3c1f1a] text-[#ffcf9d]"
+                : "bg-[#f3d37b] text-[#2f1f13]"
+            }`}
+          >
+            {deckGradeLabel}
+          </span>
           <div className="text-sm font-semibold text-[#d7be80]">
             {TEXT.leaderEffect}: {leaderEffect}
           </div>

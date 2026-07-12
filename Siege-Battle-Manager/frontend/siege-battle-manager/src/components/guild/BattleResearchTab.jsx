@@ -34,6 +34,7 @@ export default function BattleResearchTab({ monsters = []}) {
   const [leaderEffectFilter, setLeaderEffectFilter] = useState("");
   const [monsterFilterKeyword, setMonsterFilterKeyword] = useState("");
   const [monsterFilterCodes, setMonsterFilterCodes] = useState([]);
+  const [fourStarDeckOnly, setFourStarDeckOnly] = useState(false);
 
 
   const selectedMonsters = selectedMonsterCodes.map((code) =>
@@ -74,6 +75,14 @@ export default function BattleResearchTab({ monsters = []}) {
     return items
       .map((item) => item.monsterCode ?? item.code)
       .filter(Boolean);
+  }
+
+  function getMonsterStars(monster) {
+    return Number(monster?.naturalStars ?? monster?.grade ?? 0);
+  }
+
+  function hasFiveStarMonster(items = []) {
+    return items.some((item) => getMonsterStars(findMonsterByResearchItem(item)) >= 5);
   }
 
   function renderResearchMonsterDeck(items = []) {
@@ -156,7 +165,13 @@ export default function BattleResearchTab({ monsters = []}) {
 
     if (monsterFilterCodes.length > 0) {
       const deckCodes = getResearchMonsterCodes(defenseMonsters);
-      return monsterFilterCodes.every((code) => deckCodes.includes(code));
+      if (!monsterFilterCodes.every((code) => deckCodes.includes(code))) {
+        return false;
+      }
+    }
+
+    if (fourStarDeckOnly && hasFiveStarMonster(defenseMonsters)) {
+      return false;
     }
 
     return true;
@@ -461,12 +476,23 @@ async function handleCreateComment(postId) {
         
 
       <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
-        <div className="mb-3 flex items-center justify-between">
+        <div className="mb-3 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
           <h3 className="text-lg font-bold">전투 연구 목록</h3>
+          <button
+            type="button"
+            onClick={() => setFourStarDeckOnly((prev) => !prev)}
+            className={`rounded-full border px-3 py-1 text-sm font-semibold transition ${
+              fourStarDeckOnly
+                ? "border-[#f6c44f] bg-[#f3d37b] text-[#2f1f13]"
+                : "border-[#9b743a] bg-[#221913] text-[#f8e0ad] hover:border-[#f6c44f]"
+            }`}
+          >
+            4성 방덱
+          </button>
           <button
             onClick={loadPosts}
             disabled={loading}
-            className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
+            className="justify-self-end rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
           >
             새로고침
           </button>
@@ -500,6 +526,7 @@ async function handleCreateComment(postId) {
             );
             const commentActiveSlotIndex = commentActiveSlotMap[postId] ?? 0;
             const commentFilteredMonsters = getCommentFilteredMonsters(postId);
+            const postHasFiveStarMonster = hasFiveStarMonster(post.defenseMonsters ?? []);
 
             return (
               <div
@@ -511,6 +538,15 @@ async function handleCreateComment(postId) {
                     <div className="font-semibold">
                       {post.title ?? "제목 없는 연구"}
                     </div>
+                    <span
+                      className={`mt-2 inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
+                        postHasFiveStarMonster
+                          ? "bg-[#3c1f1a] text-[#ffcf9d]"
+                          : "bg-[#f3d37b] text-[#2f1f13]"
+                      }`}
+                    >
+                      {postHasFiveStarMonster ? "5성" : "4성"}
+                    </span>
 
                     <div className="mt-1 text-sm font-semibold text-[#d7be80]">
                       작성자: {post.authorName ?? post.writerName ?? "-"}
