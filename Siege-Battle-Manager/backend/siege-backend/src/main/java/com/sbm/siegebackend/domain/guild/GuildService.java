@@ -80,6 +80,7 @@ public class GuildService {
     @Transactional(readOnly = true)
     public List<GuildResponse> getAllGuilds() {
         return guildRepository.findAll().stream()
+                .filter(this::hasApprovedMaster)
                 .map(g -> new GuildResponse(
                         g.getId(),
                         g.getName(),
@@ -88,6 +89,14 @@ public class GuildService {
                         g.getMembers().size()
                 ))
                 .toList();
+    }
+
+    private boolean hasApprovedMaster(Guild guild) {
+        return guildMemberRepository.existsByGuildAndRoleAndStatus(
+                guild,
+                GuildMemberRole.MASTER,
+                GuildMemberStatus.APPROVED
+        );
     }
 
     /**

@@ -23,17 +23,20 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final SignupRequestRepository signupRequestRepository;
     private final GuildRepository guildRepository;
     private final GuildMemberRepository guildMemberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
     public UserService(UserRepository userRepository,
+                       SignupRequestRepository signupRequestRepository,
                        GuildRepository guildRepository,
                        GuildMemberRepository guildMemberRepository,
                        PasswordEncoder passwordEncoder,
                        JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
+        this.signupRequestRepository = signupRequestRepository;
         this.guildRepository = guildRepository;
         this.guildMemberRepository = guildMemberRepository;
         this.passwordEncoder = passwordEncoder;
@@ -47,29 +50,31 @@ public class UserService {
         String signupType = normalizeRequired(request.getSignupType(), "가입 유형");
         String guildName = normalizeRequired(request.getGuildName(), "길드 이름");
 
-        if (userRepository.existsByLoginId(loginId)) {
+        if (userRepository.existsByLoginId(loginId)
+                || signupRequestRepository.existsByLoginIdAndStatus(loginId, GuildMemberStatus.PENDING)) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
         }
 
-        if (userRepository.existsByEmail(email)) {
+        if (userRepository.existsByEmail(email)
+                || signupRequestRepository.existsByEmailAndStatus(email, GuildMemberStatus.PENDING)) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
 
-        if (userRepository.existsByNickname(nickname)) {
+        if (userRepository.existsByNickname(nickname)
+                || signupRequestRepository.existsByNicknameAndStatus(nickname, GuildMemberStatus.PENDING)) {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 
         validateGuildSignUp(signupType, guildName);
 
-        User user = new User();
-        user.setLoginId(loginId);
-        user.setEmail(email);
-        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setNickname(nickname);
-        user.setRole(UserRole.USER);
-
-        User saved = userRepository.save(user);
-        registerGuildMember(signupType, guildName, saved);
+        SignupRequest saved = signupRequestRepository.save(new SignupRequest(
+                loginId,
+                email,
+                passwordEncoder.encode(request.getPassword()),
+                nickname,
+                signupType.toLowerCase(),
+                guildName
+        ));
 
         return new UserSignUpResponse(
                 saved.getId(),
@@ -82,11 +87,18 @@ public class UserService {
     public UserLoginResponse login(UserLoginRequest request) {
         String loginId = normalizeRequired(request.getLoginId(), "아이디");
         User user = findByLoginIdOrLegacyEmail(loginId)
-                .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다."));
+                .orElse(null);
+
+        if (user == null) {
+            validatePendingSignupLogin(loginId, request.getPassword());
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
+        }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
         }
+
+        validateLoginApproval(user);
 
         if (user.getLoginId() == null || user.getLoginId().isBlank()) {
             user.setLoginId(loginId);
@@ -124,48 +136,70 @@ public class UserService {
                 .or(() -> userRepository.findByNickname(loginId));
     }
 
+    private void validatePendingSignupLogin(String loginId, String password) {
+        Optional<SignupRequest> optionalRequest = signupRequestRepository
+                .findFirstByLoginIdAndStatus(loginId, GuildMemberStatus.PENDING)
+                .or(() -> signupRequestRepository.findFirstByEmailAndStatus(loginId, GuildMemberStatus.PENDING))
+                .or(() -> signupRequestRepository.findFirstByNicknameAndStatus(loginId, GuildMemberStatus.PENDING));
+
+        if (optionalRequest.isEmpty()) {
+            return;
+        }
+
+        SignupRequest signupRequest = optionalRequest.get();
+        if (!passwordEncoder.matches(password, signupRequest.getPasswordHash())) {
+            return;
+        }
+
+        if (isMasterSignUp(signupRequest.getSignupType())) {
+            throw new IllegalArgumentException("관리자 승인 후 로그인할 수 있습니다.");
+        }
+
+        throw new IllegalArgumentException("길드장 승인 후 로그인할 수 있습니다.");
+    }
+
+    private void validateLoginApproval(User user) {
+        if (user.getRole() == UserRole.ADMIN) {
+            return;
+        }
+
+        GuildMember member = guildMemberRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("가입 승인 정보가 없습니다."));
+
+        if (member.getStatus() == GuildMemberStatus.APPROVED) {
+            return;
+        }
+
+        if (member.getStatus() == GuildMemberStatus.REJECTED) {
+            throw new IllegalArgumentException("가입 요청이 거절되었습니다.");
+        }
+
+        if (member.getRole() == GuildMemberRole.MASTER) {
+            throw new IllegalArgumentException("관리자 승인 후 로그인할 수 있습니다.");
+        }
+
+        throw new IllegalArgumentException("길드장 승인 후 로그인할 수 있습니다.");
+    }
+
     private void validateGuildSignUp(String signupType, String guildName) {
         if (isMasterSignUp(signupType)) {
-            if (guildRepository.existsByName(guildName)) {
+            if (guildRepository.existsByName(guildName)
+                    || signupRequestRepository.existsBySignupTypeAndGuildNameAndStatus(
+                    "master",
+                    guildName,
+                    GuildMemberStatus.PENDING
+            )) {
                 throw new IllegalArgumentException("이미 존재하는 길드 이름입니다.");
             }
             return;
         }
 
         if (isMemberSignUp(signupType)) {
-            if (!guildRepository.existsByName(guildName)) {
-                throw new IllegalArgumentException("입력한 길드가 아직 생성되지 않아 가입할 수 없습니다.");
-            }
+            findApprovedGuildByName(guildName);
             return;
         }
 
         throw new IllegalArgumentException("가입 유형이 올바르지 않습니다.");
-    }
-
-    private void registerGuildMember(String signupType, String guildName, User user) {
-        if (isMasterSignUp(signupType)) {
-            Guild guild = guildRepository.save(new Guild(guildName, "", user));
-            GuildMember member = GuildMember.createReal(
-                    guild,
-                    user,
-                    GuildMemberRole.MASTER,
-                    GuildMemberStatus.PENDING
-            );
-            guildMemberRepository.save(member);
-            guild.addMember(member);
-            return;
-        }
-
-        Guild guild = guildRepository.findByName(guildName)
-                .orElseThrow(() -> new IllegalArgumentException("입력한 길드가 아직 생성되지 않아 가입할 수 없습니다."));
-        GuildMember member = GuildMember.createReal(
-                guild,
-                user,
-                GuildMemberRole.MEMBER,
-                GuildMemberStatus.PENDING
-        );
-        guildMemberRepository.save(member);
-        guild.addMember(member);
     }
 
     private boolean isMasterSignUp(String signupType) {
@@ -174,6 +208,23 @@ public class UserService {
 
     private boolean isMemberSignUp(String signupType) {
         return "member".equalsIgnoreCase(signupType);
+    }
+
+    private Guild findApprovedGuildByName(String guildName) {
+        Guild guild = guildRepository.findByName(guildName)
+                .orElseThrow(() -> new IllegalArgumentException("가입 가능한 길드가 아닙니다."));
+
+        boolean approvedMasterExists = guildMemberRepository.existsByGuildAndRoleAndStatus(
+                guild,
+                GuildMemberRole.MASTER,
+                GuildMemberStatus.APPROVED
+        );
+
+        if (!approvedMasterExists) {
+            throw new IllegalArgumentException("가입 가능한 길드가 아닙니다.");
+        }
+
+        return guild;
     }
 
     private String normalizeRequired(String value, String fieldName) {

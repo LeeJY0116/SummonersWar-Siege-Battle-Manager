@@ -77,7 +77,7 @@ export default function LoginPage() {
       await login(loginId, pw);
       window.location.href = "/";
     } catch (e) {
-      setLoginError("아이디 또는 비밀번호가 올바르지 않습니다.");
+      setLoginError(e.message || "아이디 또는 비밀번호가 올바르지 않습니다.");
     } finally {
       setLoading(false);
     }
