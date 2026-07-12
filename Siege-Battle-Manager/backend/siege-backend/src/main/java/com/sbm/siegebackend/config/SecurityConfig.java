@@ -41,6 +41,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/signup", "/api/users/login", "/h2-console/**", "/api/monsters/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
                         // ✅ 길드 생성/내길드/내멤버는 로그인 필요
                         .requestMatchers(HttpMethod.POST, "/api/guilds").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/guilds/me").authenticated()

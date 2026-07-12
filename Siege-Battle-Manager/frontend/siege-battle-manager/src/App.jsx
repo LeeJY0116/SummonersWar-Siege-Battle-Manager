@@ -155,17 +155,14 @@ export default function SiegeBattleManager() {
   .catch(() => setMembers([]));
 }, [guild]);
 
-  const currentMember =
-    members.find((member) => member.realUser && member.displayName === me?.nickname) ?? null;
-  const currentGuildRole = currentMember?.role ?? null;
-  const canManageGuild = currentGuildRole === "MASTER" || currentGuildRole === "SUB_MASTER";
+  const isAdmin = me?.role === "ADMIN";
   const permissionLoaded = Boolean(me) && (!guild || members.length > 0);
 
   useEffect(() => {
-    if (permissionLoaded && !canManageGuild && activeTab === "review") {
+    if (permissionLoaded && !isAdmin && activeTab === "review") {
       setActiveTab("manager");
     }
-  }, [activeTab, canManageGuild, permissionLoaded]);
+  }, [activeTab, isAdmin, permissionLoaded]);
 
   useEffect(() => {
     loadBackendMonsters()
@@ -312,7 +309,7 @@ export default function SiegeBattleManager() {
         <HeaderBar
           guild={guild}
           members={members}
-          canManageGuild={canManageGuild}
+          isAdmin={isAdmin}
           activeTab={activeTab}
           onChangeTab={setActiveTab}
           onSyncSwarfarmMonsters={handleSyncSwarfarmMonsters}

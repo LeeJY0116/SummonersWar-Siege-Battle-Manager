@@ -11,13 +11,13 @@ export default function HeaderBar({
   activeTab,
   onChangeTab,
   guild,
-  canManageGuild = false,
+  isAdmin = false,
   onSyncSwarfarmMonsters,
   syncingMonsters = false,
   onApplyMonsterLocalization,
   applyingLocalization = false,
 }) {
-  const tabs = canManageGuild
+  const tabs = isAdmin
     ? TABS
     : TABS.filter((tab) => tab.key !== "review");
 
@@ -58,7 +58,7 @@ export default function HeaderBar({
               : "없음"}
           </div>
 
-          {canManageGuild && (
+          {isAdmin && (
             <button
               type="button"
               onClick={onSyncSwarfarmMonsters}
@@ -69,7 +69,7 @@ export default function HeaderBar({
             </button>
           )}
 
-          {canManageGuild && (
+          {isAdmin && (
             <button
               type="button"
               onClick={onApplyMonsterLocalization}
