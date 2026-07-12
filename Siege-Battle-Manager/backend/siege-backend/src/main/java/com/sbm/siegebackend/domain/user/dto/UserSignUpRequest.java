@@ -9,6 +9,8 @@ public class UserSignUpRequest {
     private String email;
     private String password;   // 평문 비밀번호 (서비스에서 해시)
     private String nickname;
+    private String signupType;
+    private String guildName;
 
     public UserSignUpRequest() {
     }
@@ -29,6 +31,14 @@ public class UserSignUpRequest {
         return nickname;
     }
 
+    public String getSignupType() {
+        return signupType;
+    }
+
+    public String getGuildName() {
+        return guildName;
+    }
+
     public void setLoginId(String loginId) {
         this.loginId = loginId;
     }
@@ -43,5 +53,13 @@ public class UserSignUpRequest {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void setSignupType(String signupType) {
+        this.signupType = signupType;
+    }
+
+    public void setGuildName(String guildName) {
+        this.guildName = guildName;
     }
 }

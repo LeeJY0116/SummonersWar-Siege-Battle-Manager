@@ -72,7 +72,9 @@ Content-Type: application/json
   "loginId": "test",
   "email": "test@test.com",
   "password": "test",
-  "nickname": "test"
+  "nickname": "test",
+  "signupType": "master",
+  "guildName": "test"
 }
 ```
 

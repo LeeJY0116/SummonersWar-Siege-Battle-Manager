@@ -1,6 +1,6 @@
 import { apiFetch } from "./api";
 
-export async function signup({ loginId, email, password, nickname }) {
+export async function signup({ loginId, email, password, nickname, signupType, guildName }) {
   const res = await apiFetch("/users/signup", {
     method: "POST",
     body: JSON.stringify({
@@ -8,6 +8,8 @@ export async function signup({ loginId, email, password, nickname }) {
       email,
       password,
       nickname,
+      signupType,
+      guildName,
     }),
   });
 }

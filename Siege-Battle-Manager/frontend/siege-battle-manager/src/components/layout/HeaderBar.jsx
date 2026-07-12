@@ -11,7 +11,6 @@ export default function HeaderBar({
   activeTab,
   onChangeTab,
   guild,
-  onCreateGuild,
   onSyncSwarfarmMonsters,
   syncingMonsters = false,
   onApplyMonsterLocalization,
@@ -53,16 +52,6 @@ export default function HeaderBar({
               ? `${guild.name} | 마스터: ${guild.masterNickname} | 인원: ${guild.memberCount}`
               : "없음"}
           </div>
-
-          {!guild && (
-            <button
-              type="button"
-              className="rounded bg-gray-200 px-2 py-1 text-xs hover:bg-gray-300"
-              onClick={onCreateGuild}
-            >
-              길드 만들기
-            </button>
-          )}
 
           <button
             type="button"

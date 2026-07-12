@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { login, signup } from "../../lib/auth";
-import { apiFetch } from "../../lib/api";
 
 const ROLE_OPTIONS = {
   master: {
@@ -31,12 +30,36 @@ export default function LoginPage() {
   const isSignup = view === "signup";
   const selectedSignup = ROLE_OPTIONS[signupType];
 
-  function startSignup(type) {
-    setSignupType(type);
-    setView("signup");
-    setNotice(null);
+  function resetForm() {
+    setLoginId("");
     setPw("");
     setConfirmPw("");
+    setGuildName("");
+    setGameNickname("");
+    setContactEmail("");
+    setLoginError("");
+    setNotice(null);
+  }
+
+  function startSignup(type) {
+    resetForm();
+    setSignupType(type);
+    setView("signup");
+  }
+
+  function showLogin() {
+    resetForm();
+    setView("login");
+  }
+
+  function showStart() {
+    resetForm();
+    setView("start");
+  }
+
+  function changeSignupType(type) {
+    resetForm();
+    setSignupType(type);
   }
 
   const handleLogin = async (event) => {
@@ -76,27 +99,23 @@ export default function LoginPage() {
 
     try {
       setLoading(true);
-
-      if (signupType === "member") {
-        const guildExists = await checkGuildExists(guildName);
-
-        if (!guildExists) {
-          showNotice("입력한 길드가 아직 생성되지 않아 가입할 수 없습니다.", "error");
-          return;
-        }
-      }
-
       await signup({
         loginId,
         email: contactEmail,
         password: pw,
         nickname: gameNickname,
+        signupType,
+        guildName,
       });
 
       showNotice("회원가입이 완료되었습니다. 로그인해주세요.", "success");
       setView("login");
+      setLoginId("");
       setPw("");
       setConfirmPw("");
+      setGuildName("");
+      setGameNickname("");
+      setContactEmail("");
     } catch (e) {
       showNotice(e.message || "회원가입 실패", "error");
     } finally {
@@ -187,7 +206,7 @@ export default function LoginPage() {
                 기존 계정이 있다면{" "}
                 <button
                   type="button"
-                  onClick={() => setView("login")}
+                  onClick={showLogin}
                   className="font-semibold text-slate-950 underline underline-offset-4"
                 >
                   로그인
@@ -226,7 +245,7 @@ export default function LoginPage() {
                 계정이 없나요?{" "}
                 <button
                   type="button"
-                  onClick={() => setView("start")}
+                  onClick={showStart}
                   className="font-semibold text-slate-950 underline underline-offset-4"
                 >
                   가입
@@ -246,7 +265,7 @@ export default function LoginPage() {
                   <button
                     key={type}
                     type="button"
-                    onClick={() => setSignupType(type)}
+                    onClick={() => changeSignupType(type)}
                     className={`rounded px-3 py-2 text-sm font-semibold transition ${
                       signupType === type
                         ? "bg-white text-slate-950 shadow-sm"
@@ -301,7 +320,7 @@ export default function LoginPage() {
                 기존 계정이 있다면{" "}
                 <button
                   type="button"
-                  onClick={() => setView("login")}
+                  onClick={showLogin}
                   className="font-semibold text-slate-950 underline underline-offset-4"
                 >
                   로그인
@@ -386,12 +405,4 @@ function Toast({ notice, onClose }) {
       </div>
     </div>
   );
-}
-
-async function checkGuildExists(guildName) {
-  const body = await apiFetch("/guilds");
-  const guilds = body.data ?? [];
-  const normalizedName = guildName.trim().toLowerCase();
-
-  return guilds.some((guild) => guild.name?.trim?.().toLowerCase() === normalizedName);
 }

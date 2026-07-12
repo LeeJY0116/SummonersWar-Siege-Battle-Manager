@@ -4,7 +4,7 @@ import FooterBar from "./components/layout/FooterBar.jsx";
 import ManagerTab from "./components/manager/ManagerTab.jsx";
 import MonsterReviewTab from "./components/monsters/MonsterReviewTab.jsx";
 import SiegeBattleTab from "./components/siege/SiegeBattleTab.jsx";
-import { fetchMyGuild, createGuild, fetchMyGuildMembers } from "./lib/guild.js";
+import { fetchMyGuild, fetchMyGuildMembers } from "./lib/guild.js";
 import LoginPage from "./components/auth/LoginPage.jsx";
 import GuildTab from "./components/guild/GuildTab.jsx";
 import { apiFetch } from "./lib/api.js";
@@ -291,28 +291,6 @@ export default function SiegeBattleManager() {
     );
   }
 
-  // Guild creation logic
-
-  async function handleCreateGuild() {  const name = prompt("길드 이름을 입력하세요");
-  if (!name || !name.trim()) return;
-
-  // Reflect the created guild immediately in the UI.
-  try {
-    const created = await createGuild(name.trim(), "");
-    console.log("createGuild response data:", created);
-    setGuild(created);
-
-
-    // const ms = await fetchMyGuildMembers();
-    // setMembers(ms);
-  } catch (e) {
-    console.error("create guild failed:", e);
-    alert(e.message || "길드 생성 실패");
-    setGuild(null);
-  }
-}
-
-
   // ---------------- Render ----------------
   return (
     <div className="min-h-screen w-full bg-gray-50 text-gray-900">
@@ -320,7 +298,6 @@ export default function SiegeBattleManager() {
         <HeaderBar
           guild={guild}
           members={members}
-          onCreateGuild={handleCreateGuild}
           activeTab={activeTab}
           onChangeTab={setActiveTab}
           onSyncSwarfarmMonsters={handleSyncSwarfarmMonsters}
