@@ -288,6 +288,9 @@ Authorization: Bearer {JWT}
 
 ## 가상 길드원 추가
 
+길드장/부길드장이 로그인 계정 없이 인벤토리와 방덱만 관리할 더미 계정을 생성합니다.
+더미 계정도 길드 정원 35명에 포함됩니다.
+
 ```http
 POST /api/guild-members/{guildId}/virtual
 Authorization: Bearer {JWT}
@@ -505,6 +508,13 @@ Content-Type: application/json
   ]
 }
 ```
+
+제한:
+
+- `quantity`는 0~10 범위로 저장됩니다.
+- 10 초과 값은 10으로 보정됩니다.
+- 음수 값은 0으로 보정됩니다.
+- 이미 방덱에 사용 중인 수량보다 낮게 저장할 수 없습니다.
 
 ---
 
@@ -739,12 +749,30 @@ Content-Type: application/json
 }
 ```
 
+제한:
+
+- `title`: 최대 100자
+- `content`: 최대 3000자
+- 같은 사용자는 게시글을 30초에 1회 작성할 수 있습니다.
+
 ## 게시글 목록 조회
 
 ```http
-GET /api/research/posts
+GET /api/research/posts?page=0&size=10&leaderEffect=Defense&monsterCode=sw_10131&fourStarOnly=true
 Authorization: Bearer {JWT}
 ```
+
+Query Params:
+
+| 이름 | 필수 | 설명 |
+|---|---:|---|
+| `page` | N | 0부터 시작하는 페이지 번호 |
+| `size` | N | 페이지 크기. 기본 10개 단위 사용 |
+| `leaderEffect` | N | 리더 효과 필터 |
+| `monsterCode` | N | 포함 몬스터 필터 |
+| `fourStarOnly` | N | `true`면 5성 몬스터 미포함 방덱만 조회 |
+
+검색/필터는 백엔드에서 전체 게시글 기준으로 적용한 뒤 페이지네이션합니다.
 
 ## 게시글 상세 조회
 
@@ -789,6 +817,12 @@ Content-Type: application/json
   "content": "공덱 메모"
 }
 ```
+
+제한:
+
+- `content`: 최대 1000자
+- 같은 사용자는 댓글을 30초에 1회 작성할 수 있습니다.
+- 댓글 목록은 상세 조회 응답에서 10개 단위 페이지네이션 기준으로 처리합니다.
 
 ## 댓글 수정
 

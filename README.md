@@ -523,3 +523,5 @@ backend/
 | [ERD](./docs/ERD.md)                           | 데이터베이스 구조   |
 | [Test Scenario](./docs/TEST_SCENARIO.md)       | 로컬 테스트 흐름   |
 | [Trouble Shooting](./docs/TROUBLE_SHOOTING.md) | 문제 해결 과정 정리 |
+| [User Guide](./docs/USER_GUIDE.md)             | 사용자 이용 가이드 |
+| [Daily Log 2026-07-13](./docs/DAILY_LOG_2026-07-13.md) | 2026-07-13 작업 기록 |
