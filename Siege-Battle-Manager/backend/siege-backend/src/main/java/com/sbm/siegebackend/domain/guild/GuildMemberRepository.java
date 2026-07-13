@@ -27,6 +27,12 @@ public interface GuildMemberRepository extends JpaRepository<GuildMember, Long> 
             GuildMemberStatus status
     );
 
+    Optional<GuildMember> findFirstByGuildAndRoleAndStatusOrderByIdDesc(
+            Guild guild,
+            GuildMemberRole role,
+            GuildMemberStatus status
+    );
+
     // 길드의 멤버 목록
     List<GuildMember> findByGuild(Guild guild);
 

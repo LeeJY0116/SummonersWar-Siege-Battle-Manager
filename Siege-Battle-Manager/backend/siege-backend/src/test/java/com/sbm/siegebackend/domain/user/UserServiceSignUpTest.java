@@ -8,6 +8,7 @@ import com.sbm.siegebackend.domain.guild.GuildMemberRole;
 import com.sbm.siegebackend.domain.guild.GuildMemberService;
 import com.sbm.siegebackend.domain.guild.GuildMemberStatus;
 import com.sbm.siegebackend.domain.guild.GuildRepository;
+import com.sbm.siegebackend.domain.guild.GuildService;
 import com.sbm.siegebackend.domain.guild.dto.GuildJoinRequestResponse;
 import com.sbm.siegebackend.domain.user.dto.UserSignUpRequest;
 import com.sbm.siegebackend.domain.user.dto.UserLoginRequest;
@@ -45,6 +46,9 @@ class UserServiceSignUpTest {
 
     @Autowired
     private GuildMemberService guildMemberService;
+
+    @Autowired
+    private GuildService guildService;
 
     @Test
     void 길드장_가입은_계정과_길드를_바로_생성하지_않고_신청만_생성한다() {
@@ -299,6 +303,7 @@ class UserServiceSignUpTest {
         guildMemberService.transferMaster(newMasterMember.getId(), guild.getMaster().getLoginId());
 
         assertThat(guild.getMaster().getId()).isEqualTo(newMasterUser.getId());
+        assertThat(guildService.getMyGuild(newMasterUser.getEmail()).getMasterNickname()).isEqualTo("새길드장");
         assertThat(currentMaster.getRole()).isEqualTo(GuildMemberRole.SUB_MASTER);
         assertThat(newMasterMember.getRole()).isEqualTo(GuildMemberRole.MASTER);
     }

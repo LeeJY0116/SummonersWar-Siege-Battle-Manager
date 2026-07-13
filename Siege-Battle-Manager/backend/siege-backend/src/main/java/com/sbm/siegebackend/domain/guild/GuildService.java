@@ -81,7 +81,7 @@ public class GuildService {
                 savedGuild.getId(),
                 savedGuild.getName(),
                 savedGuild.getDescription(),
-                savedGuild.getMaster().getNickname(),
+                resolveMasterNickname(savedGuild),
                 getApprovedMemberCount(savedGuild)
         );
     }
@@ -97,7 +97,7 @@ public class GuildService {
                         g.getId(),
                         g.getName(),
                         g.getDescription(),
-                        g.getMaster().getNickname(),
+                        resolveMasterNickname(g),
                         getApprovedMemberCount(g)
                 ))
                 .toList();
@@ -120,7 +120,7 @@ public class GuildService {
                         g.getId(),
                         g.getName(),
                         g.getDescription(),
-                        g.getMaster().getNickname(),
+                        resolveMasterNickname(g),
                         getApprovedMemberCount(g)
                 ))
                 .toList();
@@ -210,7 +210,7 @@ public class GuildService {
                 guild.getId(),
                 guild.getName(),
                 guild.getDescription(),
-                guild.getMaster().getNickname(),
+                resolveMasterNickname(guild),
                 getApprovedMemberCount(guild)
         );
     }
@@ -356,6 +356,16 @@ public class GuildService {
 
     private int getApprovedMemberCount(Guild guild) {
         return guildMemberRepository.countByGuildAndStatus(guild, GuildMemberStatus.APPROVED);
+    }
+
+    private String resolveMasterNickname(Guild guild) {
+        return guildMemberRepository.findFirstByGuildAndRoleAndStatusOrderByIdDesc(
+                        guild,
+                        GuildMemberRole.MASTER,
+                        GuildMemberStatus.APPROVED
+                )
+                .map(GuildMember::getDisplayName)
+                .orElseGet(() -> guild.getMaster().getNickname());
     }
 
 

@@ -28,8 +28,10 @@ export default function GuildMemberManagementTab({ members, currentGuildRole, on
   const canManageMemberRoles = currentGuildRole === "MASTER";
 
   useEffect(() => {
-    void loadBans();
-  }, []);
+    if (canManageMemberRoles) {
+      void loadBans();
+    }
+  }, [canManageMemberRoles]);
 
   async function loadBans() {
     try {
@@ -66,7 +68,9 @@ export default function GuildMemberManagementTab({ members, currentGuildRole, on
       setError("");
       await kickGuildMember(member.id);
       await onRefreshMembers?.();
-      await loadBans();
+      if (canManageMemberRoles) {
+        await loadBans();
+      }
     } catch (e) {
       setError(e.message || "길드원을 추방하지 못했습니다.");
     } finally {
@@ -130,15 +134,19 @@ export default function GuildMemberManagementTab({ members, currentGuildRole, on
                 <th className="px-4 py-3">닉네임 / ID</th>
                 <th className="px-4 py-3">등급</th>
                 <th className="px-4 py-3">상태</th>
-                <th className="px-4 py-3">등급 변경</th>
-                <th className="px-4 py-3">길드장 양도</th>
-                <th className="px-4 py-3">추방</th>
+                {canManageMemberRoles && (
+                  <>
+                    <th className="px-4 py-3">등급 변경</th>
+                    <th className="px-4 py-3">길드장 양도</th>
+                    <th className="px-4 py-3">추방</th>
+                  </>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {realMembers.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-6 text-gray-500" colSpan={6}>
+                  <td className="px-4 py-6 text-gray-500" colSpan={canManageMemberRoles ? 6 : 3}>
                     활성 길드원이 없습니다.
                   </td>
                 </tr>
@@ -161,52 +169,56 @@ export default function GuildMemberManagementTab({ members, currentGuildRole, on
                         </span>
                       </td>
                       <td className="px-4 py-4 text-gray-600">{member.status ?? "APPROVED"}</td>
-                      <td className="px-4 py-4">
-                        {isMaster || !canManageMemberRoles ? (
-                          <span className="text-gray-400">-</span>
-                        ) : (
-                          <select
-                            value={member.role}
-                            disabled={disabled}
-                            onChange={(e) => handleRoleChange(member, e.target.value)}
-                            className="rounded-md border border-gray-300 px-2 py-1 text-sm disabled:opacity-40"
-                          >
-                            {ROLE_OPTIONS.map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        )}
-                      </td>
-                      <td className="px-4 py-4">
-                        {isMaster || !canManageMemberRoles ? (
-                          <span className="text-gray-400">-</span>
-                        ) : (
-                          <button
-                            type="button"
-                            disabled={disabled}
-                            onClick={() => handleTransferMaster(member)}
-                            className="rounded-md border border-amber-300 px-3 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-50 disabled:opacity-40"
-                          >
-                            양도
-                          </button>
-                        )}
-                      </td>
-                      <td className="px-4 py-4">
-                        {isMaster || !canManageMemberRoles ? (
-                          <span className="text-gray-400">-</span>
-                        ) : (
-                          <button
-                            type="button"
-                            disabled={disabled}
-                            onClick={() => handleKick(member)}
-                            className="rounded-md border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-40"
-                          >
-                            추방
-                          </button>
-                        )}
-                      </td>
+                      {canManageMemberRoles && (
+                        <>
+                          <td className="px-4 py-4">
+                            {isMaster ? (
+                              <span className="text-gray-400">-</span>
+                            ) : (
+                              <select
+                                value={member.role}
+                                disabled={disabled}
+                                onChange={(e) => handleRoleChange(member, e.target.value)}
+                                className="rounded-md border border-gray-300 px-2 py-1 text-sm disabled:opacity-40"
+                              >
+                                {ROLE_OPTIONS.map((option) => (
+                                  <option key={option.value} value={option.value}>
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
+                          </td>
+                          <td className="px-4 py-4">
+                            {isMaster ? (
+                              <span className="text-gray-400">-</span>
+                            ) : (
+                              <button
+                                type="button"
+                                disabled={disabled}
+                                onClick={() => handleTransferMaster(member)}
+                                className="rounded-md border border-amber-300 px-3 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-50 disabled:opacity-40"
+                              >
+                                양도
+                              </button>
+                            )}
+                          </td>
+                          <td className="px-4 py-4">
+                            {isMaster ? (
+                              <span className="text-gray-400">-</span>
+                            ) : (
+                              <button
+                                type="button"
+                                disabled={disabled}
+                                onClick={() => handleKick(member)}
+                                className="rounded-md border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-40"
+                              >
+                                추방
+                              </button>
+                            )}
+                          </td>
+                        </>
+                      )}
                     </tr>
                   );
                 })
@@ -216,6 +228,7 @@ export default function GuildMemberManagementTab({ members, currentGuildRole, on
         </div>
       </section>
 
+      {canManageMemberRoles && (
       <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
         <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-4">
           <div className="flex items-center gap-3">
@@ -287,6 +300,7 @@ export default function GuildMemberManagementTab({ members, currentGuildRole, on
           </table>
         </div>
       </section>
+      )}
     </div>
   );
 }
