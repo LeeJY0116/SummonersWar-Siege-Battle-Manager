@@ -314,6 +314,27 @@ GET /api/guild-members/me
 Authorization: Bearer {JWT}
 ```
 
+응답 예시:
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "userId": 1,
+      "loginId": "test",
+      "displayName": "테스트",
+      "role": "MASTER",
+      "status": "APPROVED",
+      "realUser": true,
+      "lastLoginAt": "2026-07-13T18:27:00"
+    }
+  ],
+  "message": null
+}
+```
+
 ## 길드원 등급 변경
 
 ```http

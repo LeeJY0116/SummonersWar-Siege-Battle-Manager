@@ -135,6 +135,8 @@ JwtAuthenticationFilter 검증
 인증 사용자 처리
 ```
 
+로그인 성공 시 `User.lastLoginAt`을 현재 시각으로 갱신해 회원 관리 탭에서 최근 접속일을 표시합니다.
+
 ---
 
 ## JwtAuthenticationFilter
@@ -200,6 +202,7 @@ OncePerRequestFilter 기반 구현
 - 등급 변경
 - 길드원 추방
 - 길드장 양도
+- 최근 접속일 표시
 - 추방된 계정의 재가입 차단 목록 조회
 - 재가입 차단 해제
 
