@@ -226,6 +226,12 @@ function selectMonster(code) {
     setOwnerMemberId(String(manageableMembers[0].id));
   }, [manageableMembers, ownerMemberId]);
 
+  useEffect(() => {
+    setSelectedMonsterCodes(["", "", ""]);
+    setActiveSlotIndex(0);
+    setMonsterSearch("");
+  }, [ownerMemberId]);
+
   // 길드원 인벤토리 로드
   useEffect(() => {
     if (!ownerMemberId) return;
