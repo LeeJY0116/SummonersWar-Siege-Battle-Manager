@@ -5,12 +5,12 @@ const ROLE_OPTIONS = {
   master: {
     label: "길드장 가입",
     title: "길드장 가입 신청",
-    description: "길드 운영을 시작하기 위한 계정을 생성합니다.",
+    description: "관리자 승인 후 길드가 생성되고 로그인할 수 있습니다.",
   },
   member: {
     label: "길드원 가입",
-    title: "길드원 가입",
-    description: "기존 길드에 가입 요청할 계정을 생성합니다.",
+    title: "길드원 가입 신청",
+    description: "길드장 또는 부길드장 승인 후 로그인할 수 있습니다.",
   },
 };
 
@@ -108,7 +108,7 @@ export default function LoginPage() {
         guildName,
       });
 
-      showNotice("회원가입이 완료되었습니다. 로그인해주세요.", "success");
+      showNotice(getSignupSuccessMessage(signupType), "success");
       setView("login");
       setLoginId("");
       setPw("");
@@ -125,6 +125,14 @@ export default function LoginPage() {
 
   function showNotice(message, type = "info") {
     setNotice({ message, type });
+  }
+
+  function getSignupSuccessMessage(type) {
+    if (type === "master") {
+      return "길드장 가입 신청이 접수되었습니다. 관리자 승인 후 로그인할 수 있습니다.";
+    }
+
+    return "길드원 가입 신청이 접수되었습니다. 길드장 또는 부길드장 승인 후 로그인할 수 있습니다.";
   }
 
   return (
@@ -174,8 +182,8 @@ export default function LoginPage() {
                 <p className="text-sm font-semibold text-slate-500">계정 시작</p>
                 <h2 className="text-2xl font-bold">가입 유형을 선택해주세요</h2>
                 <p className="text-sm leading-6 text-slate-500">
-                  현재는 테스트 단계이며, 추후 길드장은 관리자 승인 후 길드를 관리하고
-                  길드원은 길드장 승인 후 참여하는 흐름으로 확장할 예정입니다.
+                  길드장은 관리자 승인 후 길드를 관리하고,
+                  길드원은 길드장 또는 부길드장 승인 후 참여할 수 있습니다.
                 </p>
               </div>
 
@@ -187,7 +195,7 @@ export default function LoginPage() {
                 >
                   <span className="block text-sm font-semibold">길드장 가입</span>
                   <span className="mt-1 block text-xs text-slate-500">
-                    길드 생성과 운영 권한 신청을 준비합니다.
+                    관리자 승인 후 길드가 생성됩니다.
                   </span>
                 </button>
                 <button
@@ -197,7 +205,7 @@ export default function LoginPage() {
                 >
                   <span className="block text-sm font-semibold">길드원 가입</span>
                   <span className="mt-1 block text-xs text-slate-500">
-                    기존 길드 가입 요청을 준비합니다.
+                    기존 길드에 가입 승인을 요청합니다.
                   </span>
                 </button>
               </div>
