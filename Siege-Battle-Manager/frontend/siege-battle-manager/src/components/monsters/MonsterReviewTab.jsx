@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { apiFetch } from "../../lib/api.js";
+import AdminMemberManagementPanel from "../admin/AdminMemberManagementPanel.jsx";
 import AdminGuildManagementPanel from "../admin/AdminGuildManagementPanel.jsx";
 import GuildApprovalPanel from "../admin/GuildApprovalPanel.jsx";
 import NicknameChangeApprovalPanel from "../admin/NicknameChangeApprovalPanel.jsx";
@@ -209,6 +210,7 @@ export default function MonsterReviewTab() {
   const [attributeFilter, setAttributeFilter] = useState("ALL");
   const [awakeningFilter, setAwakeningFilter] = useState("ALL");
   const [missingOnly, setMissingOnly] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
   async function loadMonsters() {
     try {
@@ -380,38 +382,56 @@ export default function MonsterReviewTab() {
   }
 
   return (
-    <main className="space-y-4">
+    <main className="space-y-4 rounded-2xl border border-slate-300 bg-slate-100 p-4 text-slate-900">
       <GuildApprovalPanel />
       <NicknameChangeApprovalPanel />
+      <AdminMemberManagementPanel />
       <AdminGuildManagementPanel />
 
-      <section className="flex flex-col gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+      <section className="flex flex-col gap-3 rounded-xl border border-slate-300 bg-slate-50 p-4 shadow-sm">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-lg font-semibold">{TEXT.title}</h2>
-            <p className="text-sm text-gray-500">{TEXT.description}</p>
+            <h2 className="text-lg font-semibold text-slate-950">{TEXT.title}</h2>
+            <p className="text-sm text-slate-500">{TEXT.description}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
+              onClick={() => setEditMode((prev) => !prev)}
+              className={`rounded-md border px-3 py-2 text-sm font-semibold ${
+                editMode
+                  ? "border-slate-800 bg-slate-800 text-white"
+                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100"
+              }`}
+            >
+              {editMode ? "편집 ON" : "편집 OFF"}
+            </button>
+            <button
+              type="button"
               onClick={loadMonsters}
-              className="rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50"
+              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 hover:bg-slate-100"
             >
               {TEXT.refresh}
             </button>
             <button
               type="button"
-              disabled={dirtyCodes.length === 0 || savingAll}
+              disabled={!editMode || dirtyCodes.length === 0 || savingAll}
               onClick={saveDirtyDrafts}
-              className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-40"
             >
               {savingAll
                 ? TEXT.saving
                 : dirtyCodes.length > 0
                   ? `${TEXT.saveChanges} (${dirtyCodes.length})`
-                  : TEXT.noChanges}
+                : TEXT.noChanges}
             </button>
           </div>
+        </div>
+
+        <div className="rounded-md border border-slate-200 bg-white px-3 py-2 text-xs text-slate-500">
+          {editMode
+            ? "편집 모드입니다. 표시 여부, 한글명, 별칭을 수정하고 저장할 수 있습니다."
+            : "읽기 전용 모드입니다. 필터와 검색은 가능하지만 몬스터 정보 수정은 잠겨 있습니다."}
         </div>
 
         <div className="grid gap-2 md:grid-cols-4">
@@ -422,7 +442,7 @@ export default function MonsterReviewTab() {
         </div>
       </section>
 
-      <section className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+      <section className="rounded-xl border border-slate-300 bg-slate-50 p-4 shadow-sm">
         <div className="mb-3 flex flex-wrap gap-2">
           <VariantTabButton
             active={variantFilter === "ALL"}
@@ -446,12 +466,12 @@ export default function MonsterReviewTab() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={TEXT.queryPlaceholder}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm md:col-span-2"
+            className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm md:col-span-2"
           />
           <select
             value={enabledFilter}
             onChange={(e) => setEnabledFilter(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
           >
             <option value="enabled">{TEXT.enabledOnly}</option>
             <option value="disabled">{TEXT.disabledOnly}</option>
@@ -460,7 +480,7 @@ export default function MonsterReviewTab() {
           <select
             value={attributeFilter}
             onChange={(e) => setAttributeFilter(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
           >
             <option value="ALL">{TEXT.allAttributes}</option>
             {Object.entries(ATTRIBUTE_LABELS).map(([value, label]) => (
@@ -472,7 +492,7 @@ export default function MonsterReviewTab() {
           <select
             value={awakeningFilter}
             onChange={(e) => setAwakeningFilter(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
           >
             <option value="ALL">{TEXT.allAwakening}</option>
             <option value="0">{TEXT.unawakened}</option>
@@ -482,7 +502,7 @@ export default function MonsterReviewTab() {
           </select>
         </div>
 
-        <label className="mt-3 flex items-center gap-2 text-sm text-gray-700">
+        <label className="mt-3 flex items-center gap-2 text-sm text-slate-700">
           <input
             type="checkbox"
             checked={missingOnly}
@@ -498,8 +518,8 @@ export default function MonsterReviewTab() {
         </div>
       )}
 
-      <section className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-        <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3 text-sm text-gray-600">
+      <section className="overflow-hidden rounded-xl border border-slate-300 bg-white shadow-sm">
+        <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
           <span>{loading ? TEXT.loading : `${rows.length}${TEXT.countSuffix}`}</span>
           {dirtyCodes.length > 0 && (
             <span className="rounded-full bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700">
@@ -510,7 +530,7 @@ export default function MonsterReviewTab() {
 
         <div className="max-h-[620px] overflow-auto">
           <table className="min-w-[1180px] text-left text-sm">
-            <thead className="sticky top-0 bg-gray-50 text-xs uppercase text-gray-500">
+            <thead className="sticky top-0 bg-slate-100 text-xs uppercase text-slate-500">
               <tr>
                 <th className="px-3 py-2">{TEXT.action}</th>
                 <th className="px-3 py-2">{TEXT.display}</th>
@@ -523,19 +543,19 @@ export default function MonsterReviewTab() {
                 <th className="px-3 py-2">{TEXT.aliases}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-slate-100">
               {rows.map((monster) => {
                 const draft = drafts[monster.code] ?? monster;
                 const dirty = getRowSignature(monster) !== getRowSignature(draft);
 
                 return (
-                  <tr key={monster.code} className="hover:bg-gray-50">
+                  <tr key={monster.code} className="hover:bg-slate-50">
                     <td className="whitespace-nowrap px-3 py-2">
                       <button
                         type="button"
-                        disabled={!dirty || savingCode === monster.code || savingAll}
+                        disabled={!editMode || !dirty || savingCode === monster.code || savingAll}
                         onClick={() => saveDraft(monster.code)}
-                        className="rounded-md bg-gray-900 px-3 py-1.5 text-sm text-white disabled:cursor-not-allowed disabled:opacity-40"
+                        className="rounded-md bg-slate-900 px-3 py-1.5 text-sm text-white disabled:cursor-not-allowed disabled:opacity-40"
                       >
                         {savingCode === monster.code ? TEXT.saving : dirty ? TEXT.save : TEXT.saved}
                       </button>
@@ -544,6 +564,7 @@ export default function MonsterReviewTab() {
                       <input
                         type="checkbox"
                         checked={draft.enabled !== false}
+                        disabled={!editMode}
                         onChange={(e) => updateDraft(monster.code, { enabled: e.target.checked })}
                       />
                     </td>
@@ -552,11 +573,11 @@ export default function MonsterReviewTab() {
                         <img
                           src={monster.imageUrl}
                           alt={draft.koreanName || monster.englishName || monster.code}
-                          className="h-11 w-11 rounded border border-gray-200 bg-gray-50 object-contain"
+                          className="h-11 w-11 rounded border border-slate-200 bg-slate-50 object-contain"
                           loading="lazy"
                         />
                       ) : (
-                        <div className="flex h-11 w-11 items-center justify-center rounded border border-gray-200 bg-gray-50 text-xs text-gray-400">
+                        <div className="flex h-11 w-11 items-center justify-center rounded border border-slate-200 bg-slate-50 text-xs text-slate-400">
                           {TEXT.none}
                         </div>
                       )}
@@ -569,16 +590,18 @@ export default function MonsterReviewTab() {
                     <td className="px-3 py-2">
                       <input
                         value={draft.koreanName}
+                        disabled={!editMode}
                         onChange={(e) => updateDraft(monster.code, { koreanName: e.target.value })}
-                        className="w-36 rounded-md border border-gray-300 px-2 py-1 text-sm"
+                        className="w-36 rounded-md border border-slate-300 px-2 py-1 text-sm disabled:bg-slate-100 disabled:text-slate-500"
                       />
                     </td>
-                    <td className="px-3 py-2 text-gray-700">{monster.englishName}</td>
+                    <td className="px-3 py-2 text-slate-700">{monster.englishName}</td>
                     <td className="px-3 py-2">
                       <textarea
                         value={draft.aliasesText}
+                        disabled={!editMode}
                         onChange={(e) => updateDraft(monster.code, { aliasesText: e.target.value })}
-                        className="h-16 w-80 rounded-md border border-gray-300 px-2 py-1 text-sm"
+                        className="h-16 w-80 rounded-md border border-slate-300 px-2 py-1 text-sm disabled:bg-slate-100 disabled:text-slate-500"
                       />
                     </td>
                   </tr>
@@ -594,9 +617,9 @@ export default function MonsterReviewTab() {
 
 function SummaryBox({ label, value }) {
   return (
-    <div className="rounded-md bg-gray-50 p-3">
-      <div className="text-xs text-gray-500">{label}</div>
-      <div className="text-xl font-semibold">{value}</div>
+    <div className="rounded-md border border-slate-200 bg-white p-3">
+      <div className="text-xs text-slate-500">{label}</div>
+      <div className="text-xl font-semibold text-slate-950">{value}</div>
     </div>
   );
 }
@@ -608,8 +631,8 @@ function VariantTabButton({ active, label, onClick }) {
       onClick={onClick}
       className={`rounded-full border px-3 py-1.5 text-sm ${
         active
-          ? "border-blue-500 bg-blue-50 font-semibold text-blue-700"
-          : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+          ? "border-slate-800 bg-slate-800 font-semibold text-white"
+          : "border-slate-300 bg-white text-slate-600 hover:bg-slate-100"
       }`}
     >
       {label}

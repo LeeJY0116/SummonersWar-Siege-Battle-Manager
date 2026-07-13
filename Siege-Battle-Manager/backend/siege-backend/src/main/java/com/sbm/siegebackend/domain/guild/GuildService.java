@@ -3,6 +3,7 @@ package com.sbm.siegebackend.domain.guild;
 import com.sbm.siegebackend.domain.guild.dto.GuildCreateRequest;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberHistoryResponse;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberResponse;
+import com.sbm.siegebackend.domain.guild.dto.GuildMemberRoleUpdateRequest;
 import com.sbm.siegebackend.domain.guild.dto.GuildResponse;
 import com.sbm.siegebackend.domain.guild.dto.UserNicknameHistoryResponse;
 import com.sbm.siegebackend.domain.user.User;
@@ -53,9 +54,10 @@ public class GuildService {
         }
 
         // 길드 이름 중복 검사
-        if (guildRepository.existsByName(request.getName())) {
+        if (activeGuildNameExists(request.getName())) {
             throw new IllegalArgumentException("이미 존재하는 길드 이름입니다.");
         }
+        releaseInactiveGuildName(request.getName());
 
         // 길드 생성
         Guild guild = new Guild(
@@ -93,6 +95,7 @@ public class GuildService {
     public List<GuildResponse> getAllGuilds() {
         return guildRepository.findAll().stream()
                 .filter(this::hasApprovedMaster)
+                .sorted(Comparator.comparingInt(this::getApprovedMemberCount).reversed())
                 .map(g -> new GuildResponse(
                         g.getId(),
                         g.getName(),
@@ -111,11 +114,37 @@ public class GuildService {
         );
     }
 
+    private boolean activeGuildNameExists(String guildName) {
+        return guildRepository.findByName(guildName)
+                .filter(this::hasApprovedMaster)
+                .isPresent();
+    }
+
+    private void releaseInactiveGuildName(String guildName) {
+        guildRepository.findByName(guildName)
+                .filter(guild -> !hasApprovedMaster(guild))
+                .ifPresent(guild -> {
+                    guild.setName(buildDisbandedGuildName(guild));
+                    guildRepository.flush();
+                });
+    }
+
+    private String buildDisbandedGuildName(Guild guild) {
+        String suffix = "__closed_" + guild.getId();
+        int maxBaseLength = Math.max(1, 50 - suffix.length());
+        String baseName = guild.getName().length() > maxBaseLength
+                ? guild.getName().substring(0, maxBaseLength)
+                : guild.getName();
+        return baseName + suffix;
+    }
+
     @Transactional(readOnly = true)
     public List<GuildResponse> getAdminGuilds(String loginId) {
         validateAdmin(loginId);
 
         return guildRepository.findAll().stream()
+                .filter(this::hasApprovedMaster)
+                .sorted(Comparator.comparingInt(this::getApprovedMemberCount).reversed())
                 .map(g -> new GuildResponse(
                         g.getId(),
                         g.getName(),
@@ -144,6 +173,109 @@ public class GuildService {
                 .map(this::toAdminMemberResponse)
                 .sorted(this::compareAdminMemberResponse)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<GuildMemberResponse> getAdminAllMembers(String loginId) {
+        validateAdmin(loginId);
+
+        Map<String, GuildMember> latestMembers = new LinkedHashMap<>();
+        guildMemberRepository.findAll()
+                .stream()
+                .filter(member -> member.isRealUser() && member.getUser() != null && !member.getUser().isDeleted())
+                .sorted(Comparator.comparing(GuildMember::getId).reversed())
+                .forEach(member -> latestMembers.putIfAbsent(getAdminMemberDedupKey(member), member));
+
+        return latestMembers.values()
+                .stream()
+                .map(this::toAdminMemberResponse)
+                .sorted(this::compareAdminMemberResponse)
+                .toList();
+    }
+
+    public void forceLeaveAdminMember(String loginId, Long guildMemberId) {
+        validateAdmin(loginId);
+
+        GuildMember member = guildMemberRepository.findById(guildMemberId)
+                .orElseThrow(() -> new NotFoundException("길드원을 찾을 수 없습니다."));
+        User targetUser = member.getUser();
+
+        if (!member.isRealUser() || targetUser == null) {
+            throw new IllegalStateException("실제 회원 계정만 삭제할 수 있습니다.");
+        }
+        if (targetUser.isDeleted()) {
+            return;
+        }
+        if (member.getStatus() == GuildMemberStatus.APPROVED && member.getRole() == GuildMemberRole.MASTER) {
+            throw new IllegalStateException("활성 길드장은 계정 삭제할 수 없습니다. 다른 길드원을 길드장으로 먼저 지정하거나 길드 해체를 사용해주세요.");
+        }
+
+        guildMemberRepository.findAllByUserOrderByIdDesc(targetUser)
+                .forEach(guildMember -> guildMember.changeStatus(GuildMemberStatus.LEFT));
+        targetUser.anonymizeForAdminDeletion();
+    }
+
+    public void changeAdminMemberRole(String loginId, Long guildMemberId, GuildMemberRoleUpdateRequest request) {
+        validateAdmin(loginId);
+
+        GuildMember target = guildMemberRepository.findById(guildMemberId)
+                .orElseThrow(() -> new NotFoundException("길드원을 찾을 수 없습니다."));
+
+        if (!target.isRealUser()) {
+            throw new IllegalStateException("더미 계정의 등급은 변경할 수 없습니다.");
+        }
+        if (target.getStatus() != GuildMemberStatus.APPROVED) {
+            throw new IllegalStateException("승인된 길드원의 등급만 변경할 수 있습니다.");
+        }
+
+        GuildMemberRole nextRole = request.getRole();
+        if (nextRole == null) {
+            throw new IllegalArgumentException("변경할 등급을 선택해주세요.");
+        }
+
+        if (nextRole == GuildMemberRole.MASTER) {
+            promoteAdminMaster(target);
+            return;
+        }
+
+        if (nextRole != GuildMemberRole.SUB_MASTER && nextRole != GuildMemberRole.MEMBER) {
+            throw new IllegalArgumentException("길드장, 부길드장, 길드원으로만 변경할 수 있습니다.");
+        }
+        if (target.getRole() == GuildMemberRole.MASTER) {
+            throw new IllegalStateException("현재 길드장은 바로 강등할 수 없습니다. 다른 길드원을 길드장으로 먼저 지정해주세요.");
+        }
+
+        target.changeRole(nextRole);
+    }
+
+    private void promoteAdminMaster(GuildMember target) {
+        User nextMaster = target.getUser();
+        if (nextMaster == null) {
+            throw new IllegalStateException("실제 회원만 길드장으로 지정할 수 있습니다.");
+        }
+
+        guildMemberRepository.findAllByGuild(target.getGuild()).stream()
+                .filter(member -> member.getStatus() == GuildMemberStatus.APPROVED)
+                .filter(member -> member.getRole() == GuildMemberRole.MASTER)
+                .filter(member -> !member.getId().equals(target.getId()))
+                .forEach(member -> member.changeRole(GuildMemberRole.SUB_MASTER));
+
+        target.changeRole(GuildMemberRole.MASTER);
+        target.getGuild().changeMaster(nextMaster);
+    }
+
+    public void disbandAdminGuild(String loginId, Long guildId) {
+        validateAdmin(loginId);
+
+        Guild guild = guildRepository.findById(guildId)
+                .orElseThrow(() -> new NotFoundException("길드를 찾을 수 없습니다."));
+
+        guildMemberRepository.findAllByGuild(guild)
+                .stream()
+                .filter(member -> member.getStatus() == GuildMemberStatus.APPROVED)
+                .forEach(member -> member.changeStatus(GuildMemberStatus.LEFT));
+
+        guild.setName(buildDisbandedGuildName(guild));
     }
 
     @Transactional(readOnly = true)
@@ -253,7 +385,7 @@ public class GuildService {
                 user == null ? null : user.getEmail(),
                 user == null ? null : user.getNickname(),
                 member.getDisplayName(),
-                member.getRole(),
+                member.getStatus() == GuildMemberStatus.APPROVED ? member.getRole() : null,
                 member.getType(),
                 member.getStatus(),
                 member.isRealUser(),
@@ -265,6 +397,10 @@ public class GuildService {
     private GuildMemberResponse toAdminMemberResponse(GuildMember member) {
         User user = member.getUser();
         String currentGuildName = resolveCurrentGuildName(user);
+        long guildHistoryCount = user == null ? 0 : guildMemberRepository.countByUser(user);
+        long nicknameHistoryCount = user == null
+                ? 0
+                : userNicknameHistoryRepository.countByUserAndChangeTypeNot(user, "INITIAL");
 
         return new GuildMemberResponse(
                 member.getId(),
@@ -278,7 +414,10 @@ public class GuildService {
                 member.getStatus(),
                 member.isRealUser(),
                 currentGuildName,
-                user == null ? null : user.getLastLoginAt()
+                user == null ? null : user.getLastLoginAt(),
+                user == null ? null : user.getLastLoginIp(),
+                guildHistoryCount,
+                nicknameHistoryCount
         );
     }
 

@@ -277,10 +277,10 @@ public class BattleResearchService {
         }
 
         boolean isAuthor = post.getAuthorUserId() != null && post.getAuthorUserId().equals(actorUserId);
-        boolean manager = isManager(actor);
+        boolean master = actor.getRole() == GuildMemberRole.MASTER;
 
-        if (!isAuthor && !manager) {
-            throw new IllegalStateException("작성자 또는 마스터/부마스터만 삭제할 수 있습니다.");
+        if (!isAuthor && !master) {
+            throw new IllegalStateException("작성자 또는 길드장만 게시글을 삭제할 수 있습니다.");
         }
 
         // 게시글 삭제 시 댓글도 같이 삭제되어야 하므로
@@ -378,10 +378,10 @@ public class BattleResearchService {
         }
 
         boolean isAuthor = comment.getAuthorUserId() != null && comment.getAuthorUserId().equals(actorUserId);
-        boolean manager = isManager(actor);
+        boolean master = actor.getRole() == GuildMemberRole.MASTER;
 
-        if (!isAuthor && !manager) {
-            throw new IllegalStateException("작성자 또는 마스터/부마스터만 삭제할 수 있습니다.");
+        if (!isAuthor && !master) {
+            throw new IllegalStateException("작성자 또는 길드장만 댓글을 삭제할 수 있습니다.");
         }
 
         commentRepository.delete(comment);

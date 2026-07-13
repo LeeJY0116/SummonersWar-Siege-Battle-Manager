@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import com.sbm.siegebackend.domain.user.dto.UserMeResponse;
 import org.springframework.security.core.Authentication;
 import com.sbm.siegebackend.global.api.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 
@@ -44,9 +45,41 @@ public class UserController {
      * POST /api/users/login
      */
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<UserLoginResponse>> login(@RequestBody UserLoginRequest request) {
-        UserLoginResponse response = userService.login(request);
+    public ResponseEntity<ApiResponse<UserLoginResponse>> login(
+            @RequestBody UserLoginRequest request,
+            HttpServletRequest httpRequest
+    ) {
+        UserLoginResponse response = userService.login(request, resolveClientIp(httpRequest));
         return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    private String resolveClientIp(HttpServletRequest request) {
+        String cloudflareIp = request.getHeader("CF-Connecting-IP");
+        if (cloudflareIp != null && !cloudflareIp.isBlank()) {
+            return normalizeIp(cloudflareIp.trim());
+        }
+
+        String forwardedFor = request.getHeader("X-Forwarded-For");
+        if (forwardedFor != null && !forwardedFor.isBlank()) {
+            return normalizeIp(forwardedFor.split(",")[0].trim());
+        }
+
+        String realIp = request.getHeader("X-Real-IP");
+        if (realIp != null && !realIp.isBlank()) {
+            return normalizeIp(realIp.trim());
+        }
+
+        return normalizeIp(request.getRemoteAddr());
+    }
+
+    private String normalizeIp(String ip) {
+        if ("0:0:0:0:0:0:0:1".equals(ip) || "::1".equals(ip)) {
+            return "127.0.0.1";
+        }
+        if (ip != null && ip.startsWith("::ffff:")) {
+            return ip.substring("::ffff:".length());
+        }
+        return ip;
     }
 
 

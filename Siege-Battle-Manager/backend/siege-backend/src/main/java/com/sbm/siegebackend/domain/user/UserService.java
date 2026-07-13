@@ -94,6 +94,10 @@ public class UserService {
     }
 
     public UserLoginResponse login(UserLoginRequest request) {
+        return login(request, null);
+    }
+
+    public UserLoginResponse login(UserLoginRequest request, String loginIp) {
         String loginId = normalizeRequired(request.getLoginId(), "아이디");
         User user = findByLoginIdOrLegacyEmail(loginId)
                 .orElse(null);
@@ -113,7 +117,7 @@ public class UserService {
             user.setLoginId(loginId);
         }
 
-        user.markLoggedIn();
+        user.markLoggedIn(loginIp);
 
         String token = jwtTokenProvider.createToken(
                 user.getId(),
@@ -316,7 +320,7 @@ public class UserService {
 
     private void validateGuildSignUp(String signupType, String guildName) {
         if (isMasterSignUp(signupType)) {
-            if (guildRepository.existsByName(guildName)
+            if (activeGuildNameExists(guildName)
                     || signupRequestRepository.existsBySignupTypeAndGuildNameAndStatus(
                     "master",
                     guildName,
@@ -358,6 +362,16 @@ public class UserService {
         }
 
         return guild;
+    }
+
+    private boolean activeGuildNameExists(String guildName) {
+        return guildRepository.findByName(guildName)
+                .filter(guild -> guildMemberRepository.existsByGuildAndRoleAndStatus(
+                        guild,
+                        GuildMemberRole.MASTER,
+                        GuildMemberStatus.APPROVED
+                ))
+                .isPresent();
     }
 
     private String normalizeRequired(String value, String fieldName) {

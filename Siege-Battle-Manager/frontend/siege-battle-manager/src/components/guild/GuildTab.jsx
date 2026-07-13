@@ -5,11 +5,18 @@ import OwnerlessDefenseDeckTab from "./OwnerlessDefenseDeckTab.jsx";
 import BattleResearchTab from "./BattleResearchTab.jsx";
 import GuildMemberManagementTab from "./GuildMemberManagementTab.jsx";
 
+const ROLE_LABELS = {
+  MASTER: "길드장",
+  SUB_MASTER: "부길드장",
+  MEMBER: "길드원",
+};
+
 export default function GuildTab({
   guild,
   members,
   monsters,
   canManageGuild = false,
+  currentUserId = null,
   currentGuildRole = null,
   currentGuildMemberId = null,
   onRefreshMembers,
@@ -28,16 +35,31 @@ export default function GuildTab({
   }
 
   const header = useMemo(() => {
-    if (!guild) return "가입된 길드가 없습니다.";
-    return `${guild.name} · 인원 ${members?.length ?? guild.memberCount ?? 0}`;
-  }, [guild, members]);
+    if (!guild) return null;
+    return {
+      name: guild.name,
+      memberCount: members?.length ?? guild.memberCount ?? 0,
+      roleLabel: ROLE_LABELS[currentGuildRole] ?? "-",
+    };
+  }, [currentGuildRole, guild, members]);
 
   return (
     <div className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(10,7,4,0.25)]">
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <div className="text-lg font-bold text-[#fff0c8]">길드</div>
-          <div className="text-sm font-semibold text-[#d7be80]">{header}</div>
+          {header ? (
+            <div className="flex flex-wrap items-center gap-2 text-lg font-bold text-[#fff0c8]">
+              <span>길드 {header.name}</span>
+              <span className="text-[#8f7447]">|</span>
+              <span>인원 {header.memberCount}</span>
+              <span className="text-[#8f7447]">|</span>
+              <span>계급 {header.roleLabel}</span>
+            </div>
+          ) : (
+            <div className="text-lg font-bold text-[#fff0c8]">
+              가입된 길드가 없습니다.
+            </div>
+          )}
         </div>
 
         <div className="inline-flex flex-wrap gap-1 rounded-2xl border border-[#745320] bg-[#211813] p-1">
@@ -86,7 +108,11 @@ export default function GuildTab({
       ) : subTab === "ownerless" ? (
         <OwnerlessDefenseDeckTab monsters={monsters} />
       ) : subTab === "battleResearch" ? (
-        <BattleResearchTab monsters={monsters} />
+        <BattleResearchTab
+          monsters={monsters}
+          currentUserId={currentUserId}
+          currentGuildRole={currentGuildRole}
+        />
       ) : subTab === "members" && canManageGuild ? (
         <GuildMemberManagementTab
           guild={guild}

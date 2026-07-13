@@ -197,6 +197,7 @@ public class GuildApprovalService {
 
         SignupRequest request = getPendingRequest(requestId, MASTER_SIGNUP);
         validateUserCanBeCreated(request);
+        releaseInactiveGuildName(request.getGuildName());
 
         User user = createUser(request);
         Guild guild = guildRepository.save(new Guild(request.getGuildName(), "", user));
@@ -231,6 +232,7 @@ public class GuildApprovalService {
         }
 
         validateGuildNameCanBeApproved(request.getGuildName());
+        releaseInactiveGuildName(request.getGuildName());
 
         Guild guild = guildRepository.save(new Guild(request.getGuildName(), "", user));
         GuildMember member = GuildMember.createReal(
@@ -491,7 +493,7 @@ public class GuildApprovalService {
     }
 
     private void validateGuildNameCanBeRequested(String guildName) {
-        if (guildRepository.existsByName(guildName)
+        if (activeGuildNameExists(guildName)
                 || signupRequestRepository.existsBySignupTypeAndGuildNameAndStatus(
                 MASTER_SIGNUP,
                 guildName,
@@ -506,7 +508,7 @@ public class GuildApprovalService {
     }
 
     private void validateGuildNameCanBeApproved(String guildName) {
-        if (guildRepository.existsByName(guildName)
+        if (activeGuildNameExists(guildName)
                 || signupRequestRepository.existsBySignupTypeAndGuildNameAndStatus(
                 MASTER_SIGNUP,
                 guildName,
@@ -514,6 +516,38 @@ public class GuildApprovalService {
         )) {
             throw new IllegalArgumentException("이미 사용 중이거나 개설 대기 중인 길드 이름입니다.");
         }
+    }
+
+    private boolean activeGuildNameExists(String guildName) {
+        return guildRepository.findByName(guildName)
+                .filter(this::hasApprovedMaster)
+                .isPresent();
+    }
+
+    private boolean hasApprovedMaster(Guild guild) {
+        return guildMemberRepository.existsByGuildAndRoleAndStatus(
+                guild,
+                GuildMemberRole.MASTER,
+                GuildMemberStatus.APPROVED
+        );
+    }
+
+    private void releaseInactiveGuildName(String guildName) {
+        guildRepository.findByName(guildName)
+                .filter(guild -> !hasApprovedMaster(guild))
+                .ifPresent(guild -> {
+                    guild.setName(buildDisbandedGuildName(guild));
+                    guildRepository.flush();
+                });
+    }
+
+    private String buildDisbandedGuildName(Guild guild) {
+        String suffix = "__closed_" + guild.getId();
+        int maxBaseLength = Math.max(1, 50 - suffix.length());
+        String baseName = guild.getName().length() > maxBaseLength
+                ? guild.getName().substring(0, maxBaseLength)
+                : guild.getName();
+        return baseName + suffix;
     }
 
     private String normalizeRequired(String value, String fieldName) {

@@ -8,5 +8,7 @@ public interface UserNicknameHistoryRepository extends JpaRepository<UserNicknam
 
     boolean existsByUser(User user);
 
+    long countByUserAndChangeTypeNot(User user, String changeType);
+
     List<UserNicknameHistory> findAllByUserOrderByIdDesc(User user);
 }

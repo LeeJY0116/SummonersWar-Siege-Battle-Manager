@@ -1,15 +1,19 @@
 package com.sbm.siegebackend.domain.guild;
 
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberResponse;
+import com.sbm.siegebackend.domain.guild.dto.GuildMemberRoleUpdateRequest;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberHistoryResponse;
 import com.sbm.siegebackend.domain.guild.dto.GuildResponse;
 import com.sbm.siegebackend.domain.guild.dto.UserNicknameHistoryResponse;
 import com.sbm.siegebackend.global.api.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,6 +32,12 @@ public class AdminGuildController {
     public ResponseEntity<ApiResponse<List<GuildResponse>>> getAdminGuilds(Authentication authentication) {
         String loginId = (String) authentication.getPrincipal();
         return ResponseEntity.ok(ApiResponse.success(guildService.getAdminGuilds(loginId)));
+    }
+
+    @GetMapping("/members")
+    public ResponseEntity<ApiResponse<List<GuildMemberResponse>>> getAdminAllMembers(Authentication authentication) {
+        String loginId = (String) authentication.getPrincipal();
+        return ResponseEntity.ok(ApiResponse.success(guildService.getAdminAllMembers(loginId)));
     }
 
     @GetMapping("/{guildId}/members")
@@ -59,5 +69,36 @@ public class AdminGuildController {
         return ResponseEntity.ok(ApiResponse.success(
                 guildService.getAdminNicknameHistories(loginId, guildMemberId)
         ));
+    }
+
+    @DeleteMapping("/members/{guildMemberId}/membership")
+    public ResponseEntity<ApiResponse<Void>> forceLeaveAdminMember(
+            Authentication authentication,
+            @PathVariable Long guildMemberId
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        guildService.forceLeaveAdminMember(loginId, guildMemberId);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @PatchMapping("/members/{guildMemberId}/role")
+    public ResponseEntity<ApiResponse<Void>> changeAdminMemberRole(
+            Authentication authentication,
+            @PathVariable Long guildMemberId,
+            @RequestBody GuildMemberRoleUpdateRequest request
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        guildService.changeAdminMemberRole(loginId, guildMemberId, request);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @DeleteMapping("/{guildId}")
+    public ResponseEntity<ApiResponse<Void>> disbandAdminGuild(
+            Authentication authentication,
+            @PathVariable Long guildId
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        guildService.disbandAdminGuild(loginId, guildId);
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

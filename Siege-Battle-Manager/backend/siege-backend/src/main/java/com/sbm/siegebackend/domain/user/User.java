@@ -36,6 +36,11 @@ public class User {
 
     private LocalDateTime lastLoginAt;
 
+    @Column(length = 100)
+    private String lastLoginIp;
+
+    private LocalDateTime deletedAt;
+
     protected User() {}
 
     public static User create(String loginId,
@@ -101,6 +106,18 @@ public class User {
         return lastLoginAt;
     }
 
+    public String getLastLoginIp() {
+        return lastLoginIp;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
+
     // Setter
 
     public void setEmail(String email) {
@@ -125,6 +142,21 @@ public class User {
 
     public void markLoggedIn() {
         this.lastLoginAt = LocalDateTime.now();
+    }
+
+    public void markLoggedIn(String loginIp) {
+        this.lastLoginAt = LocalDateTime.now();
+        this.lastLoginIp = loginIp;
+    }
+
+    public void anonymizeForAdminDeletion() {
+        String marker = "deleted_" + this.id;
+        this.loginId = marker;
+        this.email = marker + "@deleted.local";
+        this.nickname = marker;
+        this.passwordHash = marker;
+        this.lastLoginIp = null;
+        this.deletedAt = LocalDateTime.now();
     }
 
 }

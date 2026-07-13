@@ -52,11 +52,8 @@ export default function HeaderBar({
         </div>
 
         <div className="flex flex-wrap items-center justify-start gap-2 md:justify-end">
-          <div className="text-xs font-semibold text-[#c8a96a]">
-            길드:{" "}
-            {guild
-              ? `${guild.name} | 마스터: ${guild.masterNickname} | 내 닉네임: ${currentNickname || "-"} | 인원: ${guild.memberCount}`
-              : "없음"}
+          <div className="text-sm font-semibold text-[#d7be80]">
+            닉네임 {currentNickname || "-"}
           </div>
 
           {isAdmin && (

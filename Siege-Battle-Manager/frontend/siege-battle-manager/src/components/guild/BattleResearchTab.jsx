@@ -4,6 +4,8 @@ import {
   fetchBattleResearchPostDetail,
   createBattleResearchPost,
   createBattleResearchComment,
+  deleteBattleResearchPost,
+  deleteBattleResearchComment,
 } from "../../lib/battleResearch.js";
 import DeckMonsterSlot from "./DeckMonsterSlot.jsx";
 import DefenseDeckFilterBar from "./DefenseDeckFilterBar.jsx";
@@ -18,7 +20,7 @@ const POST_CONTENT_MAX_LENGTH = 3000;
 const COMMENT_CONTENT_MAX_LENGTH = 1000;
 const CREATE_COOLDOWN_MS = 30_000;
 
-export default function BattleResearchTab({ monsters = []}) {
+export default function BattleResearchTab({ monsters = [], currentUserId = null, currentGuildRole = null }) {
   const [posts, setPosts] = useState([]);
   const [postPage, setPostPage] = useState(0);
   const [postPageInfo, setPostPageInfo] = useState({
@@ -51,6 +53,7 @@ export default function BattleResearchTab({ monsters = []}) {
   const [monsterFilterKeyword, setMonsterFilterKeyword] = useState("");
   const [monsterFilterCodes, setMonsterFilterCodes] = useState([]);
   const [fourStarDeckOnly, setFourStarDeckOnly] = useState(false);
+  const isGuildMaster = currentGuildRole === "MASTER";
 
 
   const selectedMonsters = selectedMonsterCodes.map((code) =>
@@ -442,6 +445,49 @@ async function handleCreateComment(postId) {
   }
 }
 
+async function handleDeletePost(postId) {
+  const confirmed = window.confirm("전투 연구 글을 삭제할까요? 댓글도 함께 삭제됩니다.");
+  if (!confirmed) return;
+
+  try {
+    setLoading(true);
+    await deleteBattleResearchPost(postId);
+    setOpenedPostId((prev) => (prev === postId ? null : prev));
+    setDetailMap((prev) => {
+      const next = { ...prev };
+      delete next[postId];
+      return next;
+    });
+    await loadPosts(postPage);
+  } catch (e) {
+    console.error(e);
+    alert(e.message || "전투 연구 삭제 실패");
+  } finally {
+    setLoading(false);
+  }
+}
+
+async function handleDeleteComment(postId, commentId) {
+  const confirmed = window.confirm("댓글을 삭제할까요?");
+  if (!confirmed) return;
+
+  try {
+    setLoading(true);
+    await deleteBattleResearchComment(commentId);
+    await loadDetail(postId, commentPageMap[postId] ?? 0);
+    await loadPosts(postPage);
+  } catch (e) {
+    console.error(e);
+    alert(e.message || "댓글 삭제 실패");
+  } finally {
+    setLoading(false);
+  }
+}
+
+function canDeleteResearchItem(item) {
+  return isGuildMaster || (currentUserId != null && String(item?.authorUserId) === String(currentUserId));
+}
+
   useEffect(() => {
     loadPosts(0);
   }, [leaderEffectFilter, monsterFilterCodes, fourStarDeckOnly]);
@@ -654,6 +700,16 @@ async function handleCreateComment(postId) {
                     <span className="text-xs font-semibold text-[#c8a96a]">
                       댓글 {post.commentCount ?? 0}개
                     </span>
+                    {canDeleteResearchItem(post) && (
+                      <button
+                        type="button"
+                        onClick={() => handleDeletePost(postId)}
+                        disabled={loading}
+                        className="rounded-xl border border-red-300/60 bg-[#2b1712] px-3 py-1 text-sm font-semibold text-red-100 hover:border-red-200 disabled:opacity-50"
+                      >
+                        삭제
+                      </button>
+                    )}
                     <button
                       onClick={() => toggleDetail(postId)}
                       className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
@@ -701,8 +757,22 @@ async function handleCreateComment(postId) {
                             key={comment.commentId ?? comment.id}
                             className="rounded-xl border border-[#745320] bg-[#211813] px-3 py-2 text-sm text-[#f6deb0]"
                           >
-                            <div className="font-semibold">
-                              {comment.authorName ?? comment.writerName ?? "-"}
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="font-semibold">
+                                {comment.authorName ?? comment.writerName ?? "-"}
+                              </div>
+                              {canDeleteResearchItem(comment) && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleDeleteComment(postId, comment.commentId ?? comment.id)
+                                  }
+                                  disabled={loading}
+                                  className="rounded-lg border border-red-300/60 bg-[#2b1712] px-2 py-0.5 text-xs font-semibold text-red-100 hover:border-red-200 disabled:opacity-50"
+                                >
+                                  삭제
+                                </button>
+                              )}
                             </div>
                             <div className="mt-1 text-xs font-semibold text-[#d7be80]">
                               리더 효과: {getLeaderEffectTextFromItems(comment.attackMonsters ?? [])}

@@ -20,6 +20,9 @@ public class GuildMemberResponse {
     private boolean realUser;
     private String currentGuildName;
     private LocalDateTime lastLoginAt;
+    private String lastLoginIp;
+    private long guildHistoryCount;
+    private long nicknameHistoryCount;
 
     public GuildMemberResponse(Long id,
                                Long userId,
@@ -60,6 +63,24 @@ public class GuildMemberResponse {
                                boolean realUser,
                                String currentGuildName,
                                LocalDateTime lastLoginAt) {
+        this(id, userId, loginId, email, nickname, displayName, role, type, status, realUser, currentGuildName, lastLoginAt, null, 0, 0);
+    }
+
+    public GuildMemberResponse(Long id,
+                               Long userId,
+                               String loginId,
+                               String email,
+                               String nickname,
+                               String displayName,
+                               GuildMemberRole role,
+                               GuildMemberType type,
+                               GuildMemberStatus status,
+                               boolean realUser,
+                               String currentGuildName,
+                               LocalDateTime lastLoginAt,
+                               String lastLoginIp,
+                               long guildHistoryCount,
+                               long nicknameHistoryCount) {
         this.id = id;
         this.userId = userId;
         this.loginId = loginId;
@@ -72,6 +93,9 @@ public class GuildMemberResponse {
         this.realUser = realUser;
         this.currentGuildName = currentGuildName;
         this.lastLoginAt = lastLoginAt;
+        this.lastLoginIp = lastLoginIp;
+        this.guildHistoryCount = guildHistoryCount;
+        this.nicknameHistoryCount = nicknameHistoryCount;
     }
 
     public Long getId() {
@@ -120,5 +144,17 @@ public class GuildMemberResponse {
 
     public LocalDateTime getLastLoginAt() {
         return lastLoginAt;
+    }
+
+    public String getLastLoginIp() {
+        return lastLoginIp;
+    }
+
+    public long getGuildHistoryCount() {
+        return guildHistoryCount;
+    }
+
+    public long getNicknameHistoryCount() {
+        return nicknameHistoryCount;
     }
 }

@@ -18,6 +18,8 @@ public interface GuildMemberRepository extends JpaRepository<GuildMember, Long> 
 
     int countByGuildAndStatus(Guild guild, GuildMemberStatus status);
 
+    long countByUser(User user);
+
     // 길드 내 특정 역할 수 (MASTER / SUB_MASTER / MEMBER)
     int countByGuildAndRole(Guild guild, GuildMemberRole role);
 
