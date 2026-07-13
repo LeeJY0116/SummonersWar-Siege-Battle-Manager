@@ -243,7 +243,9 @@ public class GuildService {
                 member.getRole(),
                 member.getType(),
                 member.getStatus(),
-                member.isRealUser()
+                member.isRealUser(),
+                null,
+                user == null ? null : user.getLastLoginAt()
         );
     }
 
@@ -262,7 +264,8 @@ public class GuildService {
                 member.getType(),
                 member.getStatus(),
                 member.isRealUser(),
-                currentGuildName
+                currentGuildName,
+                user == null ? null : user.getLastLoginAt()
         );
     }
 

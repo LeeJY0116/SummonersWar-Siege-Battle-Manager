@@ -19,6 +19,11 @@ const ROLE_OPTIONS = [
   { value: "SUB_MASTER", label: "부길드장" },
 ];
 
+function formatLastLoginAt(value) {
+  if (!value) return "접속 기록 없음";
+  return new Date(value).toLocaleString();
+}
+
 export default function GuildMemberManagementTab({ members, currentGuildRole, onRefreshMembers }) {
   const [workingId, setWorkingId] = useState(null);
   const [error, setError] = useState("");
@@ -133,7 +138,7 @@ export default function GuildMemberManagementTab({ members, currentGuildRole, on
               <tr>
                 <th className="px-4 py-3">닉네임 / ID</th>
                 <th className="px-4 py-3">등급</th>
-                <th className="px-4 py-3">상태</th>
+                <th className="px-4 py-3">최근 접속일</th>
                 {canManageMemberRoles && (
                   <>
                     <th className="px-4 py-3">등급 변경</th>
@@ -168,7 +173,9 @@ export default function GuildMemberManagementTab({ members, currentGuildRole, on
                           {ROLE_LABELS[member.role] ?? member.role}
                         </span>
                       </td>
-                      <td className="px-4 py-4 text-gray-600">{member.status ?? "APPROVED"}</td>
+                      <td className="px-4 py-4 text-gray-600">
+                        {formatLastLoginAt(member.lastLoginAt)}
+                      </td>
                       {canManageMemberRoles && (
                         <>
                           <td className="px-4 py-4">

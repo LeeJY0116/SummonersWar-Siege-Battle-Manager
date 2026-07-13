@@ -230,7 +230,9 @@ public class GuildMemberService {
                 member.getRole(),
                 member.getType(),
                 member.getStatus(),
-                realUser
+                realUser,
+                null,
+                member.getUser() == null ? null : member.getUser().getLastLoginAt()
         );
     }
 

@@ -113,6 +113,8 @@ public class UserService {
             user.setLoginId(loginId);
         }
 
+        user.markLoggedIn();
+
         String token = jwtTokenProvider.createToken(
                 user.getId(),
                 user.getLoginId(),

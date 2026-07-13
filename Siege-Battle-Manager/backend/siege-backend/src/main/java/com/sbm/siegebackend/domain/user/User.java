@@ -34,6 +34,8 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    private LocalDateTime lastLoginAt;
+
     protected User() {}
 
     public static User create(String loginId,
@@ -95,6 +97,10 @@ public class User {
         return updatedAt;
     }
 
+    public LocalDateTime getLastLoginAt() {
+        return lastLoginAt;
+    }
+
     // Setter
 
     public void setEmail(String email) {
@@ -115,6 +121,10 @@ public class User {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public void markLoggedIn() {
+        this.lastLoginAt = LocalDateTime.now();
     }
 
 }

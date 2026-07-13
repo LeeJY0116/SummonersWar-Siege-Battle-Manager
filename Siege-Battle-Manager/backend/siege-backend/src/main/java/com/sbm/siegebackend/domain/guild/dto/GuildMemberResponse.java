@@ -4,6 +4,8 @@ import com.sbm.siegebackend.domain.guild.GuildMemberRole;
 import com.sbm.siegebackend.domain.guild.GuildMemberStatus;
 import com.sbm.siegebackend.domain.guild.GuildMemberType;
 
+import java.time.LocalDateTime;
+
 public class GuildMemberResponse {
 
     private Long id;
@@ -17,6 +19,7 @@ public class GuildMemberResponse {
     private GuildMemberStatus status;
     private boolean realUser;
     private String currentGuildName;
+    private LocalDateTime lastLoginAt;
 
     public GuildMemberResponse(Long id,
                                Long userId,
@@ -28,7 +31,7 @@ public class GuildMemberResponse {
                                GuildMemberType type,
                                GuildMemberStatus status,
                                boolean realUser) {
-        this(id, userId, loginId, email, nickname, displayName, role, type, status, realUser, null);
+        this(id, userId, loginId, email, nickname, displayName, role, type, status, realUser, null, null);
     }
 
     public GuildMemberResponse(Long id,
@@ -42,6 +45,21 @@ public class GuildMemberResponse {
                                GuildMemberStatus status,
                                boolean realUser,
                                String currentGuildName) {
+        this(id, userId, loginId, email, nickname, displayName, role, type, status, realUser, currentGuildName, null);
+    }
+
+    public GuildMemberResponse(Long id,
+                               Long userId,
+                               String loginId,
+                               String email,
+                               String nickname,
+                               String displayName,
+                               GuildMemberRole role,
+                               GuildMemberType type,
+                               GuildMemberStatus status,
+                               boolean realUser,
+                               String currentGuildName,
+                               LocalDateTime lastLoginAt) {
         this.id = id;
         this.userId = userId;
         this.loginId = loginId;
@@ -53,6 +71,7 @@ public class GuildMemberResponse {
         this.status = status;
         this.realUser = realUser;
         this.currentGuildName = currentGuildName;
+        this.lastLoginAt = lastLoginAt;
     }
 
     public Long getId() {
@@ -97,5 +116,9 @@ public class GuildMemberResponse {
 
     public String getCurrentGuildName() {
         return currentGuildName;
+    }
+
+    public LocalDateTime getLastLoginAt() {
+        return lastLoginAt;
     }
 }
