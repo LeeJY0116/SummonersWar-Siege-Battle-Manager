@@ -19,9 +19,24 @@ const ROLE_OPTIONS = [
   { value: "SUB_MASTER", label: "부길드장" },
 ];
 
+const ROLE_RANK = {
+  MASTER: 3,
+  SUB_MASTER: 2,
+  MEMBER: 1,
+};
+
 function formatLastLoginAt(value) {
   if (!value) return "접속 기록 없음";
   return new Date(value).toLocaleString();
+}
+
+function compareMembers(a, b) {
+  const roleDiff = (ROLE_RANK[b.role] ?? 0) - (ROLE_RANK[a.role] ?? 0);
+  if (roleDiff !== 0) return roleDiff;
+
+  const aLoginAt = a.lastLoginAt ? new Date(a.lastLoginAt).getTime() : 0;
+  const bLoginAt = b.lastLoginAt ? new Date(b.lastLoginAt).getTime() : 0;
+  return bLoginAt - aLoginAt;
 }
 
 export default function GuildMemberManagementTab({ members, currentGuildRole, onRefreshMembers }) {
@@ -29,7 +44,7 @@ export default function GuildMemberManagementTab({ members, currentGuildRole, on
   const [error, setError] = useState("");
   const [bans, setBans] = useState([]);
   const [banError, setBanError] = useState("");
-  const realMembers = (members ?? []).filter((member) => member.realUser);
+  const realMembers = (members ?? []).filter((member) => member.realUser).sort(compareMembers);
   const canManageMemberRoles = currentGuildRole === "MASTER";
 
   useEffect(() => {
@@ -122,7 +137,7 @@ export default function GuildMemberManagementTab({ members, currentGuildRole, on
         <div className="flex items-center gap-3 border-b border-gray-100 px-4 py-4">
           <h3 className="text-lg font-bold text-gray-950">길드 멤버</h3>
           <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-700">
-            활성 {realMembers.length}명
+            {realMembers.length}/35
           </span>
         </div>
 
