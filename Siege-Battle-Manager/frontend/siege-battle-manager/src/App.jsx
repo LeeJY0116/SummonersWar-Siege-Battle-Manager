@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import HeaderBar from "./components/layout/HeaderBar.jsx";
 import FooterBar from "./components/layout/FooterBar.jsx";
+import TabGuideCard from "./components/layout/TabGuideCard.jsx";
 import ManagerTab from "./components/manager/ManagerTab.jsx";
 import MonsterReviewTab from "./components/monsters/MonsterReviewTab.jsx";
 import SiegeBattleTab from "./components/siege/SiegeBattleTab.jsx";
@@ -16,6 +17,50 @@ import { formatLeaderEffectText } from "./lib/monsterLabels.js";
 
 
 const STORAGE_KEY = "siege-battle-manager@v1";
+
+const TAB_GUIDES = {
+  "guild:inventory": {
+    title: "인벤토리",
+    description: "길드원별 보유 몬스터 수량을 관리합니다.",
+    items: ["속성과 태생으로 필터링 및 검색 기능 사용 가능", "인벤토리에 존재하는 몬스터로 방덱을 생성할 수 있습니다.", "길드장 및 부길드장은 길드원의 인벤토리를 임의로 수정 가능합니다."],
+  },
+  "guild:battleResearch": {
+    title: "전투 연구",
+    description: "방덱 조합과 전투 연구 산출물을 게시글과 댓글로 남깁니다.",
+    items: ["리더 효과와 포함 몬스터로 검색", "상세 보기를 누르면 댓글을 작성할 수 있습니다."],
+  },
+  "guild:defenseDeck": {
+    title: "방덱",
+    description: "길드원 인벤토리를 기준으로 실제 보유 가능한 방덱을 생성합니다.",
+    items: ["길드장과 부길드장은 길드원 방덱 관리", "동일 방덱은 묶어서 보유 수 표시"],
+  },
+  "guild:ownerless": {
+    title: "길드 방덱",
+    description: "소유자 없이 길드 공용으로 참고할 방덱을 정리합니다.",
+    items: ["길드 방덱을 생성하고 어떤 길드원이 생성 가능한지 확인할 수 있습니다.", "생성 가능한 길드원 수 확인"],
+  },
+  "guild:members": {
+    title: "회원 관리",
+    description: "가입 요청, 길드원 등급, 더미 계정을 관리합니다.",
+    items: ["길드장 및 부길드장만 접근 가능","가입 승인과 거절 처리", "더미 계정을 만들어 길드 방덱 갯수 판단에 사용합니다."],
+  },
+  myInfo: {
+    title: "내 정보",
+    description: "내 계정 정보와 소속 길드 상태를 확인합니다.",
+    items: ["닉네임 변경 요청", "길드 탈퇴와 가입 상태 확인"],
+  },
+  review: {
+    title: "몬스터 검수",
+    description: "관리자용 몬스터 한글명, 별칭, 노출 상태를 검수합니다.",
+    items: ["콜라보와 오리지널 구분", "검색용 별칭 관리"],
+  },
+};
+
+const DEFAULT_TAB_GUIDE = {
+  title: "길드",
+  description: "길드 전투 준비에 필요한 정보를 한 곳에서 관리합니다.",
+  items: ["인벤토리, 방덱, 전투 연구 연결", "권한에 따라 관리 범위 제한"],
+};
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
@@ -116,6 +161,7 @@ async function loadBackendMonsters() {
 
 export default function SiegeBattleManager() {
   const [activeTab, setActiveTab] = useState("guild");
+  const [guildSubTab, setGuildSubTab] = useState("inventory");
   const [monsters, setMonsters] = useState([]);
   const [trios, setTrios] = useState([]);
   const [guild, setGuild] = useState(null);
@@ -184,6 +230,8 @@ export default function SiegeBattleManager() {
     currentGuildStatus === "APPROVED" &&
     (currentGuildRole === "MASTER" || currentGuildRole === "SUB_MASTER");
   const permissionLoaded = Boolean(me) && (!guild || members.length > 0);
+  const guideKey = activeTab === "guild" ? `guild:${guildSubTab}` : activeTab;
+  const guide = TAB_GUIDES[guideKey] ?? DEFAULT_TAB_GUIDE;
 
   useEffect(() => {
     if (permissionLoaded && !isAdmin && activeTab === "review") {
@@ -343,7 +391,12 @@ export default function SiegeBattleManager() {
 
   return (
     <div className="min-h-screen w-full bg-gray-50 text-gray-900">
-      <div className="max-w-6xl mx-auto p-6 md:p-8">
+      <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-5 p-6 md:p-8 xl:grid-cols-[280px_minmax(0,72rem)] xl:items-start">
+        <div className="xl:sticky xl:top-8">
+          <TabGuideCard {...guide} />
+        </div>
+
+        <div className="min-w-0">
         <HeaderBar
           guild={guild}
           members={members}
@@ -360,7 +413,8 @@ export default function SiegeBattleManager() {
         {activeTab === "manager" ? (
           <ManagerTab
             monsters={monsters}
-            trios={trios}
+            trios={trios}
+
             onCreateTrio={handleCreateTrio}
             onDeleteTrio={handleDeleteTrio}
             onChangeCount={handleChangeCount}
@@ -391,10 +445,12 @@ export default function SiegeBattleManager() {
             currentGuildRole={currentGuildRole}
             currentGuildMemberId={currentGuildMember?.id ?? null}
             onRefreshMembers={refreshMyGuildMembers}
+            onSubTabChange={setGuildSubTab}
           />
         )}
 
         <FooterBar />
+        </div>
       </div>
     </div>
   );

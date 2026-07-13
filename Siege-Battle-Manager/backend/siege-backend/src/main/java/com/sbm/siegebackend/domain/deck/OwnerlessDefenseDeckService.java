@@ -84,7 +84,7 @@ public class OwnerlessDefenseDeckService {
             throw new IllegalStateException("다른 길드의 방덱은 조회할 수 없습니다.");
         }
 
-        List<GuildMember> members = guildMemberRepository.findByGuild(actor.getGuild());
+        List<GuildMember> members = getApprovedMembers(actor.getGuild());
         List<Monster> monsters = deck.getMonsters();
 
         // ✅ 가능한 길드원 계산
@@ -143,8 +143,7 @@ public class OwnerlessDefenseDeckService {
     private OwnerlessDefenseDeckDetailResponse toDetailResponse(
             OwnerlessDefenseDeck deck
     ) {
-        List<GuildMember> members =
-                guildMemberRepository.findByGuild(deck.getGuild());
+        List<GuildMember> members = getApprovedMembers(deck.getGuild());
 
         List<Monster> monsters = deck.getMonsters();
 
@@ -221,6 +220,12 @@ public class OwnerlessDefenseDeckService {
         }
 
         return minCount == Integer.MAX_VALUE ? 0 : minCount;
+    }
+
+    private List<GuildMember> getApprovedMembers(Guild guild) {
+        return guildMemberRepository.findByGuild(guild).stream()
+                .filter(member -> member.getStatus() == GuildMemberStatus.APPROVED)
+                .toList();
     }
 
     public void delete(String email, Long deckId) {

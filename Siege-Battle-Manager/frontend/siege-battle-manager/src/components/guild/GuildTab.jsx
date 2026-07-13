@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import InventoryTab from "./InventoryTab.jsx";
 import DefenseDeckTab from "./DefenseDeckTab.jsx";
 import OwnerlessDefenseDeckTab from "./OwnerlessDefenseDeckTab.jsx";
@@ -13,9 +13,19 @@ export default function GuildTab({
   currentGuildRole = null,
   currentGuildMemberId = null,
   onRefreshMembers,
+  onSubTabChange,
 }) {
   const [subTab, setSubTab] = useState("inventory");
   const canUse = Boolean(guild);
+
+  useEffect(() => {
+    onSubTabChange?.(subTab);
+  }, [onSubTabChange, subTab]);
+
+  function changeSubTab(nextSubTab) {
+    setSubTab(nextSubTab);
+    onSubTabChange?.(nextSubTab);
+  }
 
   const header = useMemo(() => {
     if (!guild) return "가입된 길드가 없습니다.";
@@ -31,26 +41,26 @@ export default function GuildTab({
         </div>
 
         <div className="inline-flex gap-1 rounded-2xl bg-gray-100 p-1">
-          <SubTabButton active={subTab === "inventory"} onClick={() => setSubTab("inventory")}>
+          <SubTabButton active={subTab === "inventory"} onClick={() => changeSubTab("inventory")}>
             인벤토리
           </SubTabButton>
           <SubTabButton
             active={subTab === "battleResearch"}
-            onClick={() => setSubTab("battleResearch")}
+            onClick={() => changeSubTab("battleResearch")}
           >
             전투 연구
           </SubTabButton>
           <SubTabButton
             active={subTab === "defenseDeck"}
-            onClick={() => setSubTab("defenseDeck")}
+            onClick={() => changeSubTab("defenseDeck")}
           >
             방덱
           </SubTabButton>
-          <SubTabButton active={subTab === "ownerless"} onClick={() => setSubTab("ownerless")}>
+          <SubTabButton active={subTab === "ownerless"} onClick={() => changeSubTab("ownerless")}>
             길드 방덱
           </SubTabButton>
           {canManageGuild && (
-            <SubTabButton active={subTab === "members"} onClick={() => setSubTab("members")}>
+            <SubTabButton active={subTab === "members"} onClick={() => changeSubTab("members")}>
               회원 관리
             </SubTabButton>
           )}
