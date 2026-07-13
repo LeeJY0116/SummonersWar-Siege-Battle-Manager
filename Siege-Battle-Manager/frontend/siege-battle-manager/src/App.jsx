@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import HeaderBar from "./components/layout/HeaderBar.jsx";
 import FooterBar from "./components/layout/FooterBar.jsx";
 import TabGuideCard from "./components/layout/TabGuideCard.jsx";
+import HelpModal from "./components/layout/HelpModal.jsx";
 import ManagerTab from "./components/manager/ManagerTab.jsx";
 import MonsterReviewTab from "./components/monsters/MonsterReviewTab.jsx";
 import SiegeBattleTab from "./components/siege/SiegeBattleTab.jsx";
@@ -170,6 +171,7 @@ export default function SiegeBattleManager() {
   const [me, setMe] = useState(null);
   const [syncingMonsters, setSyncingMonsters] = useState(false);
   const [applyingLocalization, setApplyingLocalization] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   useEffect(() => {
     document.title = "SW 점령전";
@@ -408,6 +410,7 @@ export default function SiegeBattleManager() {
           syncingMonsters={syncingMonsters}
           onApplyMonsterLocalization={handleApplyMonsterLocalization}
           applyingLocalization={applyingLocalization}
+          onOpenHelp={() => setHelpOpen(true)}
           />
 
         {activeTab === "manager" ? (
@@ -452,6 +455,7 @@ export default function SiegeBattleManager() {
         <FooterBar />
         </div>
       </div>
+      <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
   );
 }

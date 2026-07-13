@@ -16,6 +16,7 @@ export default function HeaderBar({
   onApplyMonsterLocalization,
   applyingLocalization = false,
   currentNickname = "",
+  onOpenHelp,
 }) {
   const tabs = isAdmin
     ? TABS
@@ -79,6 +80,14 @@ export default function HeaderBar({
               {applyingLocalization ? "Applying..." : "Apply Names"}
             </button>
           )}
+
+          <button
+            type="button"
+            onClick={onOpenHelp}
+            className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-2 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
+          >
+            도움말
+          </button>
 
           <button
             type="button"
