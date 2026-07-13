@@ -71,7 +71,7 @@ export default function NicknameChangeRequestPanel({ currentNickname = "" }) {
   }
 
   return (
-    <section className="mb-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+    <section className="rounded-xl border border-gray-200 bg-gray-50 p-4">
       <div className="mb-3">
         <h3 className="text-sm font-bold text-gray-950">닉네임 변경 요청</h3>
         <p className="mt-1 text-xs text-gray-500">

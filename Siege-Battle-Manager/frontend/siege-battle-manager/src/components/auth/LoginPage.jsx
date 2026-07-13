@@ -143,7 +143,7 @@ export default function LoginPage() {
         <section className="flex min-h-[560px] flex-col justify-between rounded-lg border border-slate-800 bg-slate-950 p-8 text-white shadow-sm">
           <div className="space-y-6">
             <div className="inline-flex rounded-full border border-white/20 px-3 py-1 text-xs font-semibold text-slate-200">
-              Siege Battle Manager
+              서머너즈워 공방덱 연구사이트
             </div>
             <div className="space-y-3">
               <p className="text-sm font-semibold text-sky-200">서머너즈워</p>

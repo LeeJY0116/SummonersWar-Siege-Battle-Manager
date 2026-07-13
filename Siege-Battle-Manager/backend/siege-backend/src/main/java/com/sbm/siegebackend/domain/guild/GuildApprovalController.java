@@ -1,6 +1,7 @@
 package com.sbm.siegebackend.domain.guild;
 
 import com.sbm.siegebackend.domain.guild.dto.GuildJoinRequestResponse;
+import com.sbm.siegebackend.domain.guild.dto.ExistingGuildCreateRequestCreateRequest;
 import com.sbm.siegebackend.domain.guild.dto.GuildJoinRequestCreateRequest;
 import com.sbm.siegebackend.global.api.ApiResponse;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +53,26 @@ public class GuildApprovalController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
+    @PostMapping("/api/admin/guild-create-requests/{requestId}/approve")
+    public ResponseEntity<ApiResponse<Void>> approveExistingMasterRequest(
+            Authentication authentication,
+            @PathVariable Long requestId
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        guildApprovalService.approveExistingMasterRequest(loginId, requestId);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @PostMapping("/api/admin/guild-create-requests/{requestId}/reject")
+    public ResponseEntity<ApiResponse<Void>> rejectExistingMasterRequest(
+            Authentication authentication,
+            @PathVariable Long requestId
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        guildApprovalService.rejectExistingMasterRequest(loginId, requestId);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
     @GetMapping("/api/guilds/me/join-requests")
     public ResponseEntity<ApiResponse<List<GuildJoinRequestResponse>>> getPendingMemberRequests(
             Authentication authentication
@@ -69,6 +90,20 @@ public class GuildApprovalController {
     ) {
         String loginId = (String) authentication.getPrincipal();
         guildApprovalService.requestExistingAccountJoin(loginId, request.getGuildName());
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    @PostMapping("/api/guilds/create-requests")
+    public ResponseEntity<ApiResponse<Void>> requestExistingAccountGuildCreate(
+            Authentication authentication,
+            @org.springframework.web.bind.annotation.RequestBody ExistingGuildCreateRequestCreateRequest request
+    ) {
+        String loginId = (String) authentication.getPrincipal();
+        guildApprovalService.requestExistingAccountGuildCreate(
+                loginId,
+                request.getGuildName(),
+                request.getGuildNameConfirm()
+        );
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 

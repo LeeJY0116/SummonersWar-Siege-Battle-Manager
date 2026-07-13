@@ -4,10 +4,11 @@ import FooterBar from "./components/layout/FooterBar.jsx";
 import ManagerTab from "./components/manager/ManagerTab.jsx";
 import MonsterReviewTab from "./components/monsters/MonsterReviewTab.jsx";
 import SiegeBattleTab from "./components/siege/SiegeBattleTab.jsx";
-import { fetchMyGuild, fetchMyGuildMembers } from "./lib/guild.js";
+import { fetchMyGuild, fetchMyGuildMembers, leaveMyGuild } from "./lib/guild.js";
 import LoginPage from "./components/auth/LoginPage.jsx";
 import { fetchMe } from "./lib/auth.js";
 import GuildTab from "./components/guild/GuildTab.jsx";
+import MyInfoTab from "./components/guild/MyInfoTab.jsx";
 import GuildJoinRequestPage from "./components/guild/GuildJoinRequestPage.jsx";
 import { apiFetch } from "./lib/api.js";
 import { applyMonsterLocalization, syncSwarfarmMonsters } from "./lib/monsterSync.js";
@@ -125,7 +126,7 @@ export default function SiegeBattleManager() {
   const [applyingLocalization, setApplyingLocalization] = useState(false);
 
   useEffect(() => {
-    document.title = "Siege-Battle-Manager";
+    document.title = "서머너즈워 공방덱 연구사이트";
   }, []);
 
   const token = localStorage.getItem("accessToken");
@@ -266,6 +267,13 @@ export default function SiegeBattleManager() {
     }
   }
 
+  async function handleLeaveGuild() {
+    await leaveMyGuild();
+    setGuild(null);
+    setMembers([]);
+    setActiveTab("guild");
+  }
+
 
   // ------- Monster / trio CRUD logic -------
 
@@ -366,6 +374,14 @@ export default function SiegeBattleManager() {
           />
         ) : activeTab === "review" ? (
           <MonsterReviewTab />
+        ) : activeTab === "myInfo" ? (
+          <MyInfoTab
+            me={me}
+            guild={guild}
+            currentNickname={currentNickname}
+            currentGuildRole={currentGuildRole}
+            onLeaveGuild={handleLeaveGuild}
+          />
         ) : (
           <GuildTab
             guild={guild}
@@ -374,7 +390,6 @@ export default function SiegeBattleManager() {
             canManageGuild={canManageGuild}
             currentGuildRole={currentGuildRole}
             currentGuildMemberId={currentGuildMember?.id ?? null}
-            currentNickname={currentNickname}
             onRefreshMembers={refreshMyGuildMembers}
           />
         )}

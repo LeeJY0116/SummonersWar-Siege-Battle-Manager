@@ -5,14 +5,28 @@ export async function fetchPendingMasterRequests() {
   return body.data ?? [];
 }
 
-export async function approveMasterRequest(memberId) {
-  await apiFetch(`/admin/guild-join-requests/${memberId}/approve`, {
+export async function approveMasterRequest(request) {
+  const requestId = typeof request === "object" ? request.memberId : request;
+  const requestSource = typeof request === "object" ? request.requestSource : "SIGNUP";
+  const url =
+    requestSource === "ACCOUNT_MASTER"
+      ? `/admin/guild-create-requests/${requestId}/approve`
+      : `/admin/guild-join-requests/${requestId}/approve`;
+
+  await apiFetch(url, {
     method: "POST",
   });
 }
 
-export async function rejectMasterRequest(memberId) {
-  await apiFetch(`/admin/guild-join-requests/${memberId}/reject`, {
+export async function rejectMasterRequest(request) {
+  const requestId = typeof request === "object" ? request.memberId : request;
+  const requestSource = typeof request === "object" ? request.requestSource : "SIGNUP";
+  const url =
+    requestSource === "ACCOUNT_MASTER"
+      ? `/admin/guild-create-requests/${requestId}/reject`
+      : `/admin/guild-join-requests/${requestId}/reject`;
+
+  await apiFetch(url, {
     method: "POST",
   });
 }
@@ -54,6 +68,13 @@ export async function requestExistingAccountJoin(guildName) {
   await apiFetch("/guilds/join-requests", {
     method: "POST",
     body: JSON.stringify({ guildName }),
+  });
+}
+
+export async function requestExistingAccountGuildCreate(guildName, guildNameConfirm) {
+  await apiFetch("/guilds/create-requests", {
+    method: "POST",
+    body: JSON.stringify({ guildName, guildNameConfirm }),
   });
 }
 

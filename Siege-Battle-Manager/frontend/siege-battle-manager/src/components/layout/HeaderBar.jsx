@@ -2,6 +2,7 @@ import React from "react";
 
 const TABS = [
   { key: "guild", label: "길드" },
+  { key: "myInfo", label: "내 정보" },
   { key: "review", label: "몬스터 검수" },
 ];
 
@@ -24,10 +25,10 @@ export default function HeaderBar({
     <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight md:text-3xl">
-          Siege-Battle-Manager
+          서머너즈워 공방덱 연구사이트
         </h1>
         <p className="mt-1 text-sm text-gray-600">
-          점령전 조합과 길드 전투 기록을 관리합니다.
+          몬스터 조합과 길드 전투 기록을 관리합니다.
         </p>
       </div>
 

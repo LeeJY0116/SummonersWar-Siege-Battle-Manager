@@ -31,6 +31,12 @@ export async function fetchMyGuildMembers() {
   return res.data;
 }
 
+export async function leaveMyGuild() {
+  await apiFetch("/guilds/me/membership", {
+    method: "DELETE",
+  });
+}
+
 export async function updateGuildMemberRole(guildMemberId, role) {
   await apiFetch(`/guild-members/${guildMemberId}/role`, {
     method: "PATCH",

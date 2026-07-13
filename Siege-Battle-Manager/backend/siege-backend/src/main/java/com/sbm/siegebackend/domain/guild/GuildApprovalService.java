@@ -22,12 +22,14 @@ public class GuildApprovalService {
     private static final String MEMBER_SIGNUP = "member";
     private static final String REQUEST_SOURCE_SIGNUP = "SIGNUP";
     private static final String REQUEST_SOURCE_ACCOUNT = "ACCOUNT";
+    private static final String REQUEST_SOURCE_ACCOUNT_MASTER = "ACCOUNT_MASTER";
     private static final int MAX_GUILD_MEMBER_COUNT = 35;
 
     private final GuildRepository guildRepository;
     private final GuildMemberRepository guildMemberRepository;
     private final GuildMemberBanRepository guildMemberBanRepository;
     private final ExistingGuildJoinRequestRepository existingGuildJoinRequestRepository;
+    private final ExistingGuildCreateRequestRepository existingGuildCreateRequestRepository;
     private final SignupRequestRepository signupRequestRepository;
     private final UserRepository userRepository;
     private final UserService userService;
@@ -36,6 +38,7 @@ public class GuildApprovalService {
                                 GuildMemberRepository guildMemberRepository,
                                 GuildMemberBanRepository guildMemberBanRepository,
                                 ExistingGuildJoinRequestRepository existingGuildJoinRequestRepository,
+                                ExistingGuildCreateRequestRepository existingGuildCreateRequestRepository,
                                 SignupRequestRepository signupRequestRepository,
                                 UserRepository userRepository,
                                 UserService userService) {
@@ -43,6 +46,7 @@ public class GuildApprovalService {
         this.guildMemberRepository = guildMemberRepository;
         this.guildMemberBanRepository = guildMemberBanRepository;
         this.existingGuildJoinRequestRepository = existingGuildJoinRequestRepository;
+        this.existingGuildCreateRequestRepository = existingGuildCreateRequestRepository;
         this.signupRequestRepository = signupRequestRepository;
         this.userRepository = userRepository;
         this.userService = userService;
@@ -53,12 +57,23 @@ public class GuildApprovalService {
         User actor = userService.findByLoginIdOrThrow(loginId);
         validateAdmin(actor);
 
-        return signupRequestRepository.findAllBySignupTypeAndStatus(
+        List<GuildJoinRequestResponse> signupRequests = signupRequestRepository.findAllBySignupTypeAndStatus(
                         MASTER_SIGNUP,
                         GuildMemberStatus.PENDING
                 )
                 .stream()
                 .map(this::toResponse)
+                .toList();
+
+        List<GuildJoinRequestResponse> accountRequests = existingGuildCreateRequestRepository.findAllByStatus(
+                        GuildMemberStatus.PENDING
+                )
+                .stream()
+                .map(this::toResponse)
+                .toList();
+
+        return Stream.concat(signupRequests.stream(), accountRequests.stream())
+                .sorted((a, b) -> b.getRequestedAt().compareTo(a.getRequestedAt()))
                 .toList();
     }
 
@@ -107,10 +122,46 @@ public class GuildApprovalService {
         existingGuildJoinRequestRepository.save(ExistingGuildJoinRequest.create(guild, user));
     }
 
+    public void requestExistingAccountGuildCreate(String loginId, String guildName, String guildNameConfirm) {
+        User user = userService.findByLoginIdOrThrow(loginId);
+        String normalizedGuildName = normalizeRequired(guildName, "길드 이름");
+        String normalizedGuildNameConfirm = normalizeRequired(guildNameConfirm, "길드 이름 확인");
+
+        if (!normalizedGuildName.equals(normalizedGuildNameConfirm)) {
+            throw new IllegalArgumentException("길드 이름 확인이 일치하지 않습니다.");
+        }
+
+        if (guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED).isPresent()) {
+            throw new IllegalStateException("이미 가입된 길드가 있습니다.");
+        }
+
+        if (existingGuildJoinRequestRepository.existsByUserAndStatus(user, GuildMemberStatus.PENDING)
+                || existingGuildCreateRequestRepository.existsByUserAndStatus(user, GuildMemberStatus.PENDING)) {
+            throw new IllegalStateException("이미 처리 대기 중인 가입 또는 개설 요청이 있습니다.");
+        }
+
+        validateGuildNameCanBeRequested(normalizedGuildName);
+
+        existingGuildCreateRequestRepository.save(
+                ExistingGuildCreateRequest.create(user, normalizedGuildName)
+        );
+    }
+
     @Transactional(readOnly = true)
     public GuildJoinRequestResponse getMyPendingExistingJoinRequest(String loginId) {
         User user = userService.findByLoginIdOrThrow(loginId);
-        return existingGuildJoinRequestRepository.findFirstByUserAndStatusOrderByIdDesc(
+        GuildJoinRequestResponse joinRequest = existingGuildJoinRequestRepository.findFirstByUserAndStatusOrderByIdDesc(
+                        user,
+                        GuildMemberStatus.PENDING
+                )
+                .map(this::toResponse)
+                .orElse(null);
+
+        if (joinRequest != null) {
+            return joinRequest;
+        }
+
+        return existingGuildCreateRequestRepository.findFirstByUserAndStatusOrderByIdDesc(
                         user,
                         GuildMemberStatus.PENDING
                 )
@@ -120,13 +171,24 @@ public class GuildApprovalService {
 
     public void cancelMyPendingExistingJoinRequest(String loginId) {
         User user = userService.findByLoginIdOrThrow(loginId);
-        ExistingGuildJoinRequest request = existingGuildJoinRequestRepository.findFirstByUserAndStatusOrderByIdDesc(
+        ExistingGuildJoinRequest joinRequest = existingGuildJoinRequestRepository.findFirstByUserAndStatusOrderByIdDesc(
                         user,
                         GuildMemberStatus.PENDING
                 )
-                .orElseThrow(() -> new NotFoundException("철회할 가입 요청이 없습니다."));
+                .orElse(null);
 
-        request.changeStatus(GuildMemberStatus.REJECTED);
+        if (joinRequest != null) {
+            joinRequest.changeStatus(GuildMemberStatus.REJECTED);
+            return;
+        }
+
+        ExistingGuildCreateRequest createRequest = existingGuildCreateRequestRepository.findFirstByUserAndStatusOrderByIdDesc(
+                        user,
+                        GuildMemberStatus.PENDING
+                )
+                .orElseThrow(() -> new NotFoundException("철회할 가입 또는 개설 요청이 없습니다."));
+
+        createRequest.changeStatus(GuildMemberStatus.REJECTED);
     }
 
     public void approveMasterRequest(String loginId, Long requestId) {
@@ -154,6 +216,39 @@ public class GuildApprovalService {
         validateAdmin(actor);
 
         SignupRequest request = getPendingRequest(requestId, MASTER_SIGNUP);
+        request.changeStatus(GuildMemberStatus.REJECTED);
+    }
+
+    public void approveExistingMasterRequest(String loginId, Long requestId) {
+        User actor = userService.findByLoginIdOrThrow(loginId);
+        validateAdmin(actor);
+
+        ExistingGuildCreateRequest request = getPendingExistingCreateRequest(requestId);
+        User user = request.getUser();
+
+        if (guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED).isPresent()) {
+            throw new IllegalStateException("이미 가입된 길드가 있습니다.");
+        }
+
+        validateGuildNameCanBeApproved(request.getGuildName());
+
+        Guild guild = guildRepository.save(new Guild(request.getGuildName(), "", user));
+        GuildMember member = GuildMember.createReal(
+                guild,
+                user,
+                GuildMemberRole.MASTER,
+                GuildMemberStatus.APPROVED
+        );
+        guildMemberRepository.save(member);
+        guild.addMember(member);
+        request.changeStatus(GuildMemberStatus.APPROVED);
+    }
+
+    public void rejectExistingMasterRequest(String loginId, Long requestId) {
+        User actor = userService.findByLoginIdOrThrow(loginId);
+        validateAdmin(actor);
+
+        ExistingGuildCreateRequest request = getPendingExistingCreateRequest(requestId);
         request.changeStatus(GuildMemberStatus.REJECTED);
     }
 
@@ -300,6 +395,17 @@ public class GuildApprovalService {
         return request;
     }
 
+    private ExistingGuildCreateRequest getPendingExistingCreateRequest(Long requestId) {
+        ExistingGuildCreateRequest request = existingGuildCreateRequestRepository.findById(requestId)
+                .orElseThrow(() -> new NotFoundException("길드 개설 신청을 찾을 수 없습니다."));
+
+        if (request.getStatus() != GuildMemberStatus.PENDING) {
+            throw new IllegalArgumentException("대기 중인 길드 개설 신청이 아닙니다.");
+        }
+
+        return request;
+    }
+
     private void validateAdmin(User actor) {
         if (actor.getRole() != UserRole.ADMIN) {
             throw new IllegalStateException("관리자만 처리할 수 있습니다.");
@@ -348,6 +454,25 @@ public class GuildApprovalService {
         );
     }
 
+    private GuildJoinRequestResponse toResponse(ExistingGuildCreateRequest request) {
+        User user = request.getUser();
+
+        return new GuildJoinRequestResponse(
+                request.getId(),
+                REQUEST_SOURCE_ACCOUNT_MASTER,
+                null,
+                request.getGuildName(),
+                user.getId(),
+                user.getLoginId(),
+                user.getNickname(),
+                user.getEmail(),
+                user.getNickname(),
+                GuildMemberRole.MASTER,
+                request.getStatus(),
+                request.getCreatedAt()
+        );
+    }
+
     private Guild findApprovedGuildByName(String guildName) {
         Guild guild = guildRepository.findByName(guildName)
                 .orElseThrow(() -> new IllegalArgumentException("가입 가능한 길드가 아닙니다."));
@@ -363,6 +488,32 @@ public class GuildApprovalService {
         }
 
         return guild;
+    }
+
+    private void validateGuildNameCanBeRequested(String guildName) {
+        if (guildRepository.existsByName(guildName)
+                || signupRequestRepository.existsBySignupTypeAndGuildNameAndStatus(
+                MASTER_SIGNUP,
+                guildName,
+                GuildMemberStatus.PENDING
+        )
+                || existingGuildCreateRequestRepository.existsByGuildNameAndStatus(
+                guildName,
+                GuildMemberStatus.PENDING
+        )) {
+            throw new IllegalArgumentException("이미 사용 중이거나 개설 대기 중인 길드 이름입니다.");
+        }
+    }
+
+    private void validateGuildNameCanBeApproved(String guildName) {
+        if (guildRepository.existsByName(guildName)
+                || signupRequestRepository.existsBySignupTypeAndGuildNameAndStatus(
+                MASTER_SIGNUP,
+                guildName,
+                GuildMemberStatus.PENDING
+        )) {
+            throw new IllegalArgumentException("이미 사용 중이거나 개설 대기 중인 길드 이름입니다.");
+        }
     }
 
     private String normalizeRequired(String value, String fieldName) {

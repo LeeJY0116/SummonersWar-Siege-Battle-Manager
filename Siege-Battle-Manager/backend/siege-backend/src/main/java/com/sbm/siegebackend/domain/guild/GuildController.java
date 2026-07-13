@@ -67,4 +67,11 @@ public class GuildController {
         return ResponseEntity.ok(ApiResponse.success(members));
     }
 
+    @DeleteMapping("/me/membership")
+    public ResponseEntity<ApiResponse<Void>> leaveMyGuild(Authentication authentication) {
+        String email = (String) authentication.getPrincipal();
+        guildService.leaveMyGuild(email);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
 }

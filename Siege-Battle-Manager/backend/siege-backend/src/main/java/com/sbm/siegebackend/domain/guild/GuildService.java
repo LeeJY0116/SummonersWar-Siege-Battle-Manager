@@ -231,6 +231,19 @@ public class GuildService {
                 .toList();
     }
 
+    public void leaveMyGuild(String email) {
+        User user = userService.findByEmailOrThrow(email);
+
+        GuildMember member = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
+                .orElseThrow(() -> new NotFoundException("가입된 길드가 없습니다."));
+
+        if (member.getRole() == GuildMemberRole.MASTER) {
+            throw new IllegalStateException("길드장은 길드장 양도 후 탈퇴할 수 있습니다.");
+        }
+
+        member.changeStatus(GuildMemberStatus.LEFT);
+    }
+
     private GuildMemberResponse toMemberResponse(GuildMember member) {
         User user = member.getUser();
         return new GuildMemberResponse(

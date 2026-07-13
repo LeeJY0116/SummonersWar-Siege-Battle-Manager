@@ -27,11 +27,11 @@ export default function GuildApprovalPanel() {
     loadRequests();
   }, []);
 
-  async function handleAction(memberId, action) {
+  async function handleAction(request, action) {
     try {
-      setWorkingId(memberId);
+      setWorkingId(`${request.requestSource}:${request.memberId}`);
       setError("");
-      await action(memberId);
+      await action(request);
       await loadRequests();
     } catch (e) {
       setError(e.message || "가입 신청을 처리하지 못했습니다.");
@@ -67,6 +67,7 @@ export default function GuildApprovalPanel() {
           <thead className="bg-gray-50 text-xs uppercase text-gray-500">
             <tr>
               <th className="px-3 py-2">길드</th>
+              <th className="px-3 py-2">유형</th>
               <th className="px-3 py-2">닉네임</th>
               <th className="px-3 py-2">아이디</th>
               <th className="px-3 py-2">이메일</th>
@@ -77,20 +78,23 @@ export default function GuildApprovalPanel() {
           <tbody className="divide-y divide-gray-100">
             {loading ? (
               <tr>
-                <td className="px-3 py-4 text-gray-500" colSpan={6}>
+                <td className="px-3 py-4 text-gray-500" colSpan={7}>
                   불러오는 중
                 </td>
               </tr>
             ) : requests.length === 0 ? (
               <tr>
-                <td className="px-3 py-4 text-gray-500" colSpan={6}>
+                <td className="px-3 py-4 text-gray-500" colSpan={7}>
                   대기 중인 신청이 없습니다.
                 </td>
               </tr>
             ) : (
               requests.map((request) => (
-                <tr key={request.memberId}>
+                <tr key={`${request.requestSource}:${request.memberId}`}>
                   <td className="px-3 py-2 font-medium">{request.guildName}</td>
+                  <td className="px-3 py-2">
+                    {request.requestSource === "ACCOUNT_MASTER" ? "기존 계정 개설" : "신규 가입"}
+                  </td>
                   <td className="px-3 py-2">{request.nickname || request.displayName}</td>
                   <td className="px-3 py-2">{request.loginId}</td>
                   <td className="px-3 py-2">{request.email}</td>
@@ -99,16 +103,16 @@ export default function GuildApprovalPanel() {
                     <div className="flex gap-2">
                       <button
                         type="button"
-                        disabled={workingId === request.memberId}
-                        onClick={() => handleAction(request.memberId, approveMasterRequest)}
+                        disabled={workingId === `${request.requestSource}:${request.memberId}`}
+                        onClick={() => handleAction(request, approveMasterRequest)}
                         className="rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-40"
                       >
                         승인
                       </button>
                       <button
                         type="button"
-                        disabled={workingId === request.memberId}
-                        onClick={() => handleAction(request.memberId, rejectMasterRequest)}
+                        disabled={workingId === `${request.requestSource}:${request.memberId}`}
+                        onClick={() => handleAction(request, rejectMasterRequest)}
                         className="rounded-md border border-gray-300 px-3 py-1.5 text-xs hover:bg-gray-50 disabled:opacity-40"
                       >
                         거절
