@@ -3,6 +3,7 @@ import {
   fetchGuildMemberBans,
   kickGuildMember,
   liftGuildMemberBan,
+  transferGuildMaster,
   updateGuildMemberRole,
 } from "../../lib/guild.js";
 import GuildMemberApprovalPanel from "./GuildMemberApprovalPanel.jsx";
@@ -18,12 +19,13 @@ const ROLE_OPTIONS = [
   { value: "SUB_MASTER", label: "부길드장" },
 ];
 
-export default function GuildMemberManagementTab({ members, onRefreshMembers }) {
+export default function GuildMemberManagementTab({ members, currentGuildRole, onRefreshMembers }) {
   const [workingId, setWorkingId] = useState(null);
   const [error, setError] = useState("");
   const [bans, setBans] = useState([]);
   const [banError, setBanError] = useState("");
   const realMembers = (members ?? []).filter((member) => member.realUser);
+  const canManageMemberRoles = currentGuildRole === "MASTER";
 
   useEffect(() => {
     void loadBans();
@@ -72,6 +74,24 @@ export default function GuildMemberManagementTab({ members, onRefreshMembers }) 
     }
   }
 
+  async function handleTransferMaster(member) {
+    const ok = window.confirm(
+      `${member.displayName} 길드원에게 길드장을 양도할까요?\n양도 후 현재 길드장은 부길드장이 됩니다.`
+    );
+    if (!ok) return;
+
+    try {
+      setWorkingId(member.id);
+      setError("");
+      await transferGuildMaster(member.id);
+      await onRefreshMembers?.();
+    } catch (e) {
+      setError(e.message || "길드장을 양도하지 못했습니다.");
+    } finally {
+      setWorkingId(null);
+    }
+  }
+
   async function handleLiftBan(ban) {
     try {
       setWorkingId(`ban-${ban.id}`);
@@ -111,20 +131,21 @@ export default function GuildMemberManagementTab({ members, onRefreshMembers }) 
                 <th className="px-4 py-3">등급</th>
                 <th className="px-4 py-3">상태</th>
                 <th className="px-4 py-3">등급 변경</th>
+                <th className="px-4 py-3">길드장 양도</th>
                 <th className="px-4 py-3">추방</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {realMembers.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-6 text-gray-500" colSpan={5}>
+                  <td className="px-4 py-6 text-gray-500" colSpan={6}>
                     활성 길드원이 없습니다.
                   </td>
                 </tr>
               ) : (
                 realMembers.map((member) => {
                   const isMaster = member.role === "MASTER";
-                  const disabled = isMaster || workingId === member.id;
+                  const disabled = isMaster || !canManageMemberRoles || workingId === member.id;
 
                   return (
                     <tr key={member.id}>
@@ -141,7 +162,7 @@ export default function GuildMemberManagementTab({ members, onRefreshMembers }) 
                       </td>
                       <td className="px-4 py-4 text-gray-600">{member.status ?? "APPROVED"}</td>
                       <td className="px-4 py-4">
-                        {isMaster ? (
+                        {isMaster || !canManageMemberRoles ? (
                           <span className="text-gray-400">-</span>
                         ) : (
                           <select
@@ -159,7 +180,21 @@ export default function GuildMemberManagementTab({ members, onRefreshMembers }) 
                         )}
                       </td>
                       <td className="px-4 py-4">
-                        {isMaster ? (
+                        {isMaster || !canManageMemberRoles ? (
+                          <span className="text-gray-400">-</span>
+                        ) : (
+                          <button
+                            type="button"
+                            disabled={disabled}
+                            onClick={() => handleTransferMaster(member)}
+                            className="rounded-md border border-amber-300 px-3 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-50 disabled:opacity-40"
+                          >
+                            양도
+                          </button>
+                        )}
+                      </td>
+                      <td className="px-4 py-4">
+                        {isMaster || !canManageMemberRoles ? (
                           <span className="text-gray-400">-</span>
                         ) : (
                           <button

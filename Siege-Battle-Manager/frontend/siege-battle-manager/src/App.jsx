@@ -372,6 +372,7 @@ export default function SiegeBattleManager() {
             members={members}
             monsters={monsters}
             canManageGuild={canManageGuild}
+            currentGuildRole={currentGuildRole}
             currentGuildMemberId={currentGuildMember?.id ?? null}
             currentNickname={currentNickname}
             onRefreshMembers={refreshMyGuildMembers}

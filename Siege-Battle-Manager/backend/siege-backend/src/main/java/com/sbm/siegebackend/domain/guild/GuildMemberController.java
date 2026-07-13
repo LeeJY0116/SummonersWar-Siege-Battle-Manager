@@ -67,6 +67,16 @@ public class GuildMemberController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/{guildMemberId}/transfer-master")
+    public ResponseEntity<?> transferMaster(
+            @PathVariable Long guildMemberId,
+            Authentication auth
+    ) {
+        String loginId = (String) auth.getPrincipal();
+        guildMemberService.transferMaster(guildMemberId, loginId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/bans")
     public ResponseEntity<List<GuildMemberBanResponse>> getActiveBans(Authentication auth) {
         String loginId = (String) auth.getPrincipal();

@@ -11,6 +11,7 @@ export default function GuildTab({
   members,
   monsters,
   canManageGuild = false,
+  currentGuildRole = null,
   currentGuildMemberId = null,
   currentNickname = "",
   onRefreshMembers,
@@ -82,7 +83,11 @@ export default function GuildTab({
       ) : subTab === "battleResearch" ? (
         <BattleResearchTab monsters={monsters} />
       ) : subTab === "members" && canManageGuild ? (
-        <GuildMemberManagementTab members={members} onRefreshMembers={onRefreshMembers} />
+        <GuildMemberManagementTab
+          members={members}
+          currentGuildRole={currentGuildRole}
+          onRefreshMembers={onRefreshMembers}
+        />
       ) : null}
     </div>
   );

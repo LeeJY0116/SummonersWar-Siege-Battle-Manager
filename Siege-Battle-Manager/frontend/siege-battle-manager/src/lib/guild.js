@@ -44,6 +44,12 @@ export async function kickGuildMember(guildMemberId) {
   });
 }
 
+export async function transferGuildMaster(guildMemberId) {
+  await apiFetch(`/guild-members/${guildMemberId}/transfer-master`, {
+    method: "PATCH",
+  });
+}
+
 export async function fetchGuildMemberBans() {
   const res = await apiFetch("/guild-members/bans");
   return Array.isArray(res) ? res : res.data;

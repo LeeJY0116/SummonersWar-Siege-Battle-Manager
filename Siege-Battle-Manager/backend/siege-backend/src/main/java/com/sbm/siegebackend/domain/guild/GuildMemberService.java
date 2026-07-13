@@ -150,6 +150,28 @@ public class GuildMemberService {
         target.changeStatus(GuildMemberStatus.LEFT);
     }
 
+    public void transferMaster(Long guildMemberId, String loginId) {
+        GuildMember actor = getActor(loginId);
+        validateMaster(actor);
+
+        GuildMember target = getSameGuildTarget(actor, guildMemberId);
+        if (target.getType() != GuildMemberType.REAL) {
+            throw new IllegalArgumentException("실제 길드원에게만 길드장을 양도할 수 있습니다.");
+        }
+        if (target.getStatus() != GuildMemberStatus.APPROVED) {
+            throw new IllegalArgumentException("승인된 길드원에게만 길드장을 양도할 수 있습니다.");
+        }
+        if (actor.getId().equals(target.getId())) {
+            throw new IllegalArgumentException("자신에게 길드장을 양도할 수 없습니다.");
+        }
+        if (target.getRole() == GuildMemberRole.MASTER) {
+            return;
+        }
+
+        actor.changeRole(GuildMemberRole.SUB_MASTER);
+        target.changeRole(GuildMemberRole.MASTER);
+    }
+
     @Transactional(readOnly = true)
     public List<GuildMemberBanResponse> getActiveBans(String loginId) {
         GuildMember actor = getActor(loginId);
