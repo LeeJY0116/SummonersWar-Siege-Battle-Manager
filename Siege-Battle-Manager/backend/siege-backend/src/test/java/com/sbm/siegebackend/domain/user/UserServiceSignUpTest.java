@@ -7,6 +7,7 @@ import com.sbm.siegebackend.domain.guild.GuildMemberRepository;
 import com.sbm.siegebackend.domain.guild.GuildMemberRole;
 import com.sbm.siegebackend.domain.guild.GuildMemberStatus;
 import com.sbm.siegebackend.domain.guild.GuildRepository;
+import com.sbm.siegebackend.domain.guild.dto.GuildJoinRequestResponse;
 import com.sbm.siegebackend.domain.user.dto.UserSignUpRequest;
 import com.sbm.siegebackend.domain.user.dto.UserLoginRequest;
 import org.junit.jupiter.api.Test;
@@ -205,6 +206,67 @@ class UserServiceSignUpTest {
                 .hasMessage("가입 가능한 길드가 아닙니다.");
     }
 
+    @Test
+    void 길드원_가입_승인은_길드_정원이_가득_차면_실패한다() {
+        Guild guild = createApprovedGuild("정원길드");
+        fillGuildToCapacity(guild, "signup-capacity");
+
+        userService.signUp(signUpRequest(
+                "over-member",
+                "over-member@test.com",
+                "초과길드원",
+                "member",
+                guild.getName()
+        ));
+
+        SignupRequest request = signupRequestRepository
+                .findAllBySignupTypeAndGuildNameAndStatus(
+                        "member",
+                        guild.getName(),
+                        GuildMemberStatus.PENDING
+                )
+                .get(0);
+
+        assertThatThrownBy(() -> guildApprovalService.approveMemberRequest(
+                guild.getName() + "master",
+                request.getId()
+        ))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("길드 최대 인원(35명)을 초과할 수 없습니다.");
+
+        assertThat(userRepository.findByLoginId("over-member")).isEmpty();
+    }
+
+    @Test
+    void 기존_계정_재가입_승인은_길드_정원이_가득_차면_실패한다() {
+        Guild guild = createApprovedGuild("재가입정원길드");
+        fillGuildToCapacity(guild, "rejoin-capacity");
+        User returningUser = userRepository.save(User.create(
+                "returning-member",
+                "returning-member@test.com",
+                "test",
+                "재가입대기자",
+                UserRole.USER
+        ));
+
+        guildApprovalService.requestExistingAccountJoin(returningUser.getLoginId(), guild.getName());
+        GuildJoinRequestResponse request = guildApprovalService.getMyPendingExistingJoinRequest(
+                returningUser.getLoginId()
+        );
+
+        assertThatThrownBy(() -> guildApprovalService.approveExistingMemberRequest(
+                guild.getName() + "master",
+                request.getMemberId()
+        ))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("길드 최대 인원(35명)을 초과할 수 없습니다.");
+
+        assertThat(guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(
+                returningUser,
+                GuildMemberStatus.APPROVED
+        )).isEmpty();
+    }
+
     private Guild createApprovedGuild(String guildName) {
         User admin = createAdmin();
         userService.signUp(signUpRequest(
@@ -219,6 +281,26 @@ class UserServiceSignUpTest {
                 .get(0);
         guildApprovalService.approveMasterRequest(admin.getLoginId(), request.getId());
         return guildRepository.findByName(guildName).orElseThrow();
+    }
+
+    private void fillGuildToCapacity(Guild guild, String prefix) {
+        for (int i = 0; i < 34; i++) {
+            User user = userRepository.save(User.create(
+                    prefix + "-user-" + i,
+                    prefix + "-user-" + i + "@test.com",
+                    "test",
+                    prefix + "-닉네임-" + i,
+                    UserRole.USER
+            ));
+            GuildMember member = GuildMember.createReal(
+                    guild,
+                    user,
+                    GuildMemberRole.MEMBER,
+                    GuildMemberStatus.APPROVED
+            );
+            guildMemberRepository.save(member);
+            guild.addMember(member);
+        }
     }
 
     private User createAdmin() {
