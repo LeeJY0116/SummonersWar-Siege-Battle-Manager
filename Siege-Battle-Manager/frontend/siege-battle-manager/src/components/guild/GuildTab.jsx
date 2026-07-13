@@ -33,14 +33,14 @@ export default function GuildTab({
   }, [guild, members]);
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-      <div className="mb-4 flex items-center justify-between gap-3">
+    <div className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(10,7,4,0.25)]">
+      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <div className="text-lg font-bold">길드</div>
-          <div className="text-sm text-gray-600">{header}</div>
+          <div className="text-lg font-bold text-[#fff0c8]">길드</div>
+          <div className="text-sm font-semibold text-[#d7be80]">{header}</div>
         </div>
 
-        <div className="inline-flex gap-1 rounded-2xl bg-gray-100 p-1">
+        <div className="inline-flex flex-wrap gap-1 rounded-2xl border border-[#745320] bg-[#211813] p-1">
           <SubTabButton active={subTab === "inventory"} onClick={() => changeSubTab("inventory")}>
             인벤토리
           </SubTabButton>
@@ -68,7 +68,7 @@ export default function GuildTab({
       </div>
 
       {!canUse ? (
-        <div className="text-sm text-gray-600">길드 가입 승인 후 이용할 수 있습니다.</div>
+        <div className="text-sm text-[#d7be80]">길드 가입 승인 후 이용할 수 있습니다.</div>
       ) : subTab === "inventory" ? (
         <InventoryTab
           members={members}
@@ -104,8 +104,10 @@ function SubTabButton({ active, onClick, children }) {
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-xl px-3 py-1 text-sm ${
-        active ? "bg-white font-semibold shadow" : "text-gray-500"
+      className={`rounded-xl px-3 py-1 text-sm transition ${
+        active
+          ? "bg-[#f3d37b] font-semibold text-[#2f1f13] shadow"
+          : "text-[#d7be80] hover:bg-[#3b2a1d] hover:text-[#fff0c8]"
       }`}
     >
       {children}

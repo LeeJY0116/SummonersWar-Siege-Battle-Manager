@@ -172,7 +172,7 @@ export default function SiegeBattleManager() {
   const [applyingLocalization, setApplyingLocalization] = useState(false);
 
   useEffect(() => {
-    document.title = "서머너즈워 공방덱 연구사이트";
+    document.title = "SW 점령전";
   }, []);
 
   const token = localStorage.getItem("accessToken");
@@ -390,14 +390,14 @@ export default function SiegeBattleManager() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 text-gray-900">
+    <div className="min-h-screen w-full bg-[#17100c] text-[#f6deb0]">
       <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-5 p-6 md:p-8 xl:grid-cols-[280px_minmax(0,72rem)] xl:items-start">
         <div className="xl:sticky xl:top-8">
           <TabGuideCard {...guide} />
         </div>
 
         <div className="min-w-0">
-        <HeaderBar
+          <HeaderBar
           guild={guild}
           members={members}
           isAdmin={isAdmin}
@@ -408,7 +408,7 @@ export default function SiegeBattleManager() {
           syncingMonsters={syncingMonsters}
           onApplyMonsterLocalization={handleApplyMonsterLocalization}
           applyingLocalization={applyingLocalization}
-        />
+          />
 
         {activeTab === "manager" ? (
           <ManagerTab

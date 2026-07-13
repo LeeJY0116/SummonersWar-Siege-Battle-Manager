@@ -2,7 +2,7 @@ import React from "react";
 
 export default function TabGuideCard({ title, description, items = [] }) {
   return (
-    <aside className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-5 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
+    <aside className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-5 text-[#f6deb0] shadow-[0_10px_24px_rgba(10,7,4,0.25)]">
       <div className="text-xs font-semibold uppercase tracking-wide text-[#c8a96a]">
         현재 탭
       </div>

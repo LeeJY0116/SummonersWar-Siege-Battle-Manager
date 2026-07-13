@@ -45,6 +45,18 @@ function compareVirtualMembers(a, b) {
   return String(a.displayName ?? "").localeCompare(String(b.displayName ?? ""));
 }
 
+function SectionCard({ children }) {
+  return (
+    <section className="rounded-xl border border-[#745320] bg-[#211813] text-[#f6deb0] shadow-[0_10px_24px_rgba(10,7,4,0.18)]">
+      {children}
+    </section>
+  );
+}
+
+function TableShell({ children }) {
+  return <div className="overflow-hidden rounded-lg border border-[#745320]">{children}</div>;
+}
+
 export default function GuildMemberManagementTab({ guild, members, currentGuildRole, onRefreshMembers }) {
   const [workingId, setWorkingId] = useState(null);
   const [error, setError] = useState("");
@@ -73,7 +85,7 @@ export default function GuildMemberManagementTab({ guild, members, currentGuildR
       setBans(data ?? []);
     } catch (e) {
       setBans([]);
-      setBanError(e.message || "재가입 차단 목록을 불러오지 못했습니다.");
+      setBanError(e.message || "재가입 불가 목록을 불러오지 못했습니다.");
     }
   }
 
@@ -136,7 +148,7 @@ export default function GuildMemberManagementTab({ guild, members, currentGuildR
       await liftGuildMemberBan(ban.id);
       await loadBans();
     } catch (e) {
-      setBanError(e.message || "재가입 차단을 해제하지 못했습니다.");
+      setBanError(e.message || "재가입 제한을 해제하지 못했습니다.");
     } finally {
       setWorkingId(null);
     }
@@ -188,26 +200,26 @@ export default function GuildMemberManagementTab({ guild, members, currentGuildR
     <div className="space-y-4">
       <GuildMemberApprovalPanel onApproved={onRefreshMembers} />
 
-      <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div className="flex items-center gap-3 border-b border-gray-100 px-4 py-4">
-          <h3 className="text-lg font-bold text-gray-950">길드 멤버</h3>
-          <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-700">
+      <SectionCard>
+        <div className="flex items-center gap-3 border-b border-[#51341e] px-4 py-4">
+          <h3 className="text-lg font-bold text-[#fff0c8]">길드 멤버</h3>
+          <span className="rounded-full bg-[#f3d37b] px-3 py-1 text-sm font-semibold text-[#2f1f13]">
             {totalMembers}/35
           </span>
-          <span className="text-xs text-gray-500">
+          <span className="text-xs font-semibold text-[#d7be80]">
             실제 {realMembers.length}명 · 더미 {virtualMembers.length}명
           </span>
         </div>
 
         {error && (
-          <div className="mx-4 mt-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          <div className="mx-4 mt-4 rounded-md border border-red-300/50 bg-[#3c1f1a] p-3 text-sm text-red-100">
             {error}
           </div>
         )}
 
         <div className="overflow-hidden">
           <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50 text-gray-500">
+            <thead className="bg-[#3b2a1d] text-[#d7be80]">
               <tr>
                 <th className="px-4 py-3">닉네임 / ID</th>
                 <th className="px-4 py-3">등급</th>
@@ -221,10 +233,10 @@ export default function GuildMemberManagementTab({ guild, members, currentGuildR
                 )}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-[#51341e]">
               {realMembers.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-6 text-gray-500" colSpan={canManageMemberRoles ? 6 : 3}>
+                  <td className="px-4 py-6 text-[#d7be80]" colSpan={canManageMemberRoles ? 6 : 3}>
                     활성 길드원이 없습니다.
                   </td>
                 </tr>
@@ -236,30 +248,30 @@ export default function GuildMemberManagementTab({ guild, members, currentGuildR
                   return (
                     <tr key={member.id}>
                       <td className="px-4 py-4">
-                        <div className="font-semibold text-gray-950">{member.displayName}</div>
-                        <div className="text-xs text-gray-500">
+                        <div className="font-semibold text-[#fff0c8]">{member.displayName}</div>
+                        <div className="text-xs text-[#c8a96a]">
                           {member.loginId ?? `user-${member.userId}`}
                         </div>
                       </td>
                       <td className="px-4 py-4">
-                        <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-600">
+                        <span className="rounded-full bg-[#3c1f1a] px-3 py-1 text-xs font-semibold text-[#ffcf9d]">
                           {ROLE_LABELS[member.role] ?? member.role}
                         </span>
                       </td>
-                      <td className="px-4 py-4 text-gray-600">
+                      <td className="px-4 py-4 text-[#d7be80]">
                         {formatLastLoginAt(member.lastLoginAt)}
                       </td>
                       {canManageMemberRoles && (
                         <>
                           <td className="px-4 py-4">
                             {isMaster ? (
-                              <span className="text-gray-400">-</span>
+                              <span className="text-[#9f865d]">-</span>
                             ) : (
                               <select
                                 value={member.role}
                                 disabled={disabled}
                                 onChange={(e) => handleRoleChange(member, e.target.value)}
-                                className="rounded-md border border-gray-300 px-2 py-1 text-sm disabled:opacity-40"
+                                className="rounded-md border border-[#8f6732] bg-[#1f1712] px-2 py-1 text-sm text-[#fff0c8] disabled:opacity-40"
                               >
                                 {ROLE_OPTIONS.map((option) => (
                                   <option key={option.value} value={option.value}>
@@ -271,13 +283,13 @@ export default function GuildMemberManagementTab({ guild, members, currentGuildR
                           </td>
                           <td className="px-4 py-4">
                             {isMaster ? (
-                              <span className="text-gray-400">-</span>
+                              <span className="text-[#9f865d]">-</span>
                             ) : (
                               <button
                                 type="button"
                                 disabled={disabled}
                                 onClick={() => handleTransferMaster(member)}
-                                className="rounded-md border border-amber-300 px-3 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-50 disabled:opacity-40"
+                                className="rounded-md border border-amber-300/60 px-3 py-1.5 text-xs font-semibold text-amber-100 hover:bg-[#3a2a16] disabled:opacity-40"
                               >
                                 양도
                               </button>
@@ -285,13 +297,13 @@ export default function GuildMemberManagementTab({ guild, members, currentGuildR
                           </td>
                           <td className="px-4 py-4">
                             {isMaster ? (
-                              <span className="text-gray-400">-</span>
+                              <span className="text-[#9f865d]">-</span>
                             ) : (
                               <button
                                 type="button"
                                 disabled={disabled}
                                 onClick={() => handleKick(member)}
-                                className="rounded-md border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-40"
+                                className="rounded-md border border-red-300/50 px-3 py-1.5 text-xs font-semibold text-red-100 hover:bg-[#3c1f1a] disabled:opacity-40"
                               >
                                 추방
                               </button>
@@ -306,13 +318,13 @@ export default function GuildMemberManagementTab({ guild, members, currentGuildR
             </tbody>
           </table>
         </div>
-      </section>
+      </SectionCard>
 
       {canManageVirtualMembers && (
-        <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
-          <div className="border-b border-gray-100 px-4 py-4">
-            <h3 className="text-lg font-bold text-gray-950">더미 계정</h3>
-            <p className="mt-1 text-sm text-gray-500">
+        <SectionCard>
+          <div className="border-b border-[#51341e] px-4 py-4">
+            <h3 className="text-lg font-bold text-[#fff0c8]">더미 계정</h3>
+            <p className="mt-1 text-sm text-[#d7be80]">
               로그인 계정 없이 인벤토리와 방덱만 관리할 길드원을 생성합니다. 더미 계정도 길드 인원 35명 제한에 포함됩니다.
             </p>
           </div>
@@ -324,47 +336,47 @@ export default function GuildMemberManagementTab({ guild, members, currentGuildR
                 onChange={(event) => setVirtualMemberName(event.target.value)}
                 disabled={workingId === "virtual-create" || totalMembers >= 35}
                 placeholder="더미 계정 이름"
-                className="min-w-0 flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm disabled:opacity-50"
+                className="min-w-0 flex-1 rounded-md border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] disabled:opacity-50"
               />
               <button
                 type="submit"
                 disabled={workingId === "virtual-create" || totalMembers >= 35}
-                className="rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
+                className="rounded-md bg-[#f3d37b] px-4 py-2 text-sm font-semibold text-[#2f1f13] disabled:opacity-40"
               >
-                {workingId === "virtual-create" ? "생성 중" : "더미 계정 생성"}
+                {workingId === "virtual-create" ? "생성 중..." : "더미 계정 생성"}
               </button>
             </form>
 
             {totalMembers >= 35 && (
-              <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+              <div className="rounded-md border border-amber-300/60 bg-[#3a2a16] p-3 text-sm text-amber-100">
                 길드 인원 제한 35명에 도달해 더미 계정을 추가할 수 없습니다.
               </div>
             )}
 
-            <div className="overflow-hidden rounded-lg border border-gray-200">
+            <TableShell>
               <table className="w-full text-left text-sm">
-                <thead className="bg-gray-50 text-gray-500">
+                <thead className="bg-[#3b2a1d] text-[#d7be80]">
                   <tr>
                     <th className="px-4 py-3">이름</th>
                     <th className="px-4 py-3">유형</th>
                     <th className="px-4 py-3">관리</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-[#51341e]">
                   {virtualMembers.length === 0 ? (
                     <tr>
-                      <td className="px-4 py-6 text-gray-500" colSpan={3}>
+                      <td className="px-4 py-6 text-[#d7be80]" colSpan={3}>
                         생성된 더미 계정이 없습니다.
                       </td>
                     </tr>
                   ) : (
                     virtualMembers.map((member) => (
                       <tr key={member.id}>
-                        <td className="px-4 py-4 font-semibold text-gray-950">
+                        <td className="px-4 py-4 font-semibold text-[#fff0c8]">
                           {member.displayName}
                         </td>
                         <td className="px-4 py-4">
-                          <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                          <span className="rounded-full bg-[#3b2a1d] px-3 py-1 text-xs font-semibold text-[#d7be80]">
                             더미
                           </span>
                         </td>
@@ -373,7 +385,7 @@ export default function GuildMemberManagementTab({ guild, members, currentGuildR
                             type="button"
                             disabled={workingId === `virtual-${member.id}`}
                             onClick={() => handleDeleteVirtualMember(member)}
-                            className="rounded-md border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-40"
+                            className="rounded-md border border-red-300/50 px-3 py-1.5 text-xs font-semibold text-red-100 hover:bg-[#3c1f1a] disabled:opacity-40"
                           >
                             삭제
                           </button>
@@ -383,83 +395,83 @@ export default function GuildMemberManagementTab({ guild, members, currentGuildR
                   )}
                 </tbody>
               </table>
-            </div>
+            </TableShell>
           </div>
-        </section>
+        </SectionCard>
       )}
 
       {canManageMemberRoles && (
-      <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-4">
-          <div className="flex items-center gap-3">
-            <h3 className="text-lg font-bold text-gray-950">재가입 불가 목록</h3>
-            <span className="rounded-full bg-red-50 px-3 py-1 text-sm font-semibold text-red-600">
-              {bans.length}명
-            </span>
+        <SectionCard>
+          <div className="flex items-center justify-between gap-3 border-b border-[#51341e] px-4 py-4">
+            <div className="flex items-center gap-3">
+              <h3 className="text-lg font-bold text-[#fff0c8]">재가입 불가 목록</h3>
+              <span className="rounded-full bg-[#3c1f1a] px-3 py-1 text-sm font-semibold text-red-100">
+                {bans.length}명
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={loadBans}
+              className="rounded-md border border-[#9b743a] px-3 py-1.5 text-xs font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
+            >
+              새로고침
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={loadBans}
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
-          >
-            새로고침
-          </button>
-        </div>
 
-        {banError && (
-          <div className="mx-4 mt-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-            {banError}
-          </div>
-        )}
+          {banError && (
+            <div className="mx-4 mt-4 rounded-md border border-red-300/50 bg-[#3c1f1a] p-3 text-sm text-red-100">
+              {banError}
+            </div>
+          )}
 
-        <div className="overflow-hidden">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50 text-gray-500">
-              <tr>
-                <th className="px-4 py-3">닉네임 / ID</th>
-                <th className="px-4 py-3">처리자</th>
-                <th className="px-4 py-3">차단일</th>
-                <th className="px-4 py-3">해제</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {bans.length === 0 ? (
+          <div className="overflow-hidden">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-[#3b2a1d] text-[#d7be80]">
                 <tr>
-                  <td className="px-4 py-6 text-gray-500" colSpan={4}>
-                    재가입이 차단된 길드원이 없습니다.
-                  </td>
+                  <th className="px-4 py-3">닉네임 / ID</th>
+                  <th className="px-4 py-3">처리자</th>
+                  <th className="px-4 py-3">차단일</th>
+                  <th className="px-4 py-3">해제</th>
                 </tr>
-              ) : (
-                bans.map((ban) => (
-                  <tr key={ban.id}>
-                    <td className="px-4 py-4">
-                      <div className="font-semibold text-gray-950">{ban.nickname}</div>
-                      <div className="text-xs text-gray-500">{ban.loginId}</div>
-                    </td>
-                    <td className="px-4 py-4">
-                      <div className="text-gray-700">{ban.bannedByNickname ?? "-"}</div>
-                      <div className="text-xs text-gray-500">{ban.bannedByLoginId ?? ""}</div>
-                    </td>
-                    <td className="px-4 py-4 text-gray-600">
-                      {ban.createdAt ? new Date(ban.createdAt).toLocaleString() : "-"}
-                    </td>
-                    <td className="px-4 py-4">
-                      <button
-                        type="button"
-                        disabled={workingId === `ban-${ban.id}`}
-                        onClick={() => handleLiftBan(ban)}
-                        className="rounded-md border border-blue-200 px-3 py-1.5 text-xs font-semibold text-blue-600 hover:bg-blue-50 disabled:opacity-40"
-                      >
-                        해제
-                      </button>
+              </thead>
+              <tbody className="divide-y divide-[#51341e]">
+                {bans.length === 0 ? (
+                  <tr>
+                    <td className="px-4 py-6 text-[#d7be80]" colSpan={4}>
+                      재가입이 차단된 길드원이 없습니다.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
+                ) : (
+                  bans.map((ban) => (
+                    <tr key={ban.id}>
+                      <td className="px-4 py-4">
+                        <div className="font-semibold text-[#fff0c8]">{ban.nickname}</div>
+                        <div className="text-xs text-[#c8a96a]">{ban.loginId}</div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="text-[#f6deb0]">{ban.bannedByNickname ?? "-"}</div>
+                        <div className="text-xs text-[#c8a96a]">{ban.bannedByLoginId ?? ""}</div>
+                      </td>
+                      <td className="px-4 py-4 text-[#d7be80]">
+                        {ban.createdAt ? new Date(ban.createdAt).toLocaleString() : "-"}
+                      </td>
+                      <td className="px-4 py-4">
+                        <button
+                          type="button"
+                          disabled={workingId === `ban-${ban.id}`}
+                          onClick={() => handleLiftBan(ban)}
+                          className="rounded-md border border-blue-300/50 px-3 py-1.5 text-xs font-semibold text-blue-100 hover:bg-[#1f2f3c] disabled:opacity-40"
+                        >
+                          해제
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </SectionCard>
       )}
     </div>
   );
