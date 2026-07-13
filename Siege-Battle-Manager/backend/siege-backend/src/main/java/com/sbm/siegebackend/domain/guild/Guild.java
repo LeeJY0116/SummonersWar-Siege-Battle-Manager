@@ -66,6 +66,10 @@ public class Guild {
         members.add(member);
     }
 
+    public void changeMaster(User master) {
+        this.master = master;
+    }
+
     // --- getter ---
 
     public Long getId() {

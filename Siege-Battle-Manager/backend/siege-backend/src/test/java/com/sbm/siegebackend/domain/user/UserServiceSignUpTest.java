@@ -5,6 +5,7 @@ import com.sbm.siegebackend.domain.guild.GuildApprovalService;
 import com.sbm.siegebackend.domain.guild.GuildMember;
 import com.sbm.siegebackend.domain.guild.GuildMemberRepository;
 import com.sbm.siegebackend.domain.guild.GuildMemberRole;
+import com.sbm.siegebackend.domain.guild.GuildMemberService;
 import com.sbm.siegebackend.domain.guild.GuildMemberStatus;
 import com.sbm.siegebackend.domain.guild.GuildRepository;
 import com.sbm.siegebackend.domain.guild.dto.GuildJoinRequestResponse;
@@ -41,6 +42,9 @@ class UserServiceSignUpTest {
 
     @Autowired
     private GuildMemberRepository guildMemberRepository;
+
+    @Autowired
+    private GuildMemberService guildMemberService;
 
     @Test
     void 길드장_가입은_계정과_길드를_바로_생성하지_않고_신청만_생성한다() {
@@ -265,6 +269,38 @@ class UserServiceSignUpTest {
                 returningUser,
                 GuildMemberStatus.APPROVED
         )).isEmpty();
+    }
+
+    @Test
+    void 길드장_양도는_길드의_마스터_참조도_함께_변경한다() {
+        Guild guild = createApprovedGuild("양도길드");
+        User newMasterUser = userRepository.save(User.create(
+                "new-master",
+                "new-master@test.com",
+                "test",
+                "새길드장",
+                UserRole.USER
+        ));
+        GuildMember newMasterMember = guildMemberRepository.save(GuildMember.createReal(
+                guild,
+                newMasterUser,
+                GuildMemberRole.MEMBER,
+                GuildMemberStatus.APPROVED
+        ));
+        guild.addMember(newMasterMember);
+
+        GuildMember currentMaster = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(
+                guild.getMaster(),
+                GuildMemberStatus.APPROVED
+        ).orElseThrow();
+
+        assertThat(currentMaster.getRole()).isEqualTo(GuildMemberRole.MASTER);
+
+        guildMemberService.transferMaster(newMasterMember.getId(), guild.getMaster().getLoginId());
+
+        assertThat(guild.getMaster().getId()).isEqualTo(newMasterUser.getId());
+        assertThat(currentMaster.getRole()).isEqualTo(GuildMemberRole.SUB_MASTER);
+        assertThat(newMasterMember.getRole()).isEqualTo(GuildMemberRole.MASTER);
     }
 
     private Guild createApprovedGuild(String guildName) {

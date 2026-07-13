@@ -170,6 +170,7 @@ public class GuildMemberService {
 
         actor.changeRole(GuildMemberRole.SUB_MASTER);
         target.changeRole(GuildMemberRole.MASTER);
+        actor.getGuild().changeMaster(target.getUser());
     }
 
     @Transactional(readOnly = true)
