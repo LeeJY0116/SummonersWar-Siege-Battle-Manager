@@ -335,6 +335,21 @@ DELETE /api/guild-members/{guildMemberId}/real
 Authorization: Bearer {JWT}
 ```
 
+## 길드장 양도
+
+현재 길드장만 같은 길드의 승인된 실제 길드원에게 양도할 수 있습니다.
+
+```http
+PATCH /api/guild-members/{guildMemberId}/transfer-master
+Authorization: Bearer {JWT}
+```
+
+처리 결과:
+
+- 기존 길드장은 `SUB_MASTER`로 변경
+- 대상 길드원은 `MASTER`로 변경
+- 길드의 `master` 참조도 대상 길드원으로 변경
+
 ## 재가입 불가 목록 조회
 
 ```http

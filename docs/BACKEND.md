@@ -186,6 +186,7 @@ OncePerRequestFilter 기반 구현
 - 길드장 신청 승인 시 `User`, `Guild`, `GuildMember(MASTER)` 생성
 - 길드원 신청 승인 시 `User`, `GuildMember(MEMBER)` 생성
 - 거절된 신청은 실제 계정을 만들지 않으므로 같은 아이디로 재신청 가능
+- 가입 승인과 재가입 승인은 승인된 길드원 기준 35명 정원을 초과할 수 없음
 
 기존 계정이 길드가 없는 상태라면 `ExistingGuildJoinRequest`를 통해 새 길드 가입을 요청합니다.
 
@@ -198,10 +199,13 @@ OncePerRequestFilter 기반 구현
 - 가입 요청 승인/거절
 - 등급 변경
 - 길드원 추방
+- 길드장 양도
 - 추방된 계정의 재가입 차단 목록 조회
 - 재가입 차단 해제
 
 추방 시 `GuildMember`는 `LEFT` 상태로 변경하고, 재가입 차단은 `GuildMemberBan`으로 별도 관리합니다.
+
+길드장 양도 시 기존 길드장은 `SUB_MASTER`가 되고, 대상 길드원은 `MASTER`가 됩니다. 이때 `Guild.master` 참조도 함께 갱신해 길드 목록과 헤더의 마스터 표시가 실제 권한과 일치하도록 유지합니다.
 
 ---
 
