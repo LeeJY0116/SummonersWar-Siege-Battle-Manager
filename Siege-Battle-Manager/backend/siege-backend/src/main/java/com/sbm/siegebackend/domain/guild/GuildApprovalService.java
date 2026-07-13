@@ -22,6 +22,7 @@ public class GuildApprovalService {
     private static final String MEMBER_SIGNUP = "member";
     private static final String REQUEST_SOURCE_SIGNUP = "SIGNUP";
     private static final String REQUEST_SOURCE_ACCOUNT = "ACCOUNT";
+    private static final int MAX_GUILD_MEMBER_COUNT = 35;
 
     private final GuildRepository guildRepository;
     private final GuildMemberRepository guildMemberRepository;
@@ -165,6 +166,7 @@ public class GuildApprovalService {
         }
 
         validateUserCanBeCreated(request);
+        validateGuildCapacity(actor.getGuild());
 
         User user = createUser(request);
         GuildMember member = GuildMember.createReal(
@@ -194,6 +196,8 @@ public class GuildApprovalService {
         if (guildMemberBanRepository.existsByGuildAndUserAndActiveTrue(actor.getGuild(), user)) {
             throw new IllegalStateException("재가입 불가 목록에 있는 길드원입니다.");
         }
+
+        validateGuildCapacity(actor.getGuild());
 
         GuildMember member = GuildMember.createReal(
                 actor.getGuild(),
@@ -226,6 +230,13 @@ public class GuildApprovalService {
         }
 
         request.changeStatus(GuildMemberStatus.REJECTED);
+    }
+
+    private void validateGuildCapacity(Guild guild) {
+        int count = guildMemberRepository.countByGuildAndStatus(guild, GuildMemberStatus.APPROVED);
+        if (count >= MAX_GUILD_MEMBER_COUNT) {
+            throw new IllegalStateException("길드 최대 인원(35명)을 초과할 수 없습니다.");
+        }
     }
 
     private User createUser(SignupRequest request) {
