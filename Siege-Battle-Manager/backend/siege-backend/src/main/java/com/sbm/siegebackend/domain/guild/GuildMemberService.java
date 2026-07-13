@@ -36,6 +36,11 @@ public class GuildMemberService {
      */
     public GuildMember addVirtualMember(Long guildId, String email, GuildMemberCreateRequest request) {
         User user = userService.findByEmailOrThrow(email);
+        String displayName = request.getDisplayName() == null ? "" : request.getDisplayName().trim();
+
+        if (displayName.isBlank()) {
+            throw new IllegalArgumentException("더미 계정 이름을 입력해주세요.");
+        }
 
         Guild guild = guildRepository.findById(guildId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 길드입니다."));
@@ -44,7 +49,7 @@ public class GuildMemberService {
         GuildMember actor = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
                 .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
-        if (actor.getGuild().getId() != guildId) {
+        if (!actor.getGuild().getId().equals(guildId)) {
             throw new IllegalStateException("해당 길드의 멤버가 아니므로 접근할 수 없습니다.");
         }
 
@@ -61,7 +66,7 @@ public class GuildMemberService {
         // 가짜 길드원 생성
         GuildMember virtual = GuildMember.createVirtual(
                 guild,
-                request.getDisplayName(),
+                displayName,
                 GuildMemberRole.MEMBER
         );
 

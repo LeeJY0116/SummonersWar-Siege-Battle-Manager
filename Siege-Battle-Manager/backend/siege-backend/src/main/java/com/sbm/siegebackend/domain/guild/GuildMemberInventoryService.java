@@ -17,6 +17,8 @@ import java.util.List;
 @Transactional
 public class GuildMemberInventoryService {
 
+    private static final int MAX_MONSTER_QUANTITY = 10;
+
     private final GuildMemberRepository guildMemberRepository;
     private final GuildMemberInventoryRepository inventoryRepository;
     private final MonsterRepository monsterRepository;
@@ -117,6 +119,10 @@ public class GuildMemberInventoryService {
 
             if (item.getQuantity() < 0) {
                 throw new IllegalArgumentException("수량은 음수가 될 수 없습니다.");
+            }
+
+            if (item.getQuantity() > MAX_MONSTER_QUANTITY) {
+                throw new IllegalArgumentException("몬스터별 보유 수량은 최대 10마리까지 입력할 수 있습니다.");
             }
 
             Monster monster = monsterRepository.findByCode(item.getMonsterCode())

@@ -11,13 +11,29 @@ import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
 import MonsterFilterControls, {
   matchesMonsterPickerFilters,
 } from "../monsters/MonsterFilterControls.jsx";
-import { getElementLabel, getLeaderEffectLabel, isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
+import { getElementLabel, getLeaderEffectLabel } from "../../lib/monsterLabels.js";
+
+const POST_TITLE_MAX_LENGTH = 100;
+const POST_CONTENT_MAX_LENGTH = 3000;
+const COMMENT_CONTENT_MAX_LENGTH = 1000;
+const CREATE_COOLDOWN_MS = 30_000;
 
 export default function BattleResearchTab({ monsters = []}) {
   const [posts, setPosts] = useState([]);
+  const [postPage, setPostPage] = useState(0);
+  const [postPageInfo, setPostPageInfo] = useState({
+    page: 0,
+    size: 10,
+    totalElements: 0,
+    totalPages: 0,
+  });
   const [openedPostId, setOpenedPostId] = useState(null);
   const [detailMap, setDetailMap] = useState({});
+  const [commentPageMap, setCommentPageMap] = useState({});
   const [loading, setLoading] = useState(false);
+  const [lastPostCreatedAt, setLastPostCreatedAt] = useState(0);
+  const [lastCommentCreatedAtMap, setLastCommentCreatedAtMap] = useState({});
+  const [nowTick, setNowTick] = useState(Date.now());
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [commentContentMap, setCommentContentMap] = useState({});
@@ -68,14 +84,38 @@ export default function BattleResearchTab({ monsters = []}) {
       getLeaderEffectLabel(leaderMonster?.leaderEffectType) ||
       leaderMonster?.leaderEffectType ||
       "없음"
-    );
+  );
+}
+
+function PaginationBar({ page = 0, totalPages = 0, totalElements = 0, onChangePage }) {
+  if (!totalPages || totalPages <= 1) {
+    return null;
   }
 
-  function getResearchMonsterCodes(items = []) {
-    return items
-      .map((item) => item.monsterCode ?? item.code)
-      .filter(Boolean);
-  }
+  return (
+    <div className="mt-3 flex items-center justify-between gap-3 rounded-xl border border-[#745320] bg-[#211813] px-3 py-2 text-sm font-semibold text-[#d7be80]">
+      <button
+        type="button"
+        disabled={page <= 0}
+        onClick={() => onChangePage(page - 1)}
+        className="rounded-lg border border-[#9b743a] bg-[#221913] px-3 py-1 text-[#f8e0ad] hover:border-[#f6c44f] disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        이전
+      </button>
+      <span>
+        {page + 1} / {totalPages} · 총 {totalElements}개
+      </span>
+      <button
+        type="button"
+        disabled={page + 1 >= totalPages}
+        onClick={() => onChangePage(page + 1)}
+        className="rounded-lg border border-[#9b743a] bg-[#221913] px-3 py-1 text-[#f8e0ad] hover:border-[#f6c44f] disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        다음
+      </button>
+    </div>
+  );
+}
 
   function getMonsterStars(monster) {
     return Number(monster?.naturalStars ?? monster?.grade ?? 0);
@@ -149,33 +189,23 @@ export default function BattleResearchTab({ monsters = []}) {
     return commentAttackMonsterCodesMap[postId] ?? ["", "", ""];
   }
 
-  const visiblePosts = posts.filter((post) => {
-    const defenseMonsters = post.defenseMonsters ?? [];
-    const leaderMonster = getLeaderMonsterFromItems(defenseMonsters);
+  function isPostCooldownActive() {
+    return nowTick - lastPostCreatedAt < CREATE_COOLDOWN_MS;
+  }
 
-    if (leaderEffectFilter) {
-      const effect = isGuildBattleLeaderEffect(leaderMonster)
-        ? leaderMonster?.leaderEffectType
-        : "";
+  function isCommentCooldownActive(postId) {
+    return nowTick - (lastCommentCreatedAtMap[postId] ?? 0) < CREATE_COOLDOWN_MS;
+  }
 
-      if (effect !== leaderEffectFilter) {
-        return false;
-      }
-    }
+  const visiblePosts = posts;
 
-    if (monsterFilterCodes.length > 0) {
-      const deckCodes = getResearchMonsterCodes(defenseMonsters);
-      if (!monsterFilterCodes.every((code) => deckCodes.includes(code))) {
-        return false;
-      }
-    }
-
-    if (fourStarDeckOnly && hasFiveStarMonster(defenseMonsters)) {
-      return false;
-    }
-
-    return true;
-  });
+  function getPostFilters() {
+    return {
+      leaderEffectType: leaderEffectFilter,
+      monsterCodes: monsterFilterCodes,
+      fourStarOnly: fourStarDeckOnly,
+    };
+  }
 
   function getCommentFilteredMonsters(postId) {
     const query = commentMonsterSearchMap[postId] ?? "";
@@ -219,11 +249,18 @@ export default function BattleResearchTab({ monsters = []}) {
     });
   }
 
-  async function loadPosts() {
+  async function loadPosts(nextPage = postPage) {
     try {
       setLoading(true);
-      const data = await fetchBattleResearchPosts();
-      setPosts(data || []);
+      const data = await fetchBattleResearchPosts(nextPage, getPostFilters());
+      setPosts(data?.items || []);
+      setPostPage(data?.page ?? nextPage);
+      setPostPageInfo({
+        page: data?.page ?? nextPage,
+        size: data?.size ?? 10,
+        totalElements: data?.totalElements ?? 0,
+        totalPages: data?.totalPages ?? 0,
+      });
     } catch (e) {
       console.error(e);
       alert(e.message || "전투 연구 목록 조회 실패");
@@ -243,7 +280,7 @@ export default function BattleResearchTab({ monsters = []}) {
     if (detailMap[postId]) return;
 
     try {
-      const detail = await fetchBattleResearchPostDetail(postId);
+      const detail = await fetchBattleResearchPostDetail(postId, commentPageMap[postId] ?? 0);
 
       setDetailMap((prev) => ({
         ...prev,
@@ -255,10 +292,43 @@ export default function BattleResearchTab({ monsters = []}) {
     }
   }
 
+  async function loadDetail(postId, nextCommentPage = commentPageMap[postId] ?? 0) {
+    const detail = await fetchBattleResearchPostDetail(postId, nextCommentPage);
+
+    setDetailMap((prev) => ({
+      ...prev,
+      [postId]: detail,
+    }));
+    setCommentPageMap((prev) => ({
+      ...prev,
+      [postId]: detail.commentPage ?? nextCommentPage,
+    }));
+  }
+
   async function handleCreatePost() {
     if (!title.trim()) {
         alert("제목을 입력해주세요.");
         return;
+    }
+
+    if (title.trim().length > POST_TITLE_MAX_LENGTH) {
+      alert(`제목은 ${POST_TITLE_MAX_LENGTH}자 이하로 입력해주세요.`);
+      return;
+    }
+
+    if (!content.trim()) {
+      alert("연구 내용을 입력해주세요.");
+      return;
+    }
+
+    if (content.trim().length > POST_CONTENT_MAX_LENGTH) {
+      alert(`연구 내용은 ${POST_CONTENT_MAX_LENGTH}자 이하로 입력해주세요.`);
+      return;
+    }
+
+    if (isPostCooldownActive()) {
+      alert("전투 연구 게시글은 30초에 한 번 작성할 수 있습니다.");
+      return;
     }
 
     if (selectedMonsterCodes.some((code) => !code)) {
@@ -281,9 +351,10 @@ export default function BattleResearchTab({ monsters = []}) {
         });
 
         alert("전투 연구가 등록되었습니다.");
+        setLastPostCreatedAt(Date.now());
         setTitle("");
         setContent("");
-        await loadPosts();
+        await loadPosts(0);
 
         setSelectedMonsterCodes(["", "", ""]);
         setActiveSlotIndex(0);
@@ -307,6 +378,16 @@ async function handleCreateComment(postId) {
     return;
   }
 
+  if (content.length > COMMENT_CONTENT_MAX_LENGTH) {
+    alert(`댓글은 ${COMMENT_CONTENT_MAX_LENGTH}자 이하로 입력해주세요.`);
+    return;
+  }
+
+  if (isCommentCooldownActive(postId)) {
+    alert("댓글은 30초에 한 번 작성할 수 있습니다.");
+    return;
+  }
+
   try {
     setLoading(true);
 
@@ -316,6 +397,10 @@ async function handleCreateComment(postId) {
     });
 
     alert("댓글이 등록되었습니다.");
+    setLastCommentCreatedAtMap((prev) => ({
+      ...prev,
+      [postId]: Date.now(),
+    }));
 
     setCommentContentMap((prev) => ({
       ...prev,
@@ -347,14 +432,8 @@ async function handleCreateComment(postId) {
       [postId]: "",
     }));
 
-    const detail = await fetchBattleResearchPostDetail(postId);
-
-    setDetailMap((prev) => ({
-      ...prev,
-      [postId]: detail,
-    }));
-
-    await loadPosts();
+    await loadDetail(postId, commentPageMap[postId] ?? 0);
+    await loadPosts(postPage);
   } catch (e) {
     console.error(e);
     alert(e.message || "댓글 등록 실패");
@@ -364,7 +443,12 @@ async function handleCreateComment(postId) {
 }
 
   useEffect(() => {
-    loadPosts();
+    loadPosts(0);
+  }, [leaderEffectFilter, monsterFilterCodes, fourStarDeckOnly]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNowTick(Date.now()), 1000);
+    return () => window.clearInterval(timer);
   }, []);
 
   return (
@@ -377,9 +461,13 @@ async function handleCreateComment(postId) {
         <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            maxLength={POST_TITLE_MAX_LENGTH}
             placeholder="제목"
             className="mb-3 w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
         />
+        <div className="-mt-2 mb-3 text-right text-xs font-semibold text-[#c8a96a]">
+          {title.length}/{POST_TITLE_MAX_LENGTH}
+        </div>
 
         <div className="mb-4 rounded-xl border border-[#745320] bg-[#211813] p-3">
           <div className="mb-2 text-sm font-semibold text-[#f6deb0]">연구 대상 방덱</div>
@@ -459,14 +547,18 @@ async function handleCreateComment(postId) {
         <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
+            maxLength={POST_CONTENT_MAX_LENGTH}
             placeholder="연구 내용"
             rows={4}
             className="mb-3 w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
         />
+        <div className="-mt-2 mb-3 text-right text-xs font-semibold text-[#c8a96a]">
+          {content.length}/{POST_CONTENT_MAX_LENGTH}
+        </div>
 
         <button
             onClick={handleCreatePost}
-            disabled={loading}
+            disabled={loading || isPostCooldownActive()}
             className="rounded-xl bg-black px-4 py-2 text-white disabled:bg-gray-400"
         >
             등록
@@ -490,7 +582,7 @@ async function handleCreateComment(postId) {
             4성 방덱
           </button>
           <button
-            onClick={loadPosts}
+            onClick={() => loadPosts(postPage)}
             disabled={loading}
             className="justify-self-end rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
           >
@@ -594,6 +686,9 @@ async function handleCreateComment(postId) {
                     <div className="mt-4 text-sm font-semibold">
                       댓글
                     </div>
+                    <div className="mt-1 text-xs font-semibold text-[#c8a96a]">
+                      총 {detail.totalComments ?? (detail.comments ?? []).length}개
+                    </div>
 
                     <div className="mt-2 space-y-2">
                       {(detail.comments ?? []).length === 0 ? (
@@ -620,6 +715,12 @@ async function handleCreateComment(postId) {
                         ))
                       )}
                     </div>
+                    <PaginationBar
+                      page={detail.commentPage ?? 0}
+                      totalPages={detail.totalCommentPages ?? 0}
+                      totalElements={detail.totalComments ?? 0}
+                      onChangePage={(nextPage) => loadDetail(postId, nextPage)}
+                    />
                     <div className="mt-4 rounded-xl border border-[#745320] bg-[#211813] p-3">
                       <div className="mb-3 text-sm font-semibold">
                         댓글 공격덱
@@ -718,14 +819,18 @@ async function handleCreateComment(postId) {
                             [postId]: e.target.value,
                           }))
                         }
+                        maxLength={COMMENT_CONTENT_MAX_LENGTH}
                         placeholder="댓글 내용을 입력하세요"
                         rows={3}
                         className="mb-2 w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
                       />
+                      <div className="-mt-1 mb-2 text-right text-xs font-semibold text-[#c8a96a]">
+                        {(commentContentMap[postId] ?? "").length}/{COMMENT_CONTENT_MAX_LENGTH}
+                      </div>
 
                       <button
                         onClick={() => handleCreateComment(postId)}
-                        disabled={loading}
+                        disabled={loading || isCommentCooldownActive(postId)}
                         className="rounded-xl bg-black px-3 py-1 text-sm text-white disabled:bg-gray-400"
                       >
                         댓글 등록
@@ -738,6 +843,12 @@ async function handleCreateComment(postId) {
             })}
           </div>
         )}
+        <PaginationBar
+          page={postPageInfo.page}
+          totalPages={postPageInfo.totalPages}
+          totalElements={postPageInfo.totalElements}
+          onChangePage={loadPosts}
+        />
       </section>
     </div>
   );

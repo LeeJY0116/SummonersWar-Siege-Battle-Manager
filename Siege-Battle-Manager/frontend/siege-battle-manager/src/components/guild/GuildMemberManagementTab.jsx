@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
+  createVirtualGuildMember,
+  deleteVirtualGuildMember,
   fetchGuildMemberBans,
   kickGuildMember,
   liftGuildMemberBan,
@@ -39,13 +41,24 @@ function compareMembers(a, b) {
   return bLoginAt - aLoginAt;
 }
 
-export default function GuildMemberManagementTab({ members, currentGuildRole, onRefreshMembers }) {
+function compareVirtualMembers(a, b) {
+  return String(a.displayName ?? "").localeCompare(String(b.displayName ?? ""));
+}
+
+export default function GuildMemberManagementTab({ guild, members, currentGuildRole, onRefreshMembers }) {
   const [workingId, setWorkingId] = useState(null);
   const [error, setError] = useState("");
   const [bans, setBans] = useState([]);
   const [banError, setBanError] = useState("");
+  const [virtualMemberName, setVirtualMemberName] = useState("");
   const realMembers = (members ?? []).filter((member) => member.realUser).sort(compareMembers);
+  const virtualMembers = (members ?? [])
+    .filter((member) => !member.realUser)
+    .sort(compareVirtualMembers);
+  const totalMembers = realMembers.length + virtualMembers.length;
   const canManageMemberRoles = currentGuildRole === "MASTER";
+  const canManageVirtualMembers =
+    currentGuildRole === "MASTER" || currentGuildRole === "SUB_MASTER";
 
   useEffect(() => {
     if (canManageMemberRoles) {
@@ -129,6 +142,48 @@ export default function GuildMemberManagementTab({ members, currentGuildRole, on
     }
   }
 
+  async function handleCreateVirtualMember(event) {
+    event.preventDefault();
+
+    const displayName = virtualMemberName.trim();
+    if (!displayName) {
+      setError("더미 계정 이름을 입력해주세요.");
+      return;
+    }
+    if (!guild?.id) {
+      setError("길드 정보를 찾을 수 없습니다.");
+      return;
+    }
+
+    try {
+      setWorkingId("virtual-create");
+      setError("");
+      await createVirtualGuildMember(guild.id, displayName);
+      setVirtualMemberName("");
+      await onRefreshMembers?.();
+    } catch (e) {
+      setError(e.message || "더미 계정을 생성하지 못했습니다.");
+    } finally {
+      setWorkingId(null);
+    }
+  }
+
+  async function handleDeleteVirtualMember(member) {
+    const ok = window.confirm(`${member.displayName} 더미 계정을 삭제할까요?`);
+    if (!ok) return;
+
+    try {
+      setWorkingId(`virtual-${member.id}`);
+      setError("");
+      await deleteVirtualGuildMember(member.id);
+      await onRefreshMembers?.();
+    } catch (e) {
+      setError(e.message || "더미 계정을 삭제하지 못했습니다.");
+    } finally {
+      setWorkingId(null);
+    }
+  }
+
   return (
     <div className="space-y-4">
       <GuildMemberApprovalPanel onApproved={onRefreshMembers} />
@@ -137,7 +192,10 @@ export default function GuildMemberManagementTab({ members, currentGuildRole, on
         <div className="flex items-center gap-3 border-b border-gray-100 px-4 py-4">
           <h3 className="text-lg font-bold text-gray-950">길드 멤버</h3>
           <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-700">
-            {realMembers.length}/35
+            {totalMembers}/35
+          </span>
+          <span className="text-xs text-gray-500">
+            실제 {realMembers.length}명 · 더미 {virtualMembers.length}명
           </span>
         </div>
 
@@ -249,6 +307,86 @@ export default function GuildMemberManagementTab({ members, currentGuildRole, on
           </table>
         </div>
       </section>
+
+      {canManageVirtualMembers && (
+        <section className="rounded-xl border border-gray-200 bg-white shadow-sm">
+          <div className="border-b border-gray-100 px-4 py-4">
+            <h3 className="text-lg font-bold text-gray-950">더미 계정</h3>
+            <p className="mt-1 text-sm text-gray-500">
+              로그인 계정 없이 인벤토리와 방덱만 관리할 길드원을 생성합니다. 더미 계정도 길드 인원 35명 제한에 포함됩니다.
+            </p>
+          </div>
+
+          <div className="space-y-4 p-4">
+            <form onSubmit={handleCreateVirtualMember} className="flex flex-col gap-2 md:flex-row">
+              <input
+                value={virtualMemberName}
+                onChange={(event) => setVirtualMemberName(event.target.value)}
+                disabled={workingId === "virtual-create" || totalMembers >= 35}
+                placeholder="더미 계정 이름"
+                className="min-w-0 flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm disabled:opacity-50"
+              />
+              <button
+                type="submit"
+                disabled={workingId === "virtual-create" || totalMembers >= 35}
+                className="rounded-md bg-gray-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
+              >
+                {workingId === "virtual-create" ? "생성 중" : "더미 계정 생성"}
+              </button>
+            </form>
+
+            {totalMembers >= 35 && (
+              <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+                길드 인원 제한 35명에 도달해 더미 계정을 추가할 수 없습니다.
+              </div>
+            )}
+
+            <div className="overflow-hidden rounded-lg border border-gray-200">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-gray-50 text-gray-500">
+                  <tr>
+                    <th className="px-4 py-3">이름</th>
+                    <th className="px-4 py-3">유형</th>
+                    <th className="px-4 py-3">관리</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {virtualMembers.length === 0 ? (
+                    <tr>
+                      <td className="px-4 py-6 text-gray-500" colSpan={3}>
+                        생성된 더미 계정이 없습니다.
+                      </td>
+                    </tr>
+                  ) : (
+                    virtualMembers.map((member) => (
+                      <tr key={member.id}>
+                        <td className="px-4 py-4 font-semibold text-gray-950">
+                          {member.displayName}
+                        </td>
+                        <td className="px-4 py-4">
+                          <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                            더미
+                          </span>
+                        </td>
+                        <td className="px-4 py-4">
+                          <button
+                            type="button"
+                            disabled={workingId === `virtual-${member.id}`}
+                            onClick={() => handleDeleteVirtualMember(member)}
+                            className="rounded-md border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-40"
+                          >
+                            삭제
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      )}
 
       {canManageMemberRoles && (
       <section className="rounded-xl border border-gray-200 bg-white shadow-sm">

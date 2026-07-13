@@ -7,14 +7,26 @@ import com.sbm.siegebackend.domain.research.dto.*;
 import com.sbm.siegebackend.domain.user.User;
 import com.sbm.siegebackend.domain.user.UserService;
 import com.sbm.siegebackend.global.exception.NotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
 @Transactional
 public class BattleResearchService {
+
+    private static final int POST_TITLE_MAX_LENGTH = 100;
+    private static final int POST_CONTENT_MAX_LENGTH = 3000;
+    private static final int COMMENT_CONTENT_MAX_LENGTH = 1000;
+    private static final int CREATE_INTERVAL_SECONDS = 30;
+    private static final int PAGE_SIZE = 10;
 
     private final BattleResearchPostRepository postRepository;
     private final BattleResearchCommentRepository commentRepository;
@@ -60,6 +72,13 @@ public class BattleResearchService {
 
     public Long createPost(String email, BattleResearchPostCreateRequest request) {
         GuildMember actor = getActor(email);
+        Long authorUserId = getActorUserId(email);
+
+        validatePostCreateRateLimit(authorUserId);
+        String title = normalizeRequired(request.getTitle(), "제목");
+        String content = normalizeRequired(request.getContent(), "본문");
+        validateMaxLength(title, POST_TITLE_MAX_LENGTH, "제목");
+        validateMaxLength(content, POST_CONTENT_MAX_LENGTH, "본문");
 
         if (request.getMonsterCodes() == null || request.getMonsterCodes().size() != 3) {
             throw new IllegalArgumentException("방덱은 3마리 몬스터로 구성되어야 합니다.");
@@ -70,13 +89,12 @@ public class BattleResearchService {
                         .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 CODE: " + code)))
                 .toList();
 
-        Long authorUserId = getActorUserId(email);
         String authorName = actor.getDisplayName(); // 길드 내 이름 스냅샷
 
         BattleResearchPost post = new BattleResearchPost(
                 actor.getGuild(),
-                request.getTitle(),
-                request.getContent(),
+                title,
+                content,
                 defense,
                 authorUserId,
                 authorName
@@ -87,11 +105,29 @@ public class BattleResearchService {
     }
 
     @Transactional(readOnly = true)
-    public List<BattleResearchPostListItemResponse> listPosts(String email) {
+    public BattleResearchPostPageResponse listPosts(String email,
+                                                   int page,
+                                                   String leaderEffectType,
+                                                   List<String> monsterCodes,
+                                                   boolean fourStarOnly) {
         GuildMember actor = getActor(email);
         Long guildId = actor.getGuild().getId();
+        Pageable pageable = PageRequest.of(Math.max(0, page), PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createdAt"));
+        String normalizedLeaderEffectType = normalizeOptional(leaderEffectType);
+        List<String> normalizedMonsterCodes = normalizeMonsterCodes(monsterCodes);
+        List<String> queryMonsterCodes = normalizedMonsterCodes.isEmpty()
+                ? List.of("__NO_MONSTER_FILTER__")
+                : normalizedMonsterCodes;
 
-        List<BattleResearchPost> posts = postRepository.findByGuild_IdOrderByCreatedAtDesc(guildId);
+        Page<BattleResearchPost> postPage = postRepository.searchByGuildAndFilters(
+                guildId,
+                normalizedLeaderEffectType,
+                queryMonsterCodes,
+                normalizedMonsterCodes.size(),
+                fourStarOnly,
+                pageable
+        );
+        List<BattleResearchPost> posts = postPage.getContent();
 
         // ✅ 댓글 개수 한 번에 조회
         List<Long> postIds = posts.stream().map(BattleResearchPost::getId).toList();
@@ -106,7 +142,7 @@ public class BattleResearchService {
                         BattleResearchCommentRepository.PostCommentCount::getCnt
                 ));
 
-        return posts.stream()
+        List<BattleResearchPostListItemResponse> items = posts.stream()
                 .map(p -> new BattleResearchPostListItemResponse(
                         p.getId(),
                         p.getTitle(),
@@ -123,10 +159,18 @@ public class BattleResearchService {
                         p.getCreatedAt()
                 ))
                 .toList();
+
+        return new BattleResearchPostPageResponse(
+                items,
+                postPage.getNumber(),
+                postPage.getSize(),
+                postPage.getTotalElements(),
+                postPage.getTotalPages()
+        );
     }
 
     @Transactional(readOnly = true)
-    public BattleResearchPostDetailResponse getPostDetail(String email, Long postId) {
+    public BattleResearchPostDetailResponse getPostDetail(String email, Long postId, int commentPage) {
         GuildMember actor = getActor(email);
 
         BattleResearchPost post = postRepository.findDetailWithDefense(postId)
@@ -136,8 +180,16 @@ public class BattleResearchService {
             throw new IllegalStateException("다른 길드의 게시글은 조회할 수 없습니다.");
         }
 
-        List<BattleResearchComment> comments =
-                commentRepository.findByPostIdWithMonsters(postId);
+        Pageable pageable = PageRequest.of(Math.max(0, commentPage), PAGE_SIZE, Sort.by(Sort.Direction.ASC, "createdAt"));
+        Page<BattleResearchComment> commentIdPage = commentRepository.findByPost_Id(postId, pageable);
+        List<Long> commentIds = commentIdPage.getContent().stream()
+                .map(BattleResearchComment::getId)
+                .toList();
+        List<BattleResearchComment> comments = commentIds.isEmpty()
+                ? List.of()
+                : commentRepository.findByIdsWithMonsters(commentIds).stream()
+                .sorted(Comparator.comparing(BattleResearchComment::getCreatedAt))
+                .toList();
 
         List<BattleResearchCommentResponse> commentResponses =
                 comments.stream()
@@ -173,7 +225,11 @@ public class BattleResearchService {
                         .toList(),
                 post.getCreatedAt(),
                 post.getUpdatedAt(),
-                commentResponses
+                commentResponses,
+                commentIdPage.getNumber(),
+                commentIdPage.getSize(),
+                commentIdPage.getTotalElements(),
+                commentIdPage.getTotalPages()
         );
     }
 
@@ -202,7 +258,10 @@ public class BattleResearchService {
             throw new IllegalArgumentException("방덱은 3마리 몬스터로 구성되어야 합니다.");
         }
 
-        post.changeTitle(request.getTitle());
+        String title = normalizeRequired(request.getTitle(), "제목");
+        validateMaxLength(title, POST_TITLE_MAX_LENGTH, "제목");
+
+        post.changeTitle(title);
         post.changeDefenseMonsters(defense);
     }
 
@@ -238,6 +297,11 @@ public class BattleResearchService {
 
     public Long createComment(String email, Long postId, BattleResearchCommentCreateRequest request) {
         GuildMember actor = getActor(email);
+        Long authorUserId = getActorUserId(email);
+
+        validateCommentCreateRateLimit(authorUserId);
+        String content = normalizeRequired(request.getContent(), "댓글");
+        validateMaxLength(content, COMMENT_CONTENT_MAX_LENGTH, "댓글");
 
         BattleResearchPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("게시글이 존재하지 않습니다."));
@@ -255,13 +319,12 @@ public class BattleResearchService {
             throw new IllegalArgumentException("공덱 몬스터는 최대 3마리까지 선택 가능합니다.");
         }
 
-        Long authorUserId = getActorUserId(email);
         String authorName = actor.getDisplayName();
 
         BattleResearchComment comment = new BattleResearchComment(
                 post,
                 attack,
-                request.getContent(),
+                content,
                 authorUserId,
                 authorName
         );
@@ -296,8 +359,11 @@ public class BattleResearchService {
             throw new IllegalArgumentException("공덱 몬스터는 최대 3마리까지 선택 가능합니다.");
         }
 
+        String content = normalizeRequired(request.getContent(), "댓글");
+        validateMaxLength(content, COMMENT_CONTENT_MAX_LENGTH, "댓글");
+
         comment.changeAttackMonsters(attack);
-        comment.changeContent(request.getContent());
+        comment.changeContent(content);
     }
 
     public void deleteComment(String email, Long commentId) {
@@ -357,5 +423,55 @@ public class BattleResearchService {
         }
 
         return monster.getName();
+    }
+
+    private void validatePostCreateRateLimit(Long authorUserId) {
+        postRepository.findFirstByAuthorUserIdOrderByCreatedAtDesc(authorUserId)
+                .ifPresent(post -> validateCreateInterval(post.getCreatedAt(), "전투 연구 게시글"));
+    }
+
+    private void validateCommentCreateRateLimit(Long authorUserId) {
+        commentRepository.findFirstByAuthorUserIdOrderByCreatedAtDesc(authorUserId)
+                .ifPresent(comment -> validateCreateInterval(comment.getCreatedAt(), "댓글"));
+    }
+
+    private void validateCreateInterval(LocalDateTime lastCreatedAt, String targetName) {
+        if (lastCreatedAt.plusSeconds(CREATE_INTERVAL_SECONDS).isAfter(LocalDateTime.now())) {
+            throw new IllegalStateException(targetName + "은 30초에 한 번 작성할 수 있습니다.");
+        }
+    }
+
+    private String normalizeRequired(String value, String fieldName) {
+        if (value == null || value.trim().isEmpty()) {
+            throw new IllegalArgumentException(fieldName + "을 입력해주세요.");
+        }
+
+        return value.trim();
+    }
+
+    private String normalizeOptional(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+
+        return value.trim();
+    }
+
+    private List<String> normalizeMonsterCodes(List<String> monsterCodes) {
+        if (monsterCodes == null) {
+            return List.of();
+        }
+
+        return monsterCodes.stream()
+                .map(this::normalizeOptional)
+                .filter(code -> code != null)
+                .distinct()
+                .toList();
+    }
+
+    private void validateMaxLength(String value, int maxLength, String fieldName) {
+        if (value.length() > maxLength) {
+            throw new IllegalArgumentException(fieldName + "은 " + maxLength + "자 이하로 입력해주세요.");
+        }
     }
 }

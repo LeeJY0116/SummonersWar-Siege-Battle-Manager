@@ -7,10 +7,16 @@ import { fetchDefenseDecks } from "../../lib/defenseDeck.js";
 import Toast from "../common/Toast.jsx";
 import { useToast } from "../../hooks/useToast.js";
 
+const MAX_MONSTER_COUNT = 10;
+
 function clampNonNegative(n) {
   const v = Number.isFinite(n) ? n : Number(n);
   if (!Number.isFinite(v)) return 0;
   return Math.max(0, Math.floor(v));
+}
+
+function clampInventoryCount(n) {
+  return Math.min(MAX_MONSTER_COUNT, clampNonNegative(n));
 }
 
 function getMemberDisplayName(member) {
@@ -122,7 +128,7 @@ export default function InventoryTab({
 
           if(!code) continue;
 
-          map[String(code)] = it.count ?? it.quantity ?? 0;
+          map[String(code)] = clampInventoryCount(it.count ?? it.quantity ?? 0);
         }
         setInventoryMap(map);
       })
@@ -194,10 +200,11 @@ export default function InventoryTab({
     const code = String(monsterCode);
     const minCount = usedCountMap[code] || 0;
 
-    const next = Math.max(minCount, clampNonNegative(nextCount));
-    const prev = clampNonNegative(inventoryMap[code] ?? 0);
+    const normalizedNextCount = clampInventoryCount(nextCount);
+    const next = Math.max(minCount, normalizedNextCount);
+    const prev = clampInventoryCount(inventoryMap[code] ?? 0);
 
-    if (clampNonNegative(nextCount) < minCount) {
+    if (normalizedNextCount < minCount) {
       showToast(`방덱에 사용 중인 ${minCount}개 미만으로 줄일 수 없습니다.`);
     }
 
@@ -224,7 +231,7 @@ export default function InventoryTab({
     // 0도 포함해 보내려면 그대로, 0 제거하고 싶으면 filter 적용
     const items = Object.entries(inventoryMap).map(([monsterCode, count]) => ({
       monsterCode,
-      quantity: clampNonNegative(count),
+      quantity: clampInventoryCount(count),
     }))
     .filter((item) => item.monsterCode && item.quantity > 0);
 
@@ -329,7 +336,7 @@ export default function InventoryTab({
         <div className="grid max-h-[560px] grid-cols-1 gap-2 overflow-y-auto rounded-xl border border-[#745320] bg-[#211813] p-3 [scrollbar-color:#9b743a_#2f241b] [scrollbar-width:thin] md:grid-cols-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#9b743a] [&::-webkit-scrollbar-track]:bg-[#2f241b]">
           {(filteredMonsters || []).map((m) => {
             const mid = String(m.id);
-            const count = clampNonNegative(inventoryMap[mid] ?? 0);
+            const count = clampInventoryCount(inventoryMap[mid] ?? 0);
 
             return (
               <div
@@ -357,7 +364,7 @@ export default function InventoryTab({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => bump(mid, -1)}
-                    disabled={!canEditSelected}
+                    disabled={!canEditSelected || count <= 0}
                     className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 font-semibold text-[#f8e0ad] hover:border-[#f6c44f] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     -
@@ -366,13 +373,16 @@ export default function InventoryTab({
                   <input
                     value={String(count)}
                     onChange={(e) => changeCount(mid, e.target.value)}
+                    type="number"
+                    min="0"
+                    max={MAX_MONSTER_COUNT}
                     readOnly={!canEditSelected}
                     className="w-16 rounded-xl border border-[#9b743a] bg-[#221913] px-2 py-1 text-center font-semibold text-[#f8e0ad] read-only:bg-[#2f241b] read-only:text-[#8f7a58]"
                   />
 
                   <button
                     onClick={() => bump(mid, +1)}
-                    disabled={!canEditSelected}
+                    disabled={!canEditSelected || count >= MAX_MONSTER_COUNT}
                     className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 font-semibold text-[#f8e0ad] hover:border-[#f6c44f] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     +

@@ -37,6 +37,19 @@ export async function leaveMyGuild() {
   });
 }
 
+export async function createVirtualGuildMember(guildId, displayName) {
+  await apiFetch(`/guild-members/${guildId}/virtual`, {
+    method: "POST",
+    body: JSON.stringify({ displayName }),
+  });
+}
+
+export async function deleteVirtualGuildMember(guildMemberId) {
+  await apiFetch(`/guild-members/${guildMemberId}`, {
+    method: "DELETE",
+  });
+}
+
 export async function updateGuildMemberRole(guildMemberId, role) {
   await apiFetch(`/guild-members/${guildMemberId}/role`, {
     method: "PATCH",

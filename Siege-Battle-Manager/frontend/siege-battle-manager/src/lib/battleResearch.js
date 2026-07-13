@@ -1,12 +1,41 @@
 import { apiFetch } from "./api";
 
-export async function fetchBattleResearchPosts() {
-  const res = await apiFetch("/research/posts");
-  return res.data;
+export async function fetchBattleResearchPosts(page = 0, filters = {}) {
+  const params = new URLSearchParams();
+  params.set("page", String(page));
+
+  if (filters.leaderEffectType) {
+    params.set("leaderEffectType", filters.leaderEffectType);
+  }
+
+  if (filters.fourStarOnly) {
+    params.set("fourStarOnly", "true");
+  }
+
+  (filters.monsterCodes ?? []).forEach((code) => {
+    if (code) {
+      params.append("monsterCodes", code);
+    }
+  });
+
+  const res = await apiFetch(`/research/posts?${params.toString()}`);
+  const data = res.data;
+
+  if (Array.isArray(data)) {
+    return {
+      items: data,
+      page: 0,
+      size: data.length,
+      totalElements: data.length,
+      totalPages: data.length > 0 ? 1 : 0,
+    };
+  }
+
+  return data;
 }
 
-export async function fetchBattleResearchPostDetail(postId) {
-  const res = await apiFetch(`/research/posts/${postId}`);
+export async function fetchBattleResearchPostDetail(postId, commentPage = 0) {
+  const res = await apiFetch(`/research/posts/${postId}?commentPage=${commentPage}`);
   return res.data;
 }
 

@@ -19,6 +19,10 @@ public class BattleResearchPostDetailResponse {
     private LocalDateTime updatedAt;
 
     private List<BattleResearchCommentResponse> comments;
+    private int commentPage;
+    private int commentSize;
+    private long totalComments;
+    private int totalCommentPages;
 
     public BattleResearchPostDetailResponse(Long postId,
                                             String title,
@@ -29,6 +33,22 @@ public class BattleResearchPostDetailResponse {
                                             LocalDateTime createdAt,
                                             LocalDateTime updatedAt,
                                             List<BattleResearchCommentResponse> comments) {
+        this(postId, title, authorName, authorUserId, content, defenseMonsters, createdAt, updatedAt, comments, 0, comments == null ? 0 : comments.size(), comments == null ? 0 : comments.size(), 1);
+    }
+
+    public BattleResearchPostDetailResponse(Long postId,
+                                            String title,
+                                            String authorName,
+                                            Long authorUserId,
+                                            String content,
+                                            List<MonsterItem> defenseMonsters,
+                                            LocalDateTime createdAt,
+                                            LocalDateTime updatedAt,
+                                            List<BattleResearchCommentResponse> comments,
+                                            int commentPage,
+                                            int commentSize,
+                                            long totalComments,
+                                            int totalCommentPages) {
         this.postId = postId;
         this.title = title;
         this.authorName = authorName;
@@ -38,6 +58,10 @@ public class BattleResearchPostDetailResponse {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.comments = comments;
+        this.commentPage = commentPage;
+        this.commentSize = commentSize;
+        this.totalComments = totalComments;
+        this.totalCommentPages = totalCommentPages;
     }
 
     public static class MonsterItem {
@@ -65,4 +89,8 @@ public class BattleResearchPostDetailResponse {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public List<BattleResearchCommentResponse> getComments() { return comments; }
+    public int getCommentPage() { return commentPage; }
+    public int getCommentSize() { return commentSize; }
+    public long getTotalComments() { return totalComments; }
+    public int getTotalCommentPages() { return totalCommentPages; }
 }

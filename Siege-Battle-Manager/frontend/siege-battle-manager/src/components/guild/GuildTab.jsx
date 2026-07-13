@@ -79,6 +79,7 @@ export default function GuildTab({
         <BattleResearchTab monsters={monsters} />
       ) : subTab === "members" && canManageGuild ? (
         <GuildMemberManagementTab
+          guild={guild}
           members={members}
           currentGuildRole={currentGuildRole}
           onRefreshMembers={onRefreshMembers}

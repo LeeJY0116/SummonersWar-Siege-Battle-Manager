@@ -6,9 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/research")
 public class BattleResearchController {
@@ -32,21 +29,26 @@ public class BattleResearchController {
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<ApiResponse<List<BattleResearchPostListItemResponse>>> listPosts(
-            Authentication auth
+    public ResponseEntity<ApiResponse<BattleResearchPostPageResponse>> listPosts(
+            Authentication auth,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String leaderEffectType,
+            @RequestParam(required = false) java.util.List<String> monsterCodes,
+            @RequestParam(defaultValue = "false") boolean fourStarOnly
     ) {
         String email = (String) auth.getPrincipal();
-        List<BattleResearchPostListItemResponse> posts = service.listPosts(email);
+        BattleResearchPostPageResponse posts = service.listPosts(email, page, leaderEffectType, monsterCodes, fourStarOnly);
         return ResponseEntity.ok(ApiResponse.success(posts));
     }
 
     @GetMapping("/posts/{postId}")
     public ResponseEntity<ApiResponse<BattleResearchPostDetailResponse>> detail(
             @PathVariable Long postId,
-            Authentication auth
+            Authentication auth,
+            @RequestParam(defaultValue = "0") int commentPage
     ) {
         String email = (String) auth.getPrincipal();
-        BattleResearchPostDetailResponse detail = service.getPostDetail(email, postId);
+        BattleResearchPostDetailResponse detail = service.getPostDetail(email, postId, commentPage);
         return ResponseEntity.ok(ApiResponse.success(detail));
     }
 
