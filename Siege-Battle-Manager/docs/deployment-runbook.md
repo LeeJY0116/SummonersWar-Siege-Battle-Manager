@@ -1,0 +1,83 @@
+# Deployment Runbook
+
+이 문서는 첫 운영 배포를 진행할 때 따라갈 순서를 정리한다.
+
+## 1. Neon PostgreSQL
+
+1. Neon에서 새 프로젝트를 만든다.
+2. 데이터베이스 이름과 계정을 확인한다.
+3. JDBC URL을 복사한다.
+4. 운영 비밀번호는 Git에 기록하지 않고 배포 서비스 환경변수에만 등록한다.
+
+Render에 넣을 `DB_URL`은 JDBC 형식이어야 한다.
+
+```text
+jdbc:postgresql://HOST:5432/DB_NAME?sslmode=require
+```
+
+## 2. Render Backend
+
+Render에서 Web Service를 만든다.
+
+| Field | Value |
+| --- | --- |
+| Root Directory | `Siege-Battle-Manager/backend/siege-backend` |
+| Runtime | Docker 또는 Java |
+| Build Command | `./gradlew clean build -x test` |
+| Start Command | `java -jar build/libs/siege-backend-0.0.1-SNAPSHOT.jar` |
+
+Windows 로컬과 달리 Render는 Linux 환경이므로 Gradle wrapper 실행 권한이 필요할 수 있다.
+
+필수 환경변수:
+
+```text
+SPRING_PROFILES_ACTIVE=prod
+DB_URL=jdbc:postgresql://HOST:5432/DB_NAME?sslmode=require
+DB_USERNAME=...
+DB_PASSWORD=...
+JWT_SECRET=...
+CORS_ALLOWED_ORIGINS=https://FRONTEND_DOMAIN
+DDL_AUTO=validate
+```
+
+첫 배포에서 테이블 생성이 필요하면 임시로 `DDL_AUTO=update`를 사용하고, 정상 확인 후 `validate`로 되돌린다.
+
+## 3. Cloudflare Pages Frontend
+
+Cloudflare Pages에서 프론트 프로젝트를 연결한다.
+
+| Field | Value |
+| --- | --- |
+| Root Directory | `Siege-Battle-Manager/frontend/siege-battle-manager` |
+| Build Command | `npm run build` |
+| Build Output Directory | `dist` |
+
+필수 환경변수:
+
+```text
+VITE_API_BASE_URL=https://BACKEND_DOMAIN/api
+```
+
+프론트 빌드 이후 API 호출이 실패하면 먼저 `VITE_API_BASE_URL`과 백엔드 `CORS_ALLOWED_ORIGINS`가 서로 맞는지 확인한다.
+
+## 4. Smoke Test
+
+배포 후 최소 확인 항목:
+
+1. 로그인 실패 메시지가 정상 출력되는지 확인한다.
+2. admin 계정 로그인이 가능한지 확인한다.
+3. 일반 회원가입 요청이 승인 전 로그인 불가 상태인지 확인한다.
+4. 길드장 승인 후 길드 탭 접근이 가능한지 확인한다.
+5. 길드원은 다른 길드 데이터에 접근할 수 없는지 확인한다.
+6. 인벤토리 수량 제한이 유지되는지 확인한다.
+7. 방덱 생성, 전투 연구 작성, 댓글 작성이 가능한지 확인한다.
+8. `/api/admin/**`가 일반 계정으로 차단되는지 확인한다.
+
+## 5. After First Successful Deploy
+
+첫 배포가 성공하면 저장소 분리를 진행한다.
+
+- Public 저장소: 포트폴리오용 안정 버전과 문서 유지
+- Private 저장소: 운영 설정, 점령전 로그 파서, SMTP 설정, 실서비스 자동화 관리
+
+운영 비밀값은 어느 저장소에도 커밋하지 않는다.
