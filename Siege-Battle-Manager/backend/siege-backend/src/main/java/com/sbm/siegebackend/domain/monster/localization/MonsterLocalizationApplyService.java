@@ -36,21 +36,18 @@ public class MonsterLocalizationApplyService {
 
     public int applyLocalization() {
         Map<String, MonsterLocalizationEntry> entries = readEntries();
+        List<Monster> managedMonsters = monsterRepository.findAll().stream()
+                .filter(monster -> isManagedMonsterCode(monster.getCode()))
+                .toList();
+        List<Monster> monstersToSave = new ArrayList<>();
 
-        int appliedCount = 0;
-        hideManagedMonstersMissingFromLocalization(entries);
+        for (Monster monster : managedMonsters) {
+            String monsterCode = monster.getCode();
+            MonsterLocalizationEntry localization = entries.get(monsterCode);
 
-        for (Map.Entry<String, MonsterLocalizationEntry> entry : entries.entrySet()) {
-            String monsterCode = entry.getKey();
-            MonsterLocalizationEntry localization = entry.getValue();
-
-            if (monsterCode == null || monsterCode.isBlank() || localization == null) {
-                continue;
-            }
-
-            Monster monster = monsterRepository.findByCode(monsterCode).orElse(null);
-
-            if (monster == null) {
+            if (localization == null) {
+                monster.updateLocalization(monster.getKoreanName(), monster.getAliasList(), false);
+                monstersToSave.add(monster);
                 continue;
             }
 
@@ -59,10 +56,11 @@ public class MonsterLocalizationApplyService {
                     localization.getAliases(),
                     localization.getEnabled()
             );
-            appliedCount++;
+            monstersToSave.add(monster);
         }
 
-        return appliedCount;
+        monsterRepository.saveAll(monstersToSave);
+        return monstersToSave.size();
     }
 
     @Transactional(readOnly = true)
@@ -140,16 +138,6 @@ public class MonsterLocalizationApplyService {
                 entry.getAliases() == null ? List.of() : entry.getAliases(),
                 monster == null ? null : monster.getImageUrl()
         );
-    }
-
-    private void hideManagedMonstersMissingFromLocalization(Map<String, MonsterLocalizationEntry> entries) {
-        for (Monster monster : monsterRepository.findAll()) {
-            String code = monster.getCode();
-
-            if (isManagedMonsterCode(code) && !entries.containsKey(code)) {
-                monster.updateLocalization(monster.getKoreanName(), monster.getAliasList(), false);
-            }
-        }
     }
 
     private boolean isManagedMonsterCode(String code) {
