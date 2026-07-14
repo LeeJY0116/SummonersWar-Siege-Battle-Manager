@@ -54,6 +54,10 @@ public class DefenseDeckService {
         GuildMember owner = guildMemberRepository.findById(ownerMemberId)
                 .orElseThrow(() -> new NotFoundException("대상 길드원이 존재하지 않습니다."));
 
+        if (owner.getStatus() != GuildMemberStatus.APPROVED) {
+            throw new IllegalStateException("승인된 길드원에게만 방덱을 생성할 수 있습니다.");
+        }
+
         if (!actor.getGuild().getId().equals(owner.getGuild().getId())) {
             throw new IllegalStateException("다른 길드원의 방덱은 생성할 수 없습니다.");
         }

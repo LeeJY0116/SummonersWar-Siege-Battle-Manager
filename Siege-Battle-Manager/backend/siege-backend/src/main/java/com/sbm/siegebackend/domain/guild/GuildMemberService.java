@@ -90,6 +90,10 @@ public class GuildMemberService {
             throw new IllegalStateException("다른 길드의 멤버는 삭제할 수 없습니다.");
         }
 
+        if (target.getStatus() != GuildMemberStatus.APPROVED) {
+            throw new IllegalStateException("승인된 임의 길드원만 삭제할 수 있습니다.");
+        }
+
         // 권한 확인
         if (actor.getRole() == GuildMemberRole.MEMBER) {
             throw new IllegalStateException("길드원은 임의 길드원을 삭제할 수 없습니다.");
@@ -279,6 +283,10 @@ public class GuildMemberService {
 
         if (!actor.getGuild().getId().equals(target.getGuild().getId())) {
             throw new ForbiddenException("같은 길드의 길드원만 처리할 수 있습니다.");
+        }
+
+        if (target.getStatus() != GuildMemberStatus.APPROVED) {
+            throw new ForbiddenException("승인된 길드원만 처리할 수 있습니다.");
         }
 
         return target;

@@ -50,6 +50,10 @@ public class GuildMemberInventoryService {
         GuildMember target = guildMemberRepository.findById(guildMemberId)
                 .orElseThrow(() -> new NotFoundException("해당 길드원이 존재하지 않습니다."));
 
+        if (target.getStatus() != GuildMemberStatus.APPROVED) {
+            throw new IllegalStateException("승인된 길드원의 인벤토리만 조회할 수 있습니다.");
+        }
+
         // 같은 길드인지 확인
         if (!actor.getGuild().getId().equals(target.getGuild().getId())) {
             throw new IllegalStateException("다른 길드원의 인벤토리는 조회할 수 없습니다.");
@@ -90,6 +94,10 @@ public class GuildMemberInventoryService {
 
         GuildMember target = guildMemberRepository.findById(guildMemberId)
                 .orElseThrow(() -> new NotFoundException("해당 길드원이 존재하지 않습니다."));
+
+        if (target.getStatus() != GuildMemberStatus.APPROVED) {
+            throw new IllegalStateException("승인된 길드원의 인벤토리만 수정할 수 있습니다.");
+        }
 
         // 같은 길드인지 확인
         if (!actor.getGuild().getId().equals(target.getGuild().getId())) {
