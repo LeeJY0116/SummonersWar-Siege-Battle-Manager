@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sbm-postgres
+    environment:
+      POSTGRES_DB: siege_manager
+      POSTGRES_USER: siege_user
+      POSTGRES_PASSWORD: siege_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - sbm-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U siege_user -d siege_manager"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  sbm-postgres-data:
