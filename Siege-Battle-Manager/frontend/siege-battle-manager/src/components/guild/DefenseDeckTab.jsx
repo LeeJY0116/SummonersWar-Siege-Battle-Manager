@@ -14,11 +14,14 @@ import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
 import { getElementLabel, isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
 
 function getDeckGroupKey(deck) {
-  return (deck.monsters || [])
+  const monsterCodes = (deck.monsters || [])
     .map((monster) => monster.monsterCode)
-    .filter(Boolean)
-    .sort()
-    .join("|");
+    .filter(Boolean);
+
+  if (monsterCodes.length === 0) return "";
+
+  const [leaderCode, ...memberCodes] = monsterCodes;
+  return `${leaderCode}::${memberCodes.sort().join("|")}`;
 }
 
 function groupDecksByMonsterSet(decks) {
@@ -85,15 +88,11 @@ export default function DefenseDeckTab({
         const leaderMonster = monsters.find(
           (m) => String(m.id) === String(deck.leaderMonsterId) || m.code === deck.leaderMonsterCode
         );
-        const effect = deck.leaderEffectType || (
-          isGuildBattleLeaderEffect(leaderMonster) ? leaderMonster.leaderEffectType : ""
-        );
+        const effect = isGuildBattleLeaderEffect(leaderMonster)
+          ? leaderMonster.leaderEffectType
+          : "";
 
         if (effect !== leaderEffectFilter) {
-          return false;
-        }
-
-        if (leaderMonster && !isGuildBattleLeaderEffect(leaderMonster)) {
           return false;
         }
       }

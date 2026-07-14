@@ -13,7 +13,11 @@ import { matchesMonsterSearch } from "../../lib/monsterSearch.js";
 import MonsterFilterControls, {
   matchesMonsterPickerFilters,
 } from "../monsters/MonsterFilterControls.jsx";
-import { getElementLabel, getLeaderEffectLabel } from "../../lib/monsterLabels.js";
+import {
+  getElementLabel,
+  getLeaderEffectLabel,
+  isGuildBattleLeaderEffect,
+} from "../../lib/monsterLabels.js";
 
 const POST_TITLE_MAX_LENGTH = 100;
 const POST_CONTENT_MAX_LENGTH = 3000;
@@ -81,6 +85,10 @@ export default function BattleResearchTab({ monsters = [], currentUserId = null,
 
   function getLeaderEffectTextFromItems(items = []) {
     const leaderMonster = getLeaderMonsterFromItems(items);
+
+    if (!isGuildBattleLeaderEffect(leaderMonster)) {
+      return "없음";
+    }
 
     return (
       leaderMonster?.leaderEffectText ||

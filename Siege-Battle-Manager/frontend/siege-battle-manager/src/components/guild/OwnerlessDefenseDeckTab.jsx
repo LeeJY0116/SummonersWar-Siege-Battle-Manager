@@ -83,6 +83,10 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
   function getLeaderEffectText(deck) {
     const leaderMonster = getLeaderMonsterFromDeck(deck);
 
+    if (!isGuildBattleLeaderEffect(leaderMonster)) {
+      return "없음";
+    }
+
     return (
       leaderMonster?.leaderEffectText ||
       getLeaderEffectLabel(leaderMonster?.leaderEffectType) ||

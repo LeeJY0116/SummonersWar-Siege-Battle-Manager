@@ -1,4 +1,4 @@
-const GUILD_BATTLE_LEADER_AREAS = new Set(["General", "Guild", "Element", "Attribute"]);
+const GUILD_BATTLE_LEADER_AREAS = new Set(["general", "guild", "element", "attribute"]);
 
 const LEADER_EFFECT_LABELS = {
   "Attack Power": "공격력",
@@ -53,11 +53,19 @@ export function getElementLabel(element) {
   return ELEMENT_LABELS[element] ?? element;
 }
 
+function normalizeLeaderArea(area) {
+  return String(area ?? "").trim().toLowerCase();
+}
+
 export function isGuildBattleLeaderEffect(monster) {
+  const leaderEffectType = monster?.leaderEffectType;
+  const leaderEffectArea = normalizeLeaderArea(monster?.leaderEffectArea);
+  const leaderEffectElement = String(monster?.leaderEffectElement ?? "").trim();
+
   return Boolean(
-    monster?.leaderEffectType &&
-      (GUILD_BATTLE_LEADER_AREAS.has(monster.leaderEffectArea) ||
-        (!monster.leaderEffectArea && Boolean(monster.leaderEffectElement)))
+    leaderEffectType &&
+      (GUILD_BATTLE_LEADER_AREAS.has(leaderEffectArea) ||
+        (!leaderEffectArea && Boolean(leaderEffectElement)))
   );
 }
 

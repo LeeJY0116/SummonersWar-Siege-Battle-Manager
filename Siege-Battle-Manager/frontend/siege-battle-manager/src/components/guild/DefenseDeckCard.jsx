@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { getElementLabel, getLeaderEffectLabel } from "../../lib/monsterLabels.js";
+import {
+  getElementLabel,
+  getLeaderEffectLabel,
+  isGuildBattleLeaderEffect,
+} from "../../lib/monsterLabels.js";
 
 const TEXT = {
   leaderEffect: "리더 효과",
@@ -10,12 +14,16 @@ const TEXT = {
 };
 
 function getLeaderEffectText(deck, leaderMonster) {
+  if (!isGuildBattleLeaderEffect(leaderMonster)) {
+    return TEXT.none;
+  }
+
   return (
     leaderMonster?.leaderEffectText ||
-    getLeaderEffectLabel(deck.leaderEffectType) ||
     getLeaderEffectLabel(leaderMonster?.leaderEffectType) ||
-    deck.leaderEffectType ||
+    getLeaderEffectLabel(deck.leaderEffectType) ||
     leaderMonster?.leaderEffectType ||
+    deck.leaderEffectType ||
     TEXT.none
   );
 }
