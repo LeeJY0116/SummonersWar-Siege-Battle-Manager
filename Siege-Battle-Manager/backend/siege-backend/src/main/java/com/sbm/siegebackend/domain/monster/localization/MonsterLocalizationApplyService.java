@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbm.siegebackend.domain.monster.Monster;
 import com.sbm.siegebackend.domain.monster.MonsterRepository;
+import com.sbm.siegebackend.domain.monster.sync.MonsterAdminJobService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,49 +20,67 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Transactional
 public class MonsterLocalizationApplyService {
 
     private static final String LOCALIZATION_PATH = "data/monster-localization.json";
+    private static final int APPLY_BATCH_SIZE = 100;
     private static final Path SOURCE_LOCALIZATION_PATH =
             Path.of("src", "main", "resources", "data", "monster-localization.json");
 
     private final MonsterRepository monsterRepository;
     private final ObjectMapper objectMapper;
+    private final TransactionTemplate transactionTemplate;
+    private final MonsterAdminJobService jobService;
 
     public MonsterLocalizationApplyService(MonsterRepository monsterRepository,
-                                           ObjectMapper objectMapper) {
+                                           ObjectMapper objectMapper,
+                                           TransactionTemplate transactionTemplate,
+                                           MonsterAdminJobService jobService) {
         this.monsterRepository = monsterRepository;
         this.objectMapper = objectMapper;
+        this.transactionTemplate = transactionTemplate;
+        this.jobService = jobService;
     }
 
     public int applyLocalization() {
         Map<String, MonsterLocalizationEntry> entries = readEntries();
-        List<Monster> managedMonsters = monsterRepository.findAll().stream()
-                .filter(monster -> isManagedMonsterCode(monster.getCode()))
-                .toList();
-        List<Monster> monstersToSave = new ArrayList<>();
+        List<String> managedCodes = monsterRepository.findManagedCodes();
+        int appliedCount = 0;
 
-        for (Monster monster : managedMonsters) {
-            String monsterCode = monster.getCode();
-            MonsterLocalizationEntry localization = entries.get(monsterCode);
-
-            if (localization == null) {
-                monster.updateLocalization(monster.getKoreanName(), monster.getAliasList(), false);
-                monstersToSave.add(monster);
-                continue;
-            }
-
-            monster.updateLocalization(
-                    localization.getKoreanName(),
-                    localization.getAliases(),
-                    localization.getEnabled()
-            );
-            monstersToSave.add(monster);
+        for (int start = 0; start < managedCodes.size(); start += APPLY_BATCH_SIZE) {
+            int end = Math.min(start + APPLY_BATCH_SIZE, managedCodes.size());
+            List<String> batchCodes = managedCodes.subList(start, end);
+            int batchAppliedCount = applyBatch(entries, batchCodes);
+            appliedCount += batchAppliedCount;
+            jobService.updateProgress("몬스터 도감 정보 적용 중입니다.", appliedCount, managedCodes.size());
         }
 
-        monsterRepository.saveAll(monstersToSave);
-        return monstersToSave.size();
+        return appliedCount;
+    }
+
+    private int applyBatch(Map<String, MonsterLocalizationEntry> entries, List<String> batchCodes) {
+        return transactionTemplate.execute(status -> {
+            List<Monster> monstersToSave = new ArrayList<>();
+
+            for (Monster monster : monsterRepository.findAllByCodeIn(batchCodes)) {
+                MonsterLocalizationEntry localization = entries.get(monster.getCode());
+
+                if (localization == null) {
+                    monster.updateLocalization(monster.getKoreanName(), monster.getAliasList(), false);
+                } else {
+                    monster.updateLocalization(
+                            localization.getKoreanName(),
+                            localization.getAliases(),
+                            localization.getEnabled()
+                    );
+                }
+
+                monstersToSave.add(monster);
+            }
+
+            monsterRepository.saveAll(monstersToSave);
+            return monstersToSave.size();
+        });
     }
 
     @Transactional(readOnly = true)

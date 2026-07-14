@@ -1,6 +1,7 @@
 package com.sbm.siegebackend.domain.monster;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,4 +17,12 @@ public interface MonsterRepository extends JpaRepository<Monster, Long> {
     List<Monster> findAllByCodeIn(List<String> codes);
 
     List<Monster> findAllByCom2usIdIn(List<Integer> com2usIds);
+
+    @Query("""
+            select m.code
+              from Monster m
+             where m.code like 'sw_%'
+                or m.code like 'def_%'
+            """)
+    List<String> findManagedCodes();
 }
