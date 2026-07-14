@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -18,15 +19,16 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    // TODO: 나중에는 application.yml에서 주입받도록 수정하면 좋음
-    private static final String SECRET_KEY = "THIS_IS_VERY_SECRET_KEY_FOR_SIEGE_MANAGER_256BIT!";
     private static final long TOKEN_VALIDITY_MILLIS = 1000L * 60 * 60; // 1시간
 
     private final Key key;
 
-    public JwtTokenProvider() {
-        // 256bit 이상 키 필요 → 문자열을 바이트로 변환해서 키 생성
-        this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    public JwtTokenProvider(@Value("${security.jwt.secret}") String secretKey) {
+        if (secretKey == null || secretKey.getBytes(StandardCharsets.UTF_8).length < 32) {
+            throw new IllegalStateException("JWT_SECRET은 32바이트 이상으로 설정해야 합니다.");
+        }
+
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
