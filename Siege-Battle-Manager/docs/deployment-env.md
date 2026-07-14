@@ -27,6 +27,10 @@ Render 또는 Spring Boot 실행 환경에 등록한다.
 | `ADMIN_INITIAL_NICKNAME` | `admin` | no | 기본값 `admin` |
 | `SWARFARM_BASE_URL` | `https://swarfarm.com/api/v2` | no | 기본값 있음 |
 | `SWARFARM_IMAGE_BASE_URL` | `https://swarfarm.com/static/herders/images/monsters` | no | 기본값 있음 |
+| `SWARFARM_PAGE_SIZE` | `200` | no | Swarfarm 동기화 페이지 크기 |
+| `SWARFARM_CONNECT_TIMEOUT_SECONDS` | `10` | no | Swarfarm 연결 timeout |
+| `SWARFARM_READ_TIMEOUT_SECONDS` | `30` | no | Swarfarm 응답 timeout |
+| `SWARFARM_APPEND_MISSING_LOCALIZATION` | `false` | no | 운영에서는 `false` 권장 |
 
 ## Frontend
 

@@ -6,40 +6,54 @@ import com.sbm.siegebackend.domain.monster.MonsterRepository;
 import com.sbm.siegebackend.domain.monster.localization.MonsterLocalizationApplyService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.client.RestClient;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
 public class SwarfarmMonsterSyncService {
 
     private final MonsterRepository monsterRepository;
     private final MonsterLocalizationApplyService localizationApplyService;
+    private final TransactionTemplate transactionTemplate;
     private final RestClient restClient;
     private final String baseUrl;
     private final String imageBaseUrl;
+    private final int pageSize;
+    private final boolean appendMissingLocalization;
 
     public SwarfarmMonsterSyncService(
             MonsterRepository monsterRepository,
             MonsterLocalizationApplyService localizationApplyService,
+            TransactionTemplate transactionTemplate,
             @Value("${external.swarfarm.base-url}") String baseUrl,
-            @Value("${external.swarfarm.image-base-url}") String imageBaseUrl
+            @Value("${external.swarfarm.image-base-url}") String imageBaseUrl,
+            @Value("${external.swarfarm.page-size:200}") int pageSize,
+            @Value("${external.swarfarm.connect-timeout-seconds:10}") int connectTimeoutSeconds,
+            @Value("${external.swarfarm.read-timeout-seconds:30}") int readTimeoutSeconds,
+            @Value("${external.swarfarm.append-missing-localization:false}") boolean appendMissingLocalization
     ) {
         this.monsterRepository = monsterRepository;
         this.localizationApplyService = localizationApplyService;
-        this.restClient = RestClient.create();
+        this.transactionTemplate = transactionTemplate;
+        this.restClient = RestClient.builder()
+                .requestFactory(requestFactory(connectTimeoutSeconds, readTimeoutSeconds))
+                .build();
         this.baseUrl = baseUrl;
         this.imageBaseUrl = imageBaseUrl;
+        this.pageSize = pageSize;
+        this.appendMissingLocalization = appendMissingLocalization;
     }
 
     public int syncMonsters() {
         int savedCount = 0;
         List<Monster> syncedMonsters = new ArrayList<>();
-        String nextUrl = baseUrl + "/monsters/?page_size=1000";
+        String nextUrl = baseUrl + "/monsters/?page_size=" + pageSize;
 
         while (nextUrl != null) {
             SwarfarmPageResponse<SwarfarmMonsterResponse> page =
@@ -52,12 +66,22 @@ public class SwarfarmMonsterSyncService {
                 break;
             }
 
-            savedCount += savePage(page.getResults(), syncedMonsters);
+            savedCount += transactionTemplate.execute(status -> savePage(page.getResults(), syncedMonsters));
             nextUrl = page.getNext();
         }
 
-        localizationApplyService.appendMissingEntries(syncedMonsters);
+        if (appendMissingLocalization) {
+            localizationApplyService.appendMissingEntries(syncedMonsters);
+        }
+
         return savedCount;
+    }
+
+    private SimpleClientHttpRequestFactory requestFactory(int connectTimeoutSeconds, int readTimeoutSeconds) {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(Duration.ofSeconds(connectTimeoutSeconds));
+        factory.setReadTimeout(Duration.ofSeconds(readTimeoutSeconds));
+        return factory;
     }
 
     private int savePage(List<SwarfarmMonsterResponse> monsters, List<Monster> syncedMonsters) {

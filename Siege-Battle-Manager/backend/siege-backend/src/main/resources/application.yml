@@ -22,6 +22,10 @@ external:
   swarfarm:
     base-url: ${SWARFARM_BASE_URL:https://swarfarm.com/api/v2}
     image-base-url: ${SWARFARM_IMAGE_BASE_URL:https://swarfarm.com/static/herders/images/monsters}
+    page-size: ${SWARFARM_PAGE_SIZE:200}
+    connect-timeout-seconds: ${SWARFARM_CONNECT_TIMEOUT_SECONDS:10}
+    read-timeout-seconds: ${SWARFARM_READ_TIMEOUT_SECONDS:30}
+    append-missing-localization: ${SWARFARM_APPEND_MISSING_LOCALIZATION:false}
 
 security:
   jwt:
