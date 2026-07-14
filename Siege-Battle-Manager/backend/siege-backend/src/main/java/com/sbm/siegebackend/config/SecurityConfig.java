@@ -51,11 +51,9 @@ public class SecurityConfig {
 
                         // ✅ 길드 생성/내길드/내멤버는 로그인 필요
                         .requestMatchers(HttpMethod.POST, "/api/guilds").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/guilds").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/guilds/me").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/guilds/me/members").authenticated()
-
-                        // 길드 목록은 필요하면 permitAll (선택)
-                        .requestMatchers(HttpMethod.GET, "/api/guilds").permitAll()
 
                         // 나머지는 인증 필요
                         .anyRequest().authenticated();

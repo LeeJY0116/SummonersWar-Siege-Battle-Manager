@@ -38,12 +38,13 @@ public class GuildController {
     }
 
     /**
-     * 길드 목록 조회 (누구나 가능하게 해도 되고, 지금은 인증 필요 상태)
+     * 길드 목록 조회 (관리자 전용)
      * GET /api/guilds
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<GuildResponse>>> getGuilds() {
-        List<GuildResponse> guilds = guildService.getAllGuilds();
+    public ResponseEntity<ApiResponse<List<GuildResponse>>> getGuilds(Authentication authentication) {
+        String loginId = (String) authentication.getPrincipal();
+        List<GuildResponse> guilds = guildService.getAllGuilds(loginId);
         return ResponseEntity.ok(ApiResponse.success(guilds));
     }
 

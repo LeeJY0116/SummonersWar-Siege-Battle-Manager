@@ -92,7 +92,9 @@ public class GuildService {
      * 길드 전체 목록 조회
      */
     @Transactional(readOnly = true)
-    public List<GuildResponse> getAllGuilds() {
+    public List<GuildResponse> getAllGuilds(String loginId) {
+        validateAdmin(loginId);
+
         return guildRepository.findAll().stream()
                 .filter(this::hasApprovedMaster)
                 .sorted(Comparator.comparingInt(this::getApprovedMemberCount).reversed())
