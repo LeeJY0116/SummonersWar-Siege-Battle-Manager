@@ -39,7 +39,7 @@ public class GuildMember {
     private GuildMemberType type; // REAL / VIRTUAL
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "varchar(20) default 'APPROVED'")
+    @Column(nullable = false)
     private GuildMemberStatus status = GuildMemberStatus.APPROVED;
 
     @Column(nullable = false)
