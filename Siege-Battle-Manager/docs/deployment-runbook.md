@@ -19,6 +19,8 @@ jdbc:postgresql://HOST:5432/DB_NAME?sslmode=require
 
 Render에서 Web Service를 만든다.
 
+Blueprint로 생성할 경우 저장소 루트의 `render.yaml`을 사용한다. `sync: false`로 선언된 값은 Render 대시보드에서 직접 입력한다.
+
 | Field | Value |
 | --- | --- |
 | Root Directory | `Siege-Battle-Manager/backend/siege-backend` |

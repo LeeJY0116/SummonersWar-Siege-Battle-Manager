@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: sw-siege-backend
+    runtime: docker
+    rootDir: Siege-Battle-Manager/backend/siege-backend
+    plan: free
+    autoDeployTrigger: commit
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DDL_AUTO
+        value: validate
+      - key: RATE_LIMIT_ENABLED
+        value: true
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: ADMIN_ALLOWED_IPS
+        sync: false
