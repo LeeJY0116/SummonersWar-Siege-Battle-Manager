@@ -21,6 +21,10 @@ Render 또는 Spring Boot 실행 환경에 등록한다.
 | `RATE_LIMIT_SIGNUP_PER_MINUTE` | `5` | no | 회원가입 요청 제한 |
 | `RATE_LIMIT_GUILD_REQUEST_PER_MINUTE` | `10` | no | 길드 가입/개설 요청 제한 |
 | `RATE_LIMIT_ADMIN_PER_MINUTE` | `120` | no | 관리자 API 요청 제한 |
+| `ADMIN_INITIAL_ID` | `admin` | no | 최초 admin 자동 생성용. 생성 후 제거 권장 |
+| `ADMIN_INITIAL_PASSWORD` | `********` | no | 최초 admin 자동 생성용. 생성 후 제거 권장 |
+| `ADMIN_INITIAL_EMAIL` | `admin@example.com` | no | 기본값 `admin@example.local` |
+| `ADMIN_INITIAL_NICKNAME` | `admin` | no | 기본값 `admin` |
 | `SWARFARM_BASE_URL` | `https://swarfarm.com/api/v2` | no | 기본값 있음 |
 | `SWARFARM_IMAGE_BASE_URL` | `https://swarfarm.com/static/herders/images/monsters` | no | 기본값 있음 |
 
@@ -38,3 +42,4 @@ Cloudflare Pages 또는 Vercel에 등록한다.
 - 운영 DB에서는 H2 console을 사용하지 않는다.
 - 운영 첫 배포에서 스키마 자동 생성을 임시로 확인해야 할 때만 `DDL_AUTO=update`를 사용하고, 이후 `validate`로 되돌린다.
 - `ADMIN_ALLOWED_IPS`는 고정 IP가 있을 때만 사용한다. 고정 IP가 없으면 Cloudflare WAF나 관리자 계정 보안으로 보완한다.
+- `ADMIN_INITIAL_ID`와 `ADMIN_INITIAL_PASSWORD`는 최초 운영 admin을 만들 때만 사용한다. admin 생성 후 Render 환경변수에서 제거한다.

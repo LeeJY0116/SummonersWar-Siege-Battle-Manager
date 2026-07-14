@@ -37,6 +37,13 @@ security:
     guild-request-per-minute: ${RATE_LIMIT_GUILD_REQUEST_PER_MINUTE:10}
     admin-per-minute: ${RATE_LIMIT_ADMIN_PER_MINUTE:120}
 
+app:
+  admin:
+    initial-id: ${ADMIN_INITIAL_ID:}
+    initial-password: ${ADMIN_INITIAL_PASSWORD:}
+    initial-email: ${ADMIN_INITIAL_EMAIL:admin@example.local}
+    initial-nickname: ${ADMIN_INITIAL_NICKNAME:admin}
+
 logging:
   level:
     #    org.hibernate.SQL: debug
