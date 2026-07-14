@@ -22,11 +22,9 @@ Render에서 Web Service를 만든다.
 | Field | Value |
 | --- | --- |
 | Root Directory | `Siege-Battle-Manager/backend/siege-backend` |
-| Runtime | Docker 또는 Java |
-| Build Command | `./gradlew clean build -x test` |
-| Start Command | `java -jar build/libs/siege-backend-0.0.1-SNAPSHOT.jar` |
+| Runtime | Docker |
 
-Windows 로컬과 달리 Render는 Linux 환경이므로 Gradle wrapper 실행 권한이 필요할 수 있다.
+백엔드는 `Dockerfile`로 빌드한다. 운영 비밀값은 Dockerfile에 넣지 않고 Render 환경변수로만 등록한다.
 
 필수 환경변수:
 
