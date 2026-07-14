@@ -20,6 +20,9 @@ import org.springframework.web.client.RestClientException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class SwarfarmMonsterSyncService {
@@ -119,23 +122,38 @@ public class SwarfarmMonsterSyncService {
     }
 
     private int savePage(List<SwarfarmMonsterResponse> monsters, List<Monster> syncedMonsters) {
-        int count = 0;
+        List<SwarfarmMonsterResponse> validMonsters = monsters.stream()
+                .filter(swarfarmMonster -> swarfarmMonster.getCom2usId() != null)
+                .filter(swarfarmMonster -> toAttribute(swarfarmMonster.getElement()) != null)
+                .toList();
 
-        for (SwarfarmMonsterResponse swarfarmMonster : monsters) {
-            if (swarfarmMonster.getCom2usId() == null) {
-                continue;
-            }
+        if (validMonsters.isEmpty()) {
+            return 0;
+        }
 
+        Map<Integer, Monster> monstersByCom2usId = monsterRepository.findAllByCom2usIdIn(
+                        validMonsters.stream()
+                                .map(SwarfarmMonsterResponse::getCom2usId)
+                                .distinct()
+                                .toList()
+                ).stream()
+                .collect(Collectors.toMap(Monster::getCom2usId, Function.identity()));
+
+        Map<String, Monster> monstersByCode = monsterRepository.findAllByCodeIn(
+                        validMonsters.stream()
+                                .map(swarfarmMonster -> buildCode(swarfarmMonster.getCom2usId()))
+                                .distinct()
+                                .toList()
+                ).stream()
+                .collect(Collectors.toMap(Monster::getCode, Function.identity()));
+
+        List<Monster> monstersToSave = new ArrayList<>();
+        for (SwarfarmMonsterResponse swarfarmMonster : validMonsters) {
             MonsterAttribute attribute = toAttribute(swarfarmMonster.getElement());
-
-            if (attribute == null) {
-                continue;
-            }
-
             String code = buildCode(swarfarmMonster.getCom2usId());
             String imageUrl = buildImageUrl(swarfarmMonster.getImageFilename());
 
-            Monster monster = findExistingMonster(swarfarmMonster.getCom2usId(), code);
+            Monster monster = findExistingMonster(swarfarmMonster.getCom2usId(), code, monstersByCom2usId, monstersByCode);
             SwarfarmLeaderSkillResponse leaderSkill = swarfarmMonster.getLeaderSkill();
 
             monster.updateFromSwarfarm(
@@ -150,27 +168,40 @@ public class SwarfarmMonsterSyncService {
                     leaderSkill == null ? null : leaderSkill.getElement()
             );
 
-            monsterRepository.save(monster);
-            syncedMonsters.add(monster);
-            count++;
+            monstersToSave.add(monster);
         }
 
-        return count;
+        List<Monster> savedMonsters = monsterRepository.saveAll(monstersToSave);
+        syncedMonsters.addAll(savedMonsters);
+        return savedMonsters.size();
     }
 
     private String buildCode(Integer com2usId) {
         return "sw_" + com2usId;
     }
 
-    private Monster findExistingMonster(Integer com2usId, String code) {
-        return monsterRepository.findByCom2usId(com2usId)
-                .or(() -> monsterRepository.findByCode(code))
-                .orElseGet(() -> Monster.builder()
-                        .code(code)
-                        .name(code)
-                        .attribute(MonsterAttribute.FIRE)
-                        .leaderEffectType(null)
-                        .build());
+    private Monster findExistingMonster(Integer com2usId,
+                                        String code,
+                                        Map<Integer, Monster> monstersByCom2usId,
+                                        Map<String, Monster> monstersByCode) {
+        Monster monster = monstersByCom2usId.get(com2usId);
+
+        if (monster != null) {
+            return monster;
+        }
+
+        monster = monstersByCode.get(code);
+
+        if (monster != null) {
+            return monster;
+        }
+
+        return Monster.builder()
+                .code(code)
+                .name(code)
+                .attribute(MonsterAttribute.FIRE)
+                .leaderEffectType(null)
+                .build();
     }
 
     private String buildImageUrl(String imageFilename) {

@@ -14,4 +14,6 @@ public interface MonsterRepository extends JpaRepository<Monster, Long> {
     Optional<Monster> findByCom2usId(Integer com2usId);
 
     List<Monster> findAllByCodeIn(List<String> codes);
+
+    List<Monster> findAllByCom2usIdIn(List<Integer> com2usIds);
 }
