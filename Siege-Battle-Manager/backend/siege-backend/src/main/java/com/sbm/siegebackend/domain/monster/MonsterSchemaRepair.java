@@ -24,7 +24,7 @@ public class MonsterSchemaRepair implements CommandLineRunner {
                 connection.getMetaData().getDatabaseProductName()
         );
 
-        if (!"H2".equalsIgnoreCase(databaseProductName)) {
+        if (!"H2".equalsIgnoreCase(databaseProductName) && !"PostgreSQL".equalsIgnoreCase(databaseProductName)) {
             return;
         }
 
@@ -35,14 +35,17 @@ public class MonsterSchemaRepair implements CommandLineRunner {
                   on tc.constraint_catalog = kcu.constraint_catalog
                  and tc.constraint_schema = kcu.constraint_schema
                  and tc.constraint_name = kcu.constraint_name
-                where tc.table_schema = schema()
-                  and tc.table_name = 'MONSTERS'
+                where lower(tc.table_name) = 'monsters'
                   and tc.constraint_type = 'UNIQUE'
-                  and kcu.column_name = 'NAME'
+                  and lower(kcu.column_name) = 'name'
                 """, String.class);
 
         for (String constraint : constraints) {
-            jdbcTemplate.execute("alter table monsters drop constraint " + constraint);
+            jdbcTemplate.execute("alter table monsters drop constraint " + quoteIdentifier(constraint));
         }
+    }
+
+    private String quoteIdentifier(String identifier) {
+        return "\"" + identifier.replace("\"", "\"\"") + "\"";
     }
 }

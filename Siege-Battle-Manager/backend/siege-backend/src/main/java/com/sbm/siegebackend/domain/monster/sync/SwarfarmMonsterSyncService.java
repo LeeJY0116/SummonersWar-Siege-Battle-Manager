@@ -4,12 +4,16 @@ import com.sbm.siegebackend.domain.monster.Monster;
 import com.sbm.siegebackend.domain.monster.MonsterAttribute;
 import com.sbm.siegebackend.domain.monster.MonsterRepository;
 import com.sbm.siegebackend.domain.monster.localization.MonsterLocalizationApplyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -17,6 +21,8 @@ import java.util.List;
 
 @Service
 public class SwarfarmMonsterSyncService {
+
+    private static final Logger log = LoggerFactory.getLogger(SwarfarmMonsterSyncService.class);
 
     private final MonsterRepository monsterRepository;
     private final MonsterLocalizationApplyService localizationApplyService;
@@ -54,20 +60,20 @@ public class SwarfarmMonsterSyncService {
         int savedCount = 0;
         List<Monster> syncedMonsters = new ArrayList<>();
         String nextUrl = baseUrl + "/monsters/?page_size=" + pageSize;
+        int pageNumber = 1;
 
         while (nextUrl != null) {
-            SwarfarmPageResponse<SwarfarmMonsterResponse> page =
-                    restClient.get()
-                            .uri(nextUrl)
-                            .retrieve()
-                            .body(new ParameterizedTypeReference<>() {});
+            SwarfarmPageResponse<SwarfarmMonsterResponse> page = fetchPage(nextUrl, pageNumber);
 
             if (page == null || page.getResults() == null) {
                 break;
             }
 
-            savedCount += transactionTemplate.execute(status -> savePage(page.getResults(), syncedMonsters));
+            int pageSavedCount = savePageInTransaction(page.getResults(), syncedMonsters, pageNumber);
+            savedCount += pageSavedCount;
+            log.info("Swarfarm monster sync page {} saved {} monsters. total={}", pageNumber, pageSavedCount, savedCount);
             nextUrl = page.getNext();
+            pageNumber++;
         }
 
         if (appendMissingLocalization) {
@@ -75,6 +81,30 @@ public class SwarfarmMonsterSyncService {
         }
 
         return savedCount;
+    }
+
+    private SwarfarmPageResponse<SwarfarmMonsterResponse> fetchPage(String nextUrl, int pageNumber) {
+        try {
+            return restClient.get()
+                    .uri(nextUrl)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {});
+        } catch (RestClientException e) {
+            log.error("Failed to fetch Swarfarm monster page {}. url={}", pageNumber, nextUrl, e);
+            throw new SwarfarmSyncException("Swarfarm API 호출에 실패했습니다. 잠시 후 다시 시도해주세요.", e);
+        }
+    }
+
+    private int savePageInTransaction(List<SwarfarmMonsterResponse> monsters,
+                                      List<Monster> syncedMonsters,
+                                      int pageNumber) {
+        try {
+            Integer savedCount = transactionTemplate.execute(status -> savePage(monsters, syncedMonsters));
+            return savedCount == null ? 0 : savedCount;
+        } catch (DataAccessException e) {
+            log.error("Failed to save Swarfarm monster page {}. size={}", pageNumber, monsters.size(), e);
+            throw new SwarfarmSyncException("Swarfarm 몬스터 저장 중 DB 오류가 발생했습니다. 서버 로그를 확인해주세요.", e);
+        }
     }
 
     private SimpleClientHttpRequestFactory requestFactory(int connectTimeoutSeconds, int readTimeoutSeconds) {

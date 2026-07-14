@@ -1,16 +1,17 @@
 package com.sbm.siegebackend.global.exception;
 
+import com.sbm.siegebackend.domain.monster.sync.SwarfarmSyncException;
 import com.sbm.siegebackend.global.api.ApiResponse;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -75,8 +76,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ApiResponse<Void>> mediaTypeNotSupported(HttpMediaTypeNotSupportedException e) {
         return ResponseEntity
-                .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE) // 415
-                .body(ApiResponse.error("Content-Type이 application/json 이어야 합니다."));
+                .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                .body(ApiResponse.error("Content-Type은 application/json이어야 합니다."));
+    }
+
+    @ExceptionHandler(SwarfarmSyncException.class)
+    public ResponseEntity<ApiResponse<Void>> swarfarmSync(SwarfarmSyncException e) {
+        log.error("Swarfarm sync failed", e);
+        return ResponseEntity
+                .status(HttpStatus.BAD_GATEWAY)
+                .body(ApiResponse.error(e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
@@ -86,5 +95,4 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error("서버 내부 오류가 발생했습니다."));
     }
-
 }
