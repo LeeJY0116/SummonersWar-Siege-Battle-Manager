@@ -70,3 +70,14 @@ trufflehog git file://D:/Codes/SummonersWar --only-verified
 ```
 
 히스토리 재작성은 되돌리기 어렵기 때문에 실제 실행 전에 백업 브랜치를 만들고 별도 단계로 진행한다.
+
+## Scan History
+
+### 2026-07-14
+
+- `gitleaks detect --source=/repo --verbose`
+  - 124 commits scanned
+  - no leaks found
+- `trufflehog git file:///repo --only-verified`
+  - verified secrets: 0
+  - unverified secrets: 0
