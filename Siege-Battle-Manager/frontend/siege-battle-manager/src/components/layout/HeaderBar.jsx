@@ -55,7 +55,7 @@ export default function HeaderBar({
         <div className="flex flex-wrap items-center justify-start gap-2 md:justify-end">
           {monsterJobStatus?.status === "RUNNING" && (
             <div className="rounded-xl border border-[#9b743a] bg-[#1a120d] px-3 py-2 text-xs font-semibold text-[#f3d37b]">
-              {monsterJobStatus.operation === "SWARFARM_SYNC" ? "Sync" : "Apply"}{" "}
+              {monsterJobStatus.operation === "SWARFARM_SYNC" ? "동기화" : "적용"}{" "}
               {monsterJobStatus.processedCount ?? 0}
               {monsterJobStatus.totalCount ? ` / ${monsterJobStatus.totalCount}` : ""}
             </div>
@@ -72,7 +72,7 @@ export default function HeaderBar({
               disabled={syncingMonsters}
               className="rounded-2xl border border-[#9b743a] bg-[#221913] px-4 py-2 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f] disabled:opacity-50"
             >
-              {syncingMonsters ? "Syncing..." : "Sync Swarfarm"}
+              {syncingMonsters ? "동기화 중..." : "몬스터 동기화"}
             </button>
           )}
 
@@ -83,7 +83,7 @@ export default function HeaderBar({
               disabled={applyingLocalization}
               className="rounded-2xl border border-[#9b743a] bg-[#221913] px-4 py-2 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f] disabled:opacity-50"
             >
-              {applyingLocalization ? "Applying..." : "Apply Names"}
+              {applyingLocalization ? "적용 중..." : "도감 정보 적용"}
             </button>
           )}
 

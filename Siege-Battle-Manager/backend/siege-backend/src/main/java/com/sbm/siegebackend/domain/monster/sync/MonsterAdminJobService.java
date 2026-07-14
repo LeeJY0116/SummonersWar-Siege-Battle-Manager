@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,6 +20,8 @@ public class MonsterAdminJobService {
     private static final String STATUS_RUNNING = "RUNNING";
     private static final String STATUS_COMPLETED = "COMPLETED";
     private static final String STATUS_FAILED = "FAILED";
+    private static final Duration APPLY_STALE_TIMEOUT = Duration.ofMinutes(2);
+    private static final Duration SYNC_STALE_TIMEOUT = Duration.ofMinutes(10);
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -165,6 +168,8 @@ public class MonsterAdminJobService {
     }
 
     public MonsterAdminJobStatusResponse getStatus() {
+        failStaleRunningJob();
+
         List<MonsterAdminJobStatusResponse> statuses = jdbcTemplate.query(
                 "select operation, status, processed_count, total_count, message, started_at, finished_at from monster_admin_jobs where job_name = ?",
                 rowMapper(),
@@ -187,6 +192,38 @@ public class MonsterAdminJobService {
         return count != null && count > 0;
     }
 
+    private void failStaleRunningJob() {
+        List<RunningJobSnapshot> snapshots = jdbcTemplate.query(
+                "select operation, updated_at from monster_admin_jobs where job_name = ? and status = ?",
+                (rs, rowNum) -> new RunningJobSnapshot(
+                        rs.getString("operation"),
+                        getNullableDateTime(rs, "updated_at")
+                ),
+                JOB_NAME,
+                STATUS_RUNNING
+        );
+
+        if (snapshots.isEmpty()) {
+            return;
+        }
+
+        RunningJobSnapshot snapshot = snapshots.get(0);
+        LocalDateTime updatedAt = snapshot.updatedAt();
+
+        if (updatedAt == null) {
+            fail("작업 갱신 시간이 없어 중단된 작업으로 처리했습니다. 다시 실행해주세요.");
+            return;
+        }
+
+        Duration staleTimeout = "APPLY_LOCALIZATION".equals(snapshot.operation())
+                ? APPLY_STALE_TIMEOUT
+                : SYNC_STALE_TIMEOUT;
+
+        if (updatedAt.plus(staleTimeout).isBefore(LocalDateTime.now())) {
+            fail("작업이 오랫동안 갱신되지 않아 중단된 작업으로 처리했습니다. 다시 실행해주세요.");
+        }
+    }
+
     private RowMapper<MonsterAdminJobStatusResponse> rowMapper() {
         return (ResultSet rs, int rowNum) -> new MonsterAdminJobStatusResponse(
                 rs.getString("operation"),
@@ -207,5 +244,8 @@ public class MonsterAdminJobService {
     private LocalDateTime getNullableDateTime(ResultSet rs, String columnName) throws java.sql.SQLException {
         Timestamp timestamp = rs.getTimestamp(columnName);
         return timestamp == null ? null : timestamp.toLocalDateTime();
+    }
+
+    private record RunningJobSnapshot(String operation, LocalDateTime updatedAt) {
     }
 }
