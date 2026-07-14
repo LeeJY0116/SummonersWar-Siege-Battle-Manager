@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -49,6 +51,7 @@ public class SwarfarmMonsterSyncService {
         this.transactionTemplate = transactionTemplate;
         this.restClient = RestClient.builder()
                 .requestFactory(requestFactory(connectTimeoutSeconds, readTimeoutSeconds))
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .build();
         this.baseUrl = baseUrl;
         this.imageBaseUrl = imageBaseUrl;
@@ -87,6 +90,7 @@ public class SwarfarmMonsterSyncService {
         try {
             return restClient.get()
                     .uri(nextUrl)
+                    .accept(MediaType.APPLICATION_JSON)
                     .retrieve()
                     .body(new ParameterizedTypeReference<>() {});
         } catch (RestClientException e) {
