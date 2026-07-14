@@ -1,17 +1,11 @@
 spring:
-  datasource:
-    url: ${DB_URL:jdbc:h2:file:./data/siege-db}
-    driverClassName: ${DB_DRIVER:org.h2.Driver}
-    username: ${DB_USERNAME:sa}
-    password: ${DB_PASSWORD:}
+  profiles:
+    default: dev
 
   jpa:
-    hibernate:
-      ddl-auto: ${DDL_AUTO:update}
     properties:
       hibernate:
         format_sql: true
-    defer-datasource-initialization: true
 
   h2:
     console:
