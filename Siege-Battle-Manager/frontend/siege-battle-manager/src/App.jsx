@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import HeaderBar from "./components/layout/HeaderBar.jsx";
 import FooterBar from "./components/layout/FooterBar.jsx";
 import TabGuideCard from "./components/layout/TabGuideCard.jsx";
@@ -13,7 +13,7 @@ import GuildTab from "./components/guild/GuildTab.jsx";
 import MyInfoTab from "./components/guild/MyInfoTab.jsx";
 import GuildJoinRequestPage from "./components/guild/GuildJoinRequestPage.jsx";
 import { apiFetch } from "./lib/api.js";
-import { applyMonsterLocalization, syncSwarfarmMonsters } from "./lib/monsterSync.js";
+import { applyMonsterLocalization, getSwarfarmSyncStatus, syncSwarfarmMonsters } from "./lib/monsterSync.js";
 import { formatLeaderEffectText } from "./lib/monsterLabels.js";
 
 
@@ -171,7 +171,9 @@ export default function SiegeBattleManager() {
   const [me, setMe] = useState(null);
   const [syncingMonsters, setSyncingMonsters] = useState(false);
   const [applyingLocalization, setApplyingLocalization] = useState(false);
+  const [monsterJobStatus, setMonsterJobStatus] = useState(null);
   const [helpOpen, setHelpOpen] = useState(false);
+  const previousMonsterJobStatusRef = useRef(null);
 
   useEffect(() => {
     document.title = "SW 점령전";
@@ -219,6 +221,7 @@ export default function SiegeBattleManager() {
   }
 
   const isAdmin = me?.role === "ADMIN";
+  const monsterJobRunning = monsterJobStatus?.status === "RUNNING";
   const currentGuildMember = members.find(
     (member) =>
       member.realUser &&
@@ -253,6 +256,54 @@ export default function SiegeBattleManager() {
       });
   }, []);
 
+  useEffect(() => {
+    if (!isAdmin) return;
+
+    let cancelled = false;
+
+    async function refreshStatus() {
+      try {
+        const status = await getSwarfarmSyncStatus();
+        if (!cancelled) {
+          setMonsterJobStatus(status);
+        }
+      } catch (e) {
+        console.warn("Failed to load monster sync status", e);
+      }
+    }
+
+    refreshStatus();
+    const timer = window.setInterval(refreshStatus, monsterJobRunning ? 3000 : 8000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [isAdmin, monsterJobRunning]);
+
+  useEffect(() => {
+    const previousStatus = previousMonsterJobStatusRef.current;
+
+    if (
+      previousStatus?.status === "RUNNING" &&
+      monsterJobStatus?.status === "COMPLETED" &&
+      ["SWARFARM_SYNC", "APPLY_LOCALIZATION"].includes(monsterJobStatus?.operation)
+    ) {
+      refreshBackendMonsters().catch((e) => {
+        console.warn("Failed to refresh monsters after sync", e);
+      });
+    }
+
+    if (
+      previousStatus?.status === "RUNNING" &&
+      monsterJobStatus?.status === "FAILED"
+    ) {
+      alert(monsterJobStatus.message || "Monster admin job failed");
+    }
+
+    previousMonsterJobStatusRef.current = monsterJobStatus;
+  }, [monsterJobStatus]);
+
 
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -286,13 +337,12 @@ export default function SiegeBattleManager() {
   }
 
   async function handleSyncSwarfarmMonsters() {
-    if (syncingMonsters) return;
+    if (syncingMonsters || monsterJobRunning) return;
 
     try {
       setSyncingMonsters(true);
-      const syncedCount = await syncSwarfarmMonsters();
-      const loadedMonsters = await refreshBackendMonsters();
-      alert(`Swarfarm sync complete. Synced ${syncedCount} rows, loaded ${loadedMonsters.length} monsters.`);
+      const status = await syncSwarfarmMonsters();
+      setMonsterJobStatus(status);
     } catch (e) {
       console.error("Swarfarm sync failed:", e);
       alert(e.message || "Swarfarm sync failed");
@@ -302,13 +352,12 @@ export default function SiegeBattleManager() {
   }
 
   async function handleApplyMonsterLocalization() {
-    if (applyingLocalization) return;
+    if (applyingLocalization || monsterJobRunning) return;
 
     try {
       setApplyingLocalization(true);
-      const appliedCount = await applyMonsterLocalization();
-      const loadedMonsters = await refreshBackendMonsters();
-      alert(`Monster names applied. Updated ${appliedCount} rows, loaded ${loadedMonsters.length} monsters.`);
+      const status = await applyMonsterLocalization();
+      setMonsterJobStatus(status);
     } catch (e) {
       console.error("Monster localization apply failed:", e);
       alert(e.message || "Monster localization apply failed");
@@ -407,9 +456,10 @@ export default function SiegeBattleManager() {
           activeTab={activeTab}
           onChangeTab={setActiveTab}
           onSyncSwarfarmMonsters={handleSyncSwarfarmMonsters}
-          syncingMonsters={syncingMonsters}
+          syncingMonsters={syncingMonsters || monsterJobRunning}
           onApplyMonsterLocalization={handleApplyMonsterLocalization}
-          applyingLocalization={applyingLocalization}
+          applyingLocalization={applyingLocalization || monsterJobRunning}
+          monsterJobStatus={monsterJobStatus}
           onOpenHelp={() => setHelpOpen(true)}
           />
 

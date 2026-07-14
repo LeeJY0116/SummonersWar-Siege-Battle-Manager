@@ -15,8 +15,12 @@ public class SwarfarmMonsterSyncController {
     }
 
     @PostMapping("/sync-swarfarm")
-    public ResponseEntity<ApiResponse<Integer>> syncSwarfarmMonsters() {
-        int count = syncService.syncMonsters();
-        return ResponseEntity.ok(ApiResponse.success(count));
+    public ResponseEntity<ApiResponse<MonsterAdminJobStatusResponse>> syncSwarfarmMonsters() {
+        return ResponseEntity.ok(ApiResponse.success(syncService.startSync()));
+    }
+
+    @GetMapping("/sync-swarfarm/status")
+    public ResponseEntity<ApiResponse<MonsterAdminJobStatusResponse>> getSwarfarmSyncStatus() {
+        return ResponseEntity.ok(ApiResponse.success(syncService.getSyncStatus()));
     }
 }

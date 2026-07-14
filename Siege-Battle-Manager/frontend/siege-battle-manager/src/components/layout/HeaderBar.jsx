@@ -15,6 +15,7 @@ export default function HeaderBar({
   syncingMonsters = false,
   onApplyMonsterLocalization,
   applyingLocalization = false,
+  monsterJobStatus = null,
   currentNickname = "",
   onOpenHelp,
 }) {
@@ -52,6 +53,14 @@ export default function HeaderBar({
         </div>
 
         <div className="flex flex-wrap items-center justify-start gap-2 md:justify-end">
+          {monsterJobStatus?.status === "RUNNING" && (
+            <div className="rounded-xl border border-[#9b743a] bg-[#1a120d] px-3 py-2 text-xs font-semibold text-[#f3d37b]">
+              {monsterJobStatus.operation === "SWARFARM_SYNC" ? "Sync" : "Apply"}{" "}
+              {monsterJobStatus.processedCount ?? 0}
+              {monsterJobStatus.totalCount ? ` / ${monsterJobStatus.totalCount}` : ""}
+            </div>
+          )}
+
           <div className="text-sm font-semibold text-[#d7be80]">
             닉네임 {currentNickname || "-"}
           </div>

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.dao.DataAccessException;
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -16,11 +17,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
+import jakarta.annotation.PreDestroy;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,8 +35,11 @@ public class SwarfarmMonsterSyncService {
 
     private final MonsterRepository monsterRepository;
     private final MonsterLocalizationApplyService localizationApplyService;
+    private final MonsterAdminJobService jobService;
     private final TransactionTemplate transactionTemplate;
     private final RestClient restClient;
+    private final ExecutorService executorService =
+            Executors.newSingleThreadExecutor(new CustomizableThreadFactory("swarfarm-sync-"));
     private final String baseUrl;
     private final String imageBaseUrl;
     private final int pageSize;
@@ -41,6 +48,7 @@ public class SwarfarmMonsterSyncService {
     public SwarfarmMonsterSyncService(
             MonsterRepository monsterRepository,
             MonsterLocalizationApplyService localizationApplyService,
+            MonsterAdminJobService jobService,
             TransactionTemplate transactionTemplate,
             @Value("${external.swarfarm.base-url}") String baseUrl,
             @Value("${external.swarfarm.image-base-url}") String imageBaseUrl,
@@ -51,6 +59,7 @@ public class SwarfarmMonsterSyncService {
     ) {
         this.monsterRepository = monsterRepository;
         this.localizationApplyService = localizationApplyService;
+        this.jobService = jobService;
         this.transactionTemplate = transactionTemplate;
         this.restClient = RestClient.builder()
                 .requestFactory(requestFactory(connectTimeoutSeconds, readTimeoutSeconds))
@@ -62,8 +71,34 @@ public class SwarfarmMonsterSyncService {
         this.appendMissingLocalization = appendMissingLocalization;
     }
 
-    public int syncMonsters() {
+    public MonsterAdminJobStatusResponse startSync() {
+        MonsterAdminJobStatusResponse status = jobService.start("SWARFARM_SYNC", "Swarfarm 동기화를 시작했습니다.");
+
+        executorService.submit(() -> {
+            try {
+                int savedCount = syncMonsters();
+                jobService.complete("Swarfarm 동기화가 완료되었습니다.", savedCount, savedCount);
+            } catch (Exception e) {
+                log.error("Swarfarm monster sync background job failed", e);
+                jobService.fail(resolveFailureMessage(e));
+            }
+        });
+
+        return status;
+    }
+
+    public MonsterAdminJobStatusResponse getSyncStatus() {
+        return jobService.getStatus();
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        executorService.shutdownNow();
+    }
+
+    private int syncMonsters() {
         int savedCount = 0;
+        Integer totalCount = null;
         List<Monster> syncedMonsters = new ArrayList<>();
         String nextUrl = baseUrl + "/monsters/?page_size=" + pageSize;
         int pageNumber = 1;
@@ -75,9 +110,18 @@ public class SwarfarmMonsterSyncService {
                 break;
             }
 
+            if (page.getCount() != null) {
+                totalCount = page.getCount();
+            }
+
             int pageSavedCount = savePageInTransaction(page.getResults(), syncedMonsters, pageNumber);
             savedCount += pageSavedCount;
             log.info("Swarfarm monster sync page {} saved {} monsters. total={}", pageNumber, pageSavedCount, savedCount);
+            jobService.updateProgress(
+                    "Swarfarm 동기화 중입니다.",
+                    savedCount,
+                    totalCount
+            );
             nextUrl = page.getNext();
             pageNumber++;
         }
@@ -87,6 +131,14 @@ public class SwarfarmMonsterSyncService {
         }
 
         return savedCount;
+    }
+
+    private String resolveFailureMessage(Exception e) {
+        if (e instanceof SwarfarmSyncException && e.getMessage() != null) {
+            return e.getMessage();
+        }
+
+        return "Swarfarm 동기화 중 오류가 발생했습니다. 서버 로그를 확인해주세요.";
     }
 
     private SwarfarmPageResponse<SwarfarmMonsterResponse> fetchPage(String nextUrl, int pageNumber) {
