@@ -77,6 +77,12 @@ Cloudflare 보안 설정은 `docs/cloudflare-security-checklist.md`를 기준으
 7. 방덱 생성, 전투 연구 작성, 댓글 작성이 가능한지 확인한다.
 8. `/api/admin/**`가 일반 계정으로 차단되는지 확인한다.
 
+운영 URL의 기본 응답은 아래 스크립트로 빠르게 확인할 수 있다.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\operational-smoke-test.ps1
+```
+
 ## 5. After First Successful Deploy
 
 첫 배포가 성공하면 저장소 분리를 진행한다.
