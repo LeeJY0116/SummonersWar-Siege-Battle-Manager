@@ -65,6 +65,7 @@ public class SimpleRateLimitFilter extends OncePerRequestFilter {
 
         response.setStatus(429);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
         response.getWriter().write("{\"success\":false,\"message\":\"요청이 너무 많습니다. 잠시 후 다시 시도해주세요.\"}");
     }
 
