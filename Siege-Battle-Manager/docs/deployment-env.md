@@ -24,10 +24,10 @@ Render 또는 Spring Boot 실행 환경에 등록한다.
 | `CORS_ALLOWED_ORIGINS` | `https://example.pages.dev,https://example.com` | yes | 프론트 운영 도메인만 허용 |
 | `ADMIN_ALLOWED_IPS` | `203.0.113.10` | no | 비워두면 IP 제한 비활성화 |
 | `RATE_LIMIT_ENABLED` | `true` | no | 기본값 `true` |
-| `RATE_LIMIT_LOGIN_PER_MINUTE` | `10` | no | 로그인 요청 제한 |
-| `RATE_LIMIT_SIGNUP_PER_MINUTE` | `5` | no | 회원가입 요청 제한 |
-| `RATE_LIMIT_GUILD_REQUEST_PER_MINUTE` | `10` | no | 길드 가입/개설 요청 제한 |
-| `RATE_LIMIT_ADMIN_PER_MINUTE` | `120` | no | 관리자 API 요청 제한 |
+| `RATE_LIMIT_LOGIN_PER_MINUTE` | `5` | no | 로그인 요청 제한 |
+| `RATE_LIMIT_SIGNUP_PER_MINUTE` | `3` | no | 회원가입 요청 제한 |
+| `RATE_LIMIT_GUILD_REQUEST_PER_MINUTE` | `5` | no | 길드 가입/개설 요청 제한 |
+| `RATE_LIMIT_ADMIN_PER_MINUTE` | `60` | no | 관리자 API 요청 제한 |
 | `ADMIN_INITIAL_ID` | `admin` | no | 최초 admin 자동 생성용. 생성 후 제거 권장 |
 | `ADMIN_INITIAL_PASSWORD` | `********` | no | 최초 admin 자동 생성용. 생성 후 제거 권장 |
 | `ADMIN_INITIAL_EMAIL` | `admin@example.com` | no | 기본값 `admin@example.local` |
@@ -54,5 +54,5 @@ Cloudflare Pages 또는 Vercel에 등록한다.
 - 운영 첫 배포에서 스키마 자동 생성을 임시로 확인해야 할 때만 `DDL_AUTO=update`를 사용하고, 이후 `validate`로 되돌린다.
 - `DDL_AUTO=validate` 상태에서는 엔티티와 DB 스키마가 맞지 않으면 서버가 시작되지 않는다. 운영 배포 전 로컬 PostgreSQL 또는 Neon branch에서 먼저 확인한다.
 - Neon/Render 환경에서 간헐적인 DB I/O 오류가 보이면 커넥션 풀 값을 먼저 확인한다. 기본값은 저비용 플랜 기준으로 작게 잡는다.
-- `ADMIN_ALLOWED_IPS`는 고정 IP가 있을 때만 사용한다. 고정 IP가 없으면 Cloudflare WAF나 관리자 계정 보안으로 보완한다.
+- `ADMIN_ALLOWED_IPS`는 고정 IP가 있을 때만 사용한다. 고정 IP가 없으면 비워두고, rate limit, Cloudflare Bot Fight Mode/WAF, 강한 admin 비밀번호, 관리자 API 권한 테스트로 보완한다.
 - `ADMIN_INITIAL_ID`와 `ADMIN_INITIAL_PASSWORD`는 최초 운영 admin을 만들 때만 사용한다. admin 생성 후 Render 환경변수에서 제거한다.

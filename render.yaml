@@ -12,6 +12,14 @@ services:
         value: validate
       - key: RATE_LIMIT_ENABLED
         value: true
+      - key: RATE_LIMIT_LOGIN_PER_MINUTE
+        value: 5
+      - key: RATE_LIMIT_SIGNUP_PER_MINUTE
+        value: 3
+      - key: RATE_LIMIT_GUILD_REQUEST_PER_MINUTE
+        value: 5
+      - key: RATE_LIMIT_ADMIN_PER_MINUTE
+        value: 60
       - key: DB_URL
         sync: false
       - key: DB_USERNAME
