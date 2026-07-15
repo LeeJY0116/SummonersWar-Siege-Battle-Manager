@@ -103,3 +103,21 @@ Cloudflare 보안 설정은 `docs/cloudflare-security-checklist.md`를 기준으
 - Render 백엔드 서비스가 비공개 저장소를 바라보는지 확인
 - Cloudflare Pages 프론트 프로젝트가 비공개 저장소를 바라보는지 확인
 - 공개 저장소 푸쉬가 실서비스 자동 배포를 트리거하지 않는지 확인
+
+### 2026-07-15 보안 smoke test
+
+운영 URL 기준 기본 보안 응답을 확인했다.
+
+- Frontend: `https://sw-siege.pages.dev` 200 응답 확인
+- Backend root: 미로그인 요청 401 응답 확인
+- Admin API: `GET /api/admin/guilds` 미로그인 요청 401 JSON 응답 확인
+- Auth API: `GET /api/users/me` 미로그인 요청 401 JSON 응답 확인
+- Monster API: `GET /api/monsters` 200 응답 확인
+- Monster API 응답 크기: 약 386KB
+- Monster API 응답 시간: 약 2.68초
+
+미로그인 차단 응답:
+
+```json
+{"success":false,"data":null,"message":"로그인이 필요합니다."}
+```
