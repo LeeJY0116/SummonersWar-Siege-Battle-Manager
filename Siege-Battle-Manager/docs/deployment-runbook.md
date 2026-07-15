@@ -38,14 +38,11 @@ DB_PASSWORD=...
 JWT_SECRET=...
 CORS_ALLOWED_ORIGINS=https://FRONTEND_DOMAIN
 DDL_AUTO=validate
-ADMIN_INITIAL_ID=...
-ADMIN_INITIAL_PASSWORD=...
-ADMIN_INITIAL_EMAIL=...
-ADMIN_INITIAL_NICKNAME=...
 ```
 
 첫 배포에서 테이블 생성이 필요하면 임시로 `DDL_AUTO=update`를 사용하고, 정상 확인 후 `validate`로 되돌린다.
-최초 admin 계정이 생성되면 `ADMIN_INITIAL_ID`, `ADMIN_INITIAL_PASSWORD`, `ADMIN_INITIAL_EMAIL`, `ADMIN_INITIAL_NICKNAME`은 Render 환경변수에서 제거한다.
+최초 admin 계정 생성이 필요할 때만 `ADMIN_INITIAL_ID`, `ADMIN_INITIAL_PASSWORD`, `ADMIN_INITIAL_EMAIL`, `ADMIN_INITIAL_NICKNAME`을 임시로 등록한다.
+admin 계정이 생성되면 해당 환경변수는 Render 환경변수에서 제거한다.
 
 ## 3. Cloudflare Pages Frontend
 
@@ -86,3 +83,21 @@ VITE_API_BASE_URL=https://BACKEND_DOMAIN/api
 - Private 저장소: 운영 설정, 점령전 로그 파서, SMTP 설정, 실서비스 자동화 관리
 
 운영 비밀값은 어느 저장소에도 커밋하지 않는다.
+
+## 6. Deployment Verification Log
+
+### 2026-07-15
+
+배포 저장소 분리 이후 기본 연결 상태를 확인했다.
+
+- Frontend: `https://sw-siege.pages.dev` 200 응답 확인
+- Backend: `https://sw-siege-backend.onrender.com/api/monsters` 200 응답 확인
+- Database: `/api/monsters`에서 Neon PostgreSQL 데이터 조회 확인
+- CORS: `Origin: https://sw-siege.pages.dev` 요청에 `access-control-allow-origin: https://sw-siege.pages.dev` 확인
+- Frontend bundle: 배포된 JS 번들에 `https://sw-siege-backend.onrender.com/api` 포함 확인
+
+대시보드에서 확인해야 할 항목:
+
+- Render 백엔드 서비스가 비공개 저장소를 바라보는지 확인
+- Cloudflare Pages 프론트 프로젝트가 비공개 저장소를 바라보는지 확인
+- 공개 저장소 푸쉬가 실서비스 자동 배포를 트리거하지 않는지 확인
