@@ -33,7 +33,7 @@ class SecurityAuthorizationTest {
     private UserRepository userRepository;
 
     @Test
-    void 관리자_API는_토큰_없이_접근할_수_없다() throws Exception {
+    void admin_api_requires_login() throws Exception {
         mockMvc.perform(get("/api/admin/guilds"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.success", is(false)))
@@ -41,7 +41,7 @@ class SecurityAuthorizationTest {
     }
 
     @Test
-    void 관리자_API는_일반_유저_토큰으로_접근할_수_없다() throws Exception {
+    void admin_api_rejects_user_token() throws Exception {
         User user = createUser("security-user", UserRole.USER);
         String token = jwtTokenProvider.createToken(user.getId(), user.getLoginId(), user.getRole().name());
 
@@ -53,7 +53,7 @@ class SecurityAuthorizationTest {
     }
 
     @Test
-    void 관리자_API는_ADMIN_토큰으로_접근할_수_있다() throws Exception {
+    void admin_api_accepts_admin_token() throws Exception {
         User admin = createUser("security-admin", UserRole.ADMIN);
         String token = jwtTokenProvider.createToken(admin.getId(), admin.getLoginId(), admin.getRole().name());
 

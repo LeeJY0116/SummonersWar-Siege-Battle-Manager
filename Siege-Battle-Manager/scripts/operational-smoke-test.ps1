@@ -31,6 +31,11 @@ function Write-Fail {
     Write-Host "[FAIL] $Message"
 }
 
+function Write-Skip {
+    param([string]$Message)
+    Write-Host "[SKIP] $Message"
+}
+
 function Get-HttpResponse {
     param(
         [string]$Uri,
@@ -152,11 +157,28 @@ Write-Host "Origin  : $origin"
 Write-Host ""
 
 Assert-Status -Name "Frontend" -Uri $frontendUrl -ExpectedStatus 200
-Assert-JsonMessage -Name "Backend root unauthenticated" -Uri $backendUrl -ExpectedStatus 401 -ExpectedMessage $loginRequiredMessage
-Assert-JsonMessage -Name "Admin API unauthenticated" -Uri "$backendUrl/api/admin/guilds" -ExpectedStatus 401 -ExpectedMessage $loginRequiredMessage
-Assert-JsonMessage -Name "User API unauthenticated" -Uri "$backendUrl/api/users/me" -ExpectedStatus 401 -ExpectedMessage $loginRequiredMessage
-Assert-MonsterApi -Uri "$backendUrl/api/monsters"
-Assert-Cors -Uri "$backendUrl/api/monsters" -ExpectedOrigin $origin
+
+$backendAvailable = $true
+try {
+    Get-HttpResponse -Uri $backendUrl | Out-Null
+} catch {
+    $backendAvailable = $false
+    Write-Fail "Backend is not reachable: $($_.Exception.Message)"
+}
+
+if ($backendAvailable) {
+    Assert-JsonMessage -Name "Backend root unauthenticated" -Uri $backendUrl -ExpectedStatus 401 -ExpectedMessage $loginRequiredMessage
+    Assert-JsonMessage -Name "Admin API unauthenticated" -Uri "$backendUrl/api/admin/guilds" -ExpectedStatus 401 -ExpectedMessage $loginRequiredMessage
+    Assert-JsonMessage -Name "User API unauthenticated" -Uri "$backendUrl/api/users/me" -ExpectedStatus 401 -ExpectedMessage $loginRequiredMessage
+    Assert-MonsterApi -Uri "$backendUrl/api/monsters"
+    Assert-Cors -Uri "$backendUrl/api/monsters" -ExpectedOrigin $origin
+} else {
+    Write-Skip "Backend root unauthenticated"
+    Write-Skip "Admin API unauthenticated"
+    Write-Skip "User API unauthenticated"
+    Write-Skip "Monster API"
+    Write-Skip "CORS"
+}
 
 Write-Host ""
 
