@@ -62,6 +62,8 @@ VITE_API_BASE_URL=https://BACKEND_DOMAIN/api
 
 프론트 빌드 이후 API 호출이 실패하면 먼저 `VITE_API_BASE_URL`과 백엔드 `CORS_ALLOWED_ORIGINS`가 서로 맞는지 확인한다.
 
+Cloudflare 보안 설정은 `docs/cloudflare-security-checklist.md`를 기준으로 점검한다.
+
 ## 4. Smoke Test
 
 배포 후 최소 확인 항목:
