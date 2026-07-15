@@ -1,5 +1,8 @@
 package com.sbm.siegebackend.domain.guild;
 
+import com.sbm.siegebackend.domain.deck.DefenseDeckService;
+import com.sbm.siegebackend.domain.deck.dto.DefenseDeckCreateRequest;
+import com.sbm.siegebackend.domain.guild.dto.GuildMemberInventoryUpdateRequest;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberRoleUpdateRequest;
 import com.sbm.siegebackend.domain.user.User;
 import com.sbm.siegebackend.domain.user.UserRepository;
@@ -11,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -21,6 +26,12 @@ class GuildMemberServiceTest {
 
     @Autowired
     private GuildMemberService guildMemberService;
+
+    @Autowired
+    private GuildMemberInventoryService guildMemberInventoryService;
+
+    @Autowired
+    private DefenseDeckService defenseDeckService;
 
     @Autowired
     private GuildRepository guildRepository;
@@ -75,6 +86,43 @@ class GuildMemberServiceTest {
         )).isFalse();
     }
 
+    @Test
+    void 다른_길드원의_인벤토리는_직접_ID로도_조회하거나_수정할_수_없다() {
+        GuildFixture myGuild = createGuildFixture("inventory-my");
+        GuildFixture otherGuild = createGuildFixture("inventory-other");
+
+        assertThatThrownBy(() -> guildMemberInventoryService.getInventory(
+                otherGuild.member.getId(),
+                myGuild.masterUser.getEmail()
+        ))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("다른 길드원의 인벤토리는 조회할 수 없습니다.");
+
+        assertThatThrownBy(() -> guildMemberInventoryService.updateInventory(
+                otherGuild.member.getId(),
+                myGuild.masterUser.getEmail(),
+                emptyInventoryRequest()
+        ))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("다른 길드의 인벤토리는 수정할 수 없습니다.");
+    }
+
+    @Test
+    void 다른_길드원의_방덱은_직접_ID로도_생성할_수_없다() {
+        GuildFixture myGuild = createGuildFixture("deck-my");
+        GuildFixture otherGuild = createGuildFixture("deck-other");
+        DefenseDeckCreateRequest request = new DefenseDeckCreateRequest();
+        request.setMonsterCodes(List.of("m1", "m2", "m3"));
+
+        assertThatThrownBy(() -> defenseDeckService.createDeck(
+                otherGuild.member.getId(),
+                myGuild.masterUser.getEmail(),
+                request
+        ))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("다른 길드원의 방덱은 생성할 수 없습니다.");
+    }
+
     private GuildFixture createGuildFixture(String prefix) {
         User masterUser = createUser(prefix + "-master", prefix + "마스터");
         Guild guild = guildRepository.save(new Guild(prefix + "-guild", "", masterUser));
@@ -110,6 +158,12 @@ class GuildMemberServiceTest {
                 role,
                 GuildMemberStatus.APPROVED
         ));
+    }
+
+    private GuildMemberInventoryUpdateRequest emptyInventoryRequest() {
+        GuildMemberInventoryUpdateRequest request = new GuildMemberInventoryUpdateRequest();
+        request.setItems(List.of());
+        return request;
     }
 
     private record GuildFixture(
