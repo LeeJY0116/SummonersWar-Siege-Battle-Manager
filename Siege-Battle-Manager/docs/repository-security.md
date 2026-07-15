@@ -73,6 +73,15 @@ trufflehog git file://D:/Codes/SummonersWar --only-verified
 
 ## Scan History
 
+### 2026-07-15
+
+- `docker run --rm -v D:/Codes/SummonersWar:/repo:ro zricethezav/gitleaks:latest detect --source=/repo --verbose --redact`
+  - 140 commits scanned
+  - no leaks found
+- `docker run --rm -v D:/Codes/SummonersWar:/repo:ro trufflesecurity/trufflehog:latest git file:///repo --only-verified --no-update`
+  - verified secrets: 0
+  - unverified secrets: 0
+
 ### 2026-07-14
 
 - `gitleaks detect --source=/repo --verbose`
