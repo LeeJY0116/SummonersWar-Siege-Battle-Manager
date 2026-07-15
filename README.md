@@ -2,6 +2,12 @@
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3-green)
 ![React](https://img.shields.io/badge/React-19-blue)
 
+> 공개 포트폴리오 저장소
+>
+> 이 저장소는 SW 점령전 프로젝트의 공개 포트폴리오 버전입니다.
+> 실제 배포와 운영 설정은 별도의 비공개 저장소에서 관리합니다.
+> 시크릿, 운영 환경변수, DB 백업, 비공개 운영 스크립트는 이 저장소에 저장하지 않습니다.
+
 # Siege-Battle-Manager
 
 길드 점령전 방덱/공덱 관리 & 길드 운영 플랫폼
