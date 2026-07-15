@@ -22,6 +22,10 @@ external:
     base-url: https://swarfarm.com/api/v2
     image-base-url: https://swarfarm.com/static/herders/images/monsters
 
+security:
+  jwt:
+    secret: test-jwt-secret-for-local-tests-only-32-bytes
+
 logging:
   level:
     org.springframework.security: WARN

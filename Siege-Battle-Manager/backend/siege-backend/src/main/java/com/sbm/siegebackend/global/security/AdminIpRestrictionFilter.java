@@ -32,7 +32,7 @@ public class AdminIpRestrictionFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        if (!request.getRequestURI().startsWith("/api/admin/") || allowedIps.isEmpty()) {
+        if (!isAdminPath(request.getRequestURI()) || allowedIps.isEmpty()) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -46,6 +46,10 @@ public class AdminIpRestrictionFilter extends OncePerRequestFilter {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.getWriter().write("{\"success\":false,\"message\":\"관리자 페이지에 접근할 수 없는 IP입니다.\"}");
+    }
+
+    private boolean isAdminPath(String uri) {
+        return uri.startsWith("/api/admin/") || uri.startsWith("/api/users/admin/");
     }
 
     private String resolveClientIp(HttpServletRequest request) {

@@ -49,6 +49,7 @@ public class SecurityConfig {
 
                     auth
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/users/admin/**").hasRole("ADMIN")
 
                         // ✅ 길드 생성/내길드/내멤버는 로그인 필요
                         .requestMatchers(HttpMethod.POST, "/api/guilds").authenticated()

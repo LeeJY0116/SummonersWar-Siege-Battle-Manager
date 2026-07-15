@@ -82,11 +82,15 @@ public class SimpleRateLimitFilter extends OncePerRequestFilter {
                 && ("/api/guilds/join-requests".equals(uri) || "/api/guilds/create-requests".equals(uri))) {
             return guildRequestLimitPerMinute;
         }
-        if (uri.startsWith("/api/admin/")) {
+        if (isAdminPath(uri)) {
             return adminLimitPerMinute;
         }
 
         return 0;
+    }
+
+    private boolean isAdminPath(String uri) {
+        return uri.startsWith("/api/admin/") || uri.startsWith("/api/users/admin/");
     }
 
     private WindowCounter nextCounter(WindowCounter previous) {
