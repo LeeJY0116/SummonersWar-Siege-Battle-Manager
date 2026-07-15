@@ -12,6 +12,13 @@ Render 또는 Spring Boot 실행 환경에 등록한다.
 | `DB_URL` | `jdbc:postgresql://host:5432/dbname?sslmode=require` | yes | Neon PostgreSQL JDBC URL |
 | `DB_USERNAME` | `neondb_owner` | yes | 운영 DB 계정 |
 | `DB_PASSWORD` | `********` | yes | 운영 DB 비밀번호 |
+| `DB_MAX_POOL_SIZE` | `5` | no | Render/Neon 기본 커넥션 풀 최대 크기 |
+| `DB_MIN_IDLE` | `0` | no | 유휴 커넥션 최소 유지 수 |
+| `DB_CONNECTION_TIMEOUT` | `30000` | no | DB 커넥션 획득 대기 시간(ms) |
+| `DB_VALIDATION_TIMEOUT` | `5000` | no | DB 커넥션 검증 대기 시간(ms) |
+| `DB_IDLE_TIMEOUT` | `60000` | no | 유휴 커넥션 정리 시간(ms) |
+| `DB_MAX_LIFETIME` | `300000` | no | 커넥션 최대 생존 시간(ms) |
+| `DB_KEEPALIVE_TIME` | `120000` | no | 커넥션 keepalive 주기(ms) |
 | `JWT_SECRET` | `********` | yes | 32바이트 이상 새 값 사용 |
 | `DDL_AUTO` | `validate` | no | 운영 기본값은 `validate` |
 | `CORS_ALLOWED_ORIGINS` | `https://example.pages.dev,https://example.com` | yes | 프론트 운영 도메인만 허용 |
@@ -45,5 +52,7 @@ Cloudflare Pages 또는 Vercel에 등록한다.
 - 공개된 적 있는 JWT 키는 운영에서 재사용하지 않는다.
 - 운영 DB에서는 H2 console을 사용하지 않는다.
 - 운영 첫 배포에서 스키마 자동 생성을 임시로 확인해야 할 때만 `DDL_AUTO=update`를 사용하고, 이후 `validate`로 되돌린다.
+- `DDL_AUTO=validate` 상태에서는 엔티티와 DB 스키마가 맞지 않으면 서버가 시작되지 않는다. 운영 배포 전 로컬 PostgreSQL 또는 Neon branch에서 먼저 확인한다.
+- Neon/Render 환경에서 간헐적인 DB I/O 오류가 보이면 커넥션 풀 값을 먼저 확인한다. 기본값은 저비용 플랜 기준으로 작게 잡는다.
 - `ADMIN_ALLOWED_IPS`는 고정 IP가 있을 때만 사용한다. 고정 IP가 없으면 Cloudflare WAF나 관리자 계정 보안으로 보완한다.
 - `ADMIN_INITIAL_ID`와 `ADMIN_INITIAL_PASSWORD`는 최초 운영 admin을 만들 때만 사용한다. admin 생성 후 Render 환경변수에서 제거한다.
