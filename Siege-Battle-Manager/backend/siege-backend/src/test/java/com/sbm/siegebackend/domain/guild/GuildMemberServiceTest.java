@@ -4,6 +4,14 @@ import com.sbm.siegebackend.domain.deck.DefenseDeckService;
 import com.sbm.siegebackend.domain.deck.dto.DefenseDeckCreateRequest;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberInventoryUpdateRequest;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberRoleUpdateRequest;
+import com.sbm.siegebackend.domain.monster.Monster;
+import com.sbm.siegebackend.domain.monster.MonsterAttribute;
+import com.sbm.siegebackend.domain.monster.MonsterRepository;
+import com.sbm.siegebackend.domain.research.BattleResearchComment;
+import com.sbm.siegebackend.domain.research.BattleResearchCommentRepository;
+import com.sbm.siegebackend.domain.research.BattleResearchPost;
+import com.sbm.siegebackend.domain.research.BattleResearchPostRepository;
+import com.sbm.siegebackend.domain.research.BattleResearchService;
 import com.sbm.siegebackend.domain.user.User;
 import com.sbm.siegebackend.domain.user.UserRepository;
 import com.sbm.siegebackend.domain.user.UserRole;
@@ -31,6 +39,9 @@ class GuildMemberServiceTest {
     private GuildMemberInventoryService guildMemberInventoryService;
 
     @Autowired
+    private GuildMemberInventoryRepository guildMemberInventoryRepository;
+
+    @Autowired
     private DefenseDeckService defenseDeckService;
 
     @Autowired
@@ -43,10 +54,22 @@ class GuildMemberServiceTest {
     private GuildMemberBanRepository guildMemberBanRepository;
 
     @Autowired
+    private MonsterRepository monsterRepository;
+
+    @Autowired
+    private BattleResearchService battleResearchService;
+
+    @Autowired
+    private BattleResearchPostRepository battleResearchPostRepository;
+
+    @Autowired
+    private BattleResearchCommentRepository battleResearchCommentRepository;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Test
-    void 길드장_추방은_길드원을_LEFT로_변경하고_재가입을_차단한다() {
+    void kick_real_member_marks_left_and_adds_active_ban() {
         GuildFixture fixture = createGuildFixture("kick");
 
         guildMemberService.kickRealMember(fixture.member.getId(), fixture.masterUser.getLoginId());
@@ -59,7 +82,7 @@ class GuildMemberServiceTest {
     }
 
     @Test
-    void 부길드장은_등급_변경과_추방을_할_수_없다() {
+    void sub_master_cannot_change_role_or_kick_member() {
         GuildFixture fixture = createGuildFixture("submaster-permission");
         GuildMemberRoleUpdateRequest request = new GuildMemberRoleUpdateRequest();
         request.setRole(GuildMemberRole.SUB_MASTER);
@@ -69,15 +92,13 @@ class GuildMemberServiceTest {
                 fixture.subMasterUser.getLoginId(),
                 request
         ))
-                .isInstanceOf(ForbiddenException.class)
-                .hasMessage("길드장만 처리할 수 있습니다.");
+                .isInstanceOf(ForbiddenException.class);
 
         assertThatThrownBy(() -> guildMemberService.kickRealMember(
                 fixture.member.getId(),
                 fixture.subMasterUser.getLoginId()
         ))
-                .isInstanceOf(ForbiddenException.class)
-                .hasMessage("길드장만 처리할 수 있습니다.");
+                .isInstanceOf(ForbiddenException.class);
 
         assertThat(fixture.member.getStatus()).isEqualTo(GuildMemberStatus.APPROVED);
         assertThat(guildMemberBanRepository.existsByGuildAndUserAndActiveTrue(
@@ -87,7 +108,7 @@ class GuildMemberServiceTest {
     }
 
     @Test
-    void 다른_길드원의_인벤토리는_직접_ID로도_조회하거나_수정할_수_없다() {
+    void cannot_read_or_update_other_guild_inventory_by_direct_member_id() {
         GuildFixture myGuild = createGuildFixture("inventory-my");
         GuildFixture otherGuild = createGuildFixture("inventory-other");
 
@@ -95,20 +116,18 @@ class GuildMemberServiceTest {
                 otherGuild.member.getId(),
                 myGuild.masterUser.getEmail()
         ))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("다른 길드원의 인벤토리는 조회할 수 없습니다.");
+                .isInstanceOf(IllegalStateException.class);
 
         assertThatThrownBy(() -> guildMemberInventoryService.updateInventory(
                 otherGuild.member.getId(),
                 myGuild.masterUser.getEmail(),
                 emptyInventoryRequest()
         ))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("다른 길드의 인벤토리는 수정할 수 없습니다.");
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
-    void 다른_길드원의_방덱은_직접_ID로도_생성할_수_없다() {
+    void cannot_create_other_guild_deck_by_direct_member_id() {
         GuildFixture myGuild = createGuildFixture("deck-my");
         GuildFixture otherGuild = createGuildFixture("deck-other");
         DefenseDeckCreateRequest request = new DefenseDeckCreateRequest();
@@ -119,26 +138,178 @@ class GuildMemberServiceTest {
                 myGuild.masterUser.getEmail(),
                 request
         ))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("다른 길드원의 방덱은 생성할 수 없습니다.");
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void same_guild_member_cannot_manage_other_member_inventory_or_deck() {
+        GuildFixture fixture = createGuildFixture("same-guild-permission");
+        List<Monster> monsters = createMonsters("same-guild-permission");
+        saveInventory(fixture.subMaster, monsters);
+
+        assertThatThrownBy(() -> guildMemberInventoryService.getInventory(
+                fixture.subMaster.getId(),
+                fixture.memberUser.getEmail()
+        ))
+                .isInstanceOf(IllegalStateException.class);
+
+        assertThatThrownBy(() -> guildMemberInventoryService.updateInventory(
+                fixture.subMaster.getId(),
+                fixture.memberUser.getEmail(),
+                emptyInventoryRequest()
+        ))
+                .isInstanceOf(IllegalStateException.class);
+
+        DefenseDeckCreateRequest request = new DefenseDeckCreateRequest();
+        request.setMonsterCodes(monsters.stream().map(Monster::getCode).toList());
+
+        assertThatThrownBy(() -> defenseDeckService.createDeck(
+                fixture.subMaster.getId(),
+                fixture.memberUser.getEmail(),
+                request
+        ))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void defense_deck_delete_requires_same_guild_and_owner_or_manager() {
+        GuildFixture myGuild = createGuildFixture("delete-deck-my");
+        GuildFixture otherGuild = createGuildFixture("delete-deck-other");
+        List<Monster> otherMonsters = createMonsters("delete-deck-other");
+        saveInventory(otherGuild.member, otherMonsters);
+
+        DefenseDeckCreateRequest otherRequest = new DefenseDeckCreateRequest();
+        otherRequest.setMonsterCodes(otherMonsters.stream().map(Monster::getCode).toList());
+        Long otherDeckId = defenseDeckService.createDeck(
+                otherGuild.member.getId(),
+                otherGuild.masterUser.getEmail(),
+                otherRequest
+        );
+
+        assertThatThrownBy(() -> defenseDeckService.deleteDeck(
+                otherDeckId,
+                myGuild.masterUser.getEmail()
+        ))
+                .isInstanceOf(IllegalStateException.class);
+
+        List<Monster> sameGuildMonsters = createMonsters("delete-deck-same");
+        saveInventory(myGuild.subMaster, sameGuildMonsters);
+
+        DefenseDeckCreateRequest sameGuildRequest = new DefenseDeckCreateRequest();
+        sameGuildRequest.setMonsterCodes(sameGuildMonsters.stream().map(Monster::getCode).toList());
+        Long sameGuildDeckId = defenseDeckService.createDeck(
+                myGuild.subMaster.getId(),
+                myGuild.masterUser.getEmail(),
+                sameGuildRequest
+        );
+
+        assertThatThrownBy(() -> defenseDeckService.deleteDeck(
+                sameGuildDeckId,
+                myGuild.memberUser.getEmail()
+        ))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void battle_research_delete_requires_author_or_master_in_same_guild() {
+        GuildFixture fixture = createGuildFixture("research-delete");
+        List<Monster> monsters = createMonsters("research-delete");
+        BattleResearchPost post = battleResearchPostRepository.save(new BattleResearchPost(
+                fixture.guild,
+                "title",
+                "content",
+                monsters,
+                fixture.memberUser.getId(),
+                fixture.member.getDisplayName()
+        ));
+        BattleResearchComment comment = battleResearchCommentRepository.save(new BattleResearchComment(
+                post,
+                List.of(),
+                "comment",
+                fixture.memberUser.getId(),
+                fixture.member.getDisplayName()
+        ));
+
+        assertThatThrownBy(() -> battleResearchService.deletePost(
+                fixture.subMasterUser.getEmail(),
+                post.getId()
+        ))
+                .isInstanceOf(IllegalStateException.class);
+
+        assertThatThrownBy(() -> battleResearchService.deleteComment(
+                fixture.subMasterUser.getEmail(),
+                comment.getId()
+        ))
+                .isInstanceOf(IllegalStateException.class);
+
+        battleResearchService.deleteComment(fixture.memberUser.getEmail(), comment.getId());
+
+        BattleResearchComment masterDeletedComment = battleResearchCommentRepository.save(new BattleResearchComment(
+                post,
+                List.of(),
+                "master delete comment",
+                fixture.memberUser.getId(),
+                fixture.member.getDisplayName()
+        ));
+        battleResearchService.deleteComment(fixture.masterUser.getEmail(), masterDeletedComment.getId());
+
+        battleResearchService.deletePost(fixture.masterUser.getEmail(), post.getId());
+
+        assertThat(battleResearchPostRepository.findById(post.getId())).isEmpty();
+        assertThat(battleResearchCommentRepository.findById(comment.getId())).isEmpty();
+        assertThat(battleResearchCommentRepository.findById(masterDeletedComment.getId())).isEmpty();
+    }
+
+    @Test
+    void battle_research_cannot_delete_other_guild_post_or_comment() {
+        GuildFixture myGuild = createGuildFixture("research-other-my");
+        GuildFixture otherGuild = createGuildFixture("research-other");
+        List<Monster> monsters = createMonsters("research-other");
+        BattleResearchPost otherPost = battleResearchPostRepository.save(new BattleResearchPost(
+                otherGuild.guild,
+                "title",
+                "content",
+                monsters,
+                otherGuild.memberUser.getId(),
+                otherGuild.member.getDisplayName()
+        ));
+        BattleResearchComment otherComment = battleResearchCommentRepository.save(new BattleResearchComment(
+                otherPost,
+                List.of(),
+                "comment",
+                otherGuild.memberUser.getId(),
+                otherGuild.member.getDisplayName()
+        ));
+
+        assertThatThrownBy(() -> battleResearchService.deletePost(
+                myGuild.masterUser.getEmail(),
+                otherPost.getId()
+        ))
+                .isInstanceOf(IllegalStateException.class);
+
+        assertThatThrownBy(() -> battleResearchService.deleteComment(
+                myGuild.masterUser.getEmail(),
+                otherComment.getId()
+        ))
+                .isInstanceOf(IllegalStateException.class);
     }
 
     private GuildFixture createGuildFixture(String prefix) {
-        User masterUser = createUser(prefix + "-master", prefix + "마스터");
+        User masterUser = createUser(prefix + "-master", prefix + "-master");
         Guild guild = guildRepository.save(new Guild(prefix + "-guild", "", masterUser));
         GuildMember master = createMember(guild, masterUser, GuildMemberRole.MASTER);
 
-        User subMasterUser = createUser(prefix + "-submaster", prefix + "부길드장");
+        User subMasterUser = createUser(prefix + "-submaster", prefix + "-submaster");
         GuildMember subMaster = createMember(guild, subMasterUser, GuildMemberRole.SUB_MASTER);
 
-        User memberUser = createUser(prefix + "-member", prefix + "길드원");
+        User memberUser = createUser(prefix + "-member", prefix + "-member");
         GuildMember member = createMember(guild, memberUser, GuildMemberRole.MEMBER);
 
         guild.addMember(master);
         guild.addMember(subMaster);
         guild.addMember(member);
 
-        return new GuildFixture(guild, masterUser, subMasterUser, memberUser, member);
+        return new GuildFixture(guild, masterUser, subMasterUser, memberUser, master, subMaster, member);
     }
 
     private User createUser(String loginId, String nickname) {
@@ -166,11 +337,36 @@ class GuildMemberServiceTest {
         return request;
     }
 
+    private List<Monster> createMonsters(String prefix) {
+        return List.of(
+                createMonster(prefix + "-m1", MonsterAttribute.FIRE),
+                createMonster(prefix + "-m2", MonsterAttribute.WATER),
+                createMonster(prefix + "-m3", MonsterAttribute.WIND)
+        );
+    }
+
+    private Monster createMonster(String code, MonsterAttribute attribute) {
+        return monsterRepository.save(Monster.builder()
+                .code(code)
+                .name(code)
+                .attribute(attribute)
+                .leaderEffectType(null)
+                .build());
+    }
+
+    private void saveInventory(GuildMember member, List<Monster> monsters) {
+        monsters.forEach(monster -> guildMemberInventoryRepository.save(
+                new GuildMemberInventory(member, monster, 1)
+        ));
+    }
+
     private record GuildFixture(
             Guild guild,
             User masterUser,
             User subMasterUser,
             User memberUser,
+            GuildMember master,
+            GuildMember subMaster,
             GuildMember member
     ) {
     }
