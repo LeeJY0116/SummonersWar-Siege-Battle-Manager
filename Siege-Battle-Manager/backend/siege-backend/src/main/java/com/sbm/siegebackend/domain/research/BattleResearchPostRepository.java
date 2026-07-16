@@ -64,6 +64,13 @@ public interface BattleResearchPostRepository extends JpaRepository<BattleResear
     Optional<BattleResearchPost> findFirstByAuthorUserIdOrderByCreatedAtDesc(Long authorUserId);
 
     @Query("""
+        select distinct p from BattleResearchPost p
+        left join fetch p.selectedMonsters
+        where p.id in :postIds
+    """)
+    List<BattleResearchPost> findByIdsWithDefense(@Param("postIds") List<Long> postIds);
+
+    @Query("""
         select p from BattleResearchPost p
         left join fetch p.selectedMonsters
         where p.id = :postId

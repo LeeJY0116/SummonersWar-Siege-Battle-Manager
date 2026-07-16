@@ -35,7 +35,26 @@ public interface GuildMemberInventoryRepository extends JpaRepository<GuildMembe
             @Param("monsterCode") String monsterCode
     );
 
-    List<GuildMemberInventory> findByGuildMember(GuildMember member);
+    @Query("""
+        select i
+        from GuildMemberInventory i
+        join fetch i.monster
+        where i.guildMember = :member
+    """)
+    List<GuildMemberInventory> findByGuildMember(@Param("member") GuildMember member);
+
+    @Query("""
+        select i
+        from GuildMemberInventory i
+        join fetch i.guildMember
+        join fetch i.monster
+        where i.guildMember in :members
+          and i.monster in :monsters
+    """)
+    List<GuildMemberInventory> findByGuildMembersAndMonsters(
+            @Param("members") List<GuildMember> members,
+            @Param("monsters") List<Monster> monsters
+    );
 
     Optional<GuildMemberInventory> findByGuildMemberAndMonster(GuildMember member, Monster monster);
 }

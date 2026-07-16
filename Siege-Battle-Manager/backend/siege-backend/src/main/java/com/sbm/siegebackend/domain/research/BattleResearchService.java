@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -131,6 +134,11 @@ public class BattleResearchService {
 
         // ✅ 댓글 개수 한 번에 조회
         List<Long> postIds = posts.stream().map(BattleResearchPost::getId).toList();
+        Map<Long, BattleResearchPost> postsWithDefenseById = postIds.isEmpty()
+                ? Map.of()
+                : postRepository.findByIdsWithDefense(postIds)
+                .stream()
+                .collect(Collectors.toMap(BattleResearchPost::getId, Function.identity()));
 
         var countRows = postIds.isEmpty()
                 ? List.<BattleResearchCommentRepository.PostCommentCount>of()
@@ -143,21 +151,25 @@ public class BattleResearchService {
                 ));
 
         List<BattleResearchPostListItemResponse> items = posts.stream()
-                .map(p -> new BattleResearchPostListItemResponse(
-                        p.getId(),
-                        p.getTitle(),
-                        p.getAuthorName(),
-                        p.getAuthorUserId(),
-                        p.getDefenseMonsters().stream()
-                                .map(m -> new BattleResearchPostListItemResponse.MonsterItem(
-                                        m.getId(),
-                                        m.getCode(),
-                                        getMonsterDisplayName(m)
-                                ))
-                                .toList(),
-                        countMap.getOrDefault(p.getId(), 0L).intValue(),
-                        p.getCreatedAt()
-                ))
+                .map(p -> {
+                    BattleResearchPost postWithDefense = postsWithDefenseById.getOrDefault(p.getId(), p);
+
+                    return new BattleResearchPostListItemResponse(
+                            p.getId(),
+                            p.getTitle(),
+                            p.getAuthorName(),
+                            p.getAuthorUserId(),
+                            postWithDefense.getDefenseMonsters().stream()
+                                    .map(m -> new BattleResearchPostListItemResponse.MonsterItem(
+                                            m.getId(),
+                                            m.getCode(),
+                                            getMonsterDisplayName(m)
+                                    ))
+                                    .toList(),
+                            countMap.getOrDefault(p.getId(), 0L).intValue(),
+                            p.getCreatedAt()
+                    );
+                })
                 .toList();
 
         return new BattleResearchPostPageResponse(

@@ -11,6 +11,7 @@ import com.sbm.siegebackend.global.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.List;
@@ -93,24 +94,8 @@ public class OwnerlessDefenseDeckService {
         List<GuildMember> members = getApprovedMembers(actor.getGuild());
         List<Monster> monsters = deck.getMonsters();
 
-        // ✅ 가능한 길드원 계산
-        List<OwnerlessDefenseDeckDetailResponse.AvailableMember> available = members.stream()
-                .map(m -> {
-                    int buildableCount = countBuildableSets(m, monsters);
-
-                    if (buildableCount <= 0) {
-                        return null;
-                    }
-
-                    return new OwnerlessDefenseDeckDetailResponse.AvailableMember(
-                            m.getId(),
-                            m.getDisplayName(),
-                            m.getType().name(),
-                            buildableCount
-                    );
-                })
-                .filter(Objects::nonNull)
-                .toList();
+        List<OwnerlessDefenseDeckDetailResponse.AvailableMember> available =
+                getAvailableMembers(members, monsters);
 
         return new OwnerlessDefenseDeckDetailResponse(
                 deck.getId(),
@@ -154,23 +139,7 @@ public class OwnerlessDefenseDeckService {
         List<Monster> monsters = deck.getMonsters();
 
         List<OwnerlessDefenseDeckDetailResponse.AvailableMember> available =
-                members.stream()
-                        .map(m -> {
-                            int buildableCount = countBuildableSets(m, monsters);
-
-                            if (buildableCount <= 0) {
-                                return null;
-                            }
-
-                            return new OwnerlessDefenseDeckDetailResponse.AvailableMember(
-                                    m.getId(),
-                                    m.getDisplayName(),
-                                    m.getType().name(),
-                                    buildableCount
-                            );
-                        })
-                        .filter(Objects::nonNull)
-                        .toList();
+                getAvailableMembers(members, monsters);
 
         Monster leader = deck.getLeader();
 
@@ -196,33 +165,56 @@ public class OwnerlessDefenseDeckService {
         );
     }
 
-    private boolean canBuild(GuildMember member, List<Monster> monsters) {
-        for (Monster monster : monsters) {
-            GuildMemberInventory inv = inventoryRepository
-                    .findByGuildMemberAndMonsterCode(member, monster.getCode())
-                    .orElse(null);
-
-            if (inv == null || inv.getQuantity() < 1) {
-                return false;
-            }
+    private List<OwnerlessDefenseDeckDetailResponse.AvailableMember> getAvailableMembers(
+            List<GuildMember> members,
+            List<Monster> monsters
+    ) {
+        if (members.isEmpty() || monsters.isEmpty()) {
+            return List.of();
         }
-        return true;
+
+        Map<Long, Map<Long, Integer>> quantityByMemberAndMonster = new HashMap<>();
+        inventoryRepository.findByGuildMembersAndMonsters(members, monsters)
+                .forEach(inventory -> quantityByMemberAndMonster
+                        .computeIfAbsent(inventory.getGuildMember().getId(), ignored -> new HashMap<>())
+                        .put(inventory.getMonster().getId(), inventory.getQuantity()));
+
+        return members.stream()
+                .map(member -> {
+                    int buildableCount = countBuildableSets(member, monsters, quantityByMemberAndMonster);
+
+                    if (buildableCount <= 0) {
+                        return null;
+                    }
+
+                    return new OwnerlessDefenseDeckDetailResponse.AvailableMember(
+                            member.getId(),
+                            member.getDisplayName(),
+                            member.getType().name(),
+                            buildableCount
+                    );
+                })
+                .filter(Objects::nonNull)
+                .toList();
     }
 
-    // 몇 세트 나오는지 계산하는 메서드
-    private int countBuildableSets(GuildMember member, List<Monster> monsters) {
+    private int countBuildableSets(
+            GuildMember member,
+            List<Monster> monsters,
+            Map<Long, Map<Long, Integer>> quantityByMemberAndMonster
+    ) {
         int minCount = Integer.MAX_VALUE;
+        Map<Long, Integer> quantityByMonster =
+                quantityByMemberAndMonster.getOrDefault(member.getId(), Map.of());
 
         for (Monster monster : monsters) {
-            GuildMemberInventory inv = inventoryRepository
-                    .findByGuildMemberAndMonsterCode(member, monster.getCode())
-                    .orElse(null);
+            int quantity = quantityByMonster.getOrDefault(monster.getId(), 0);
 
-            if (inv == null || inv.getQuantity() <= 0) {
+            if (quantity <= 0) {
                 return 0;
             }
 
-            minCount = Math.min(minCount, inv.getQuantity());
+            minCount = Math.min(minCount, quantity);
         }
 
         return minCount == Integer.MAX_VALUE ? 0 : minCount;
