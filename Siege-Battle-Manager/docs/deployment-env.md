@@ -54,5 +54,6 @@ Cloudflare Pages 또는 Vercel에 등록한다.
 - 운영 첫 배포에서 스키마 자동 생성을 임시로 확인해야 할 때만 `DDL_AUTO=update`를 사용하고, 이후 `validate`로 되돌린다.
 - `DDL_AUTO=validate` 상태에서는 엔티티와 DB 스키마가 맞지 않으면 서버가 시작되지 않는다. 운영 배포 전 로컬 PostgreSQL 또는 Neon branch에서 먼저 확인한다.
 - Neon/Render 환경에서 간헐적인 DB I/O 오류가 보이면 커넥션 풀 값을 먼저 확인한다. 기본값은 저비용 플랜 기준으로 작게 잡는다.
+- Render Free 플랜은 sleep/wake 지연이 있어 운영 안정화와 긴 동기화 작업 중에는 Starter 플랜을 사용한다.
 - `ADMIN_ALLOWED_IPS`는 고정 IP가 있을 때만 사용한다. 고정 IP가 없으면 비워두고, rate limit, Cloudflare Bot Fight Mode/WAF, 강한 admin 비밀번호, 관리자 API 권한 테스트로 보완한다.
 - `ADMIN_INITIAL_ID`와 `ADMIN_INITIAL_PASSWORD`는 최초 운영 admin을 만들 때만 사용한다. admin 생성 후 Render 환경변수에서 제거한다.
