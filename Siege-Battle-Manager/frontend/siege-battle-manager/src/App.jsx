@@ -8,7 +8,7 @@ import MonsterReviewTab from "./components/monsters/MonsterReviewTab.jsx";
 import SiegeBattleTab from "./components/siege/SiegeBattleTab.jsx";
 import { fetchMyGuild, fetchMyGuildMembers, leaveMyGuild } from "./lib/guild.js";
 import LoginPage from "./components/auth/LoginPage.jsx";
-import { fetchBootstrap } from "./lib/auth.js";
+import { fetchBootstrap, fetchMe } from "./lib/auth.js";
 import GuildTab from "./components/guild/GuildTab.jsx";
 import MyInfoTab from "./components/guild/MyInfoTab.jsx";
 import GuildJoinRequestPage from "./components/guild/GuildJoinRequestPage.jsx";
@@ -96,6 +96,19 @@ export default function SiegeBattleManager() {
 
     setGuildLoaded(false);
     fetchBootstrap()
+      .catch(async () => {
+        const loadedMe = await fetchMe();
+        const loadedGuild = await fetchMyGuild().catch(() => null);
+        const loadedMembers = loadedGuild
+          ? await fetchMyGuildMembers().catch(() => [])
+          : [];
+
+        return {
+          me: loadedMe,
+          guild: loadedGuild,
+          members: loadedMembers,
+        };
+      })
       .then((data) => {
         setMe(data?.me ?? null);
         setGuild(data?.guild ?? null);

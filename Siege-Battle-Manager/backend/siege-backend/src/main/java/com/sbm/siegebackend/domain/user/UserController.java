@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.sbm.siegebackend.domain.user.dto.UserMeResponse;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import com.sbm.siegebackend.global.api.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import com.sbm.siegebackend.global.exception.NotFoundException;
@@ -106,6 +107,7 @@ public class UserController {
     }
 
     @GetMapping("/bootstrap")
+    @Transactional(readOnly = true)
     public ResponseEntity<ApiResponse<UserBootstrapResponse>> bootstrap(Authentication authentication) {
         String loginId = (String) authentication.getPrincipal();
         User user = userService.findByLoginIdOrThrow(loginId);
