@@ -253,17 +253,23 @@ public class OwnerlessDefenseDeckService {
     }
 
     private boolean hasSameDeck(Long guildId, List<String> monsterCodes) {
+        String requestedDeckKey = createDeckKey(monsterCodes);
+
         return ownerlessRepo.findByGuildIdWithMonsters(guildId).stream()
                 .map(OwnerlessDefenseDeck::getMonsters)
                 .map(monsters -> monsters.stream().map(Monster::getCode).toList())
-                .anyMatch(existingCodes -> isSameLeaderAndMonsterSet(existingCodes, monsterCodes));
+                .map(this::createDeckKey)
+                .anyMatch(requestedDeckKey::equals);
     }
 
-    private boolean isSameLeaderAndMonsterSet(List<String> existingCodes, List<String> requestedCodes) {
-        return existingCodes.size() == requestedCodes.size()
-                && existingCodes.get(0).equals(requestedCodes.get(0))
-                && existingCodes.containsAll(requestedCodes)
-                && requestedCodes.containsAll(existingCodes);
+    private String createDeckKey(List<String> monsterCodes) {
+        String leaderCode = monsterCodes.get(0);
+        List<String> sortedMemberCodes = monsterCodes.subList(1, monsterCodes.size())
+                .stream()
+                .sorted()
+                .toList();
+
+        return leaderCode + "|" + String.join(",", sortedMemberCodes);
     }
 
     private String getMonsterDisplayName(Monster monster) {
