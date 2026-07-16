@@ -137,18 +137,20 @@ export default function LoginPage() {
 
   return (
     <div
-      className={`bg-[#120c09] px-3 py-3 text-slate-950 ${
+      className={`bg-white text-slate-950 ${
         view === "login" ? "h-dvh overflow-hidden" : "min-h-dvh overflow-auto"
       }`}
     >
       {notice && <Toast notice={notice} onClose={() => setNotice(null)} />}
 
       <div
-        className={`mx-auto flex w-full max-w-md ${
-          view === "login" ? "h-full items-center" : "min-h-[calc(100dvh-1.5rem)] items-start py-4"
+        className={`mx-auto flex w-full ${
+          view === "login"
+            ? "h-full max-w-none items-start px-6 pt-16 sm:max-w-md sm:items-center sm:px-0 sm:pt-0"
+            : "min-h-dvh max-w-none items-center px-6 py-10 sm:max-w-md sm:px-0"
         }`}
       >
-        <div className="w-full rounded-2xl border border-[#8b6a2e] bg-[#f8f7f5] p-6 shadow-[0_18px_40px_rgba(0,0,0,0.35)] sm:p-8">
+        <div className="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_18px_40px_rgba(15,23,42,0.08)] sm:p-8">
           {view === "start" && (
             <div className="space-y-6">
               <div className="space-y-2">
