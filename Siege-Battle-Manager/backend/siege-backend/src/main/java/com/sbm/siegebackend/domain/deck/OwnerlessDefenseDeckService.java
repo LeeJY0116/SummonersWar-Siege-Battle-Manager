@@ -11,8 +11,10 @@ import com.sbm.siegebackend.global.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -139,7 +141,7 @@ public class OwnerlessDefenseDeckService {
         List<OwnerlessDefenseDeck> decks =
                 ownerlessRepo.findByGuildIdWithMonsters(actor.getGuild().getId());
 
-        return decks.stream()
+        return distinctDecksByKey(decks).stream()
                 .map(this::toDetailResponse)
                 .toList();
     }
@@ -260,6 +262,19 @@ public class OwnerlessDefenseDeckService {
                 .map(monsters -> monsters.stream().map(Monster::getCode).toList())
                 .map(this::createDeckKey)
                 .anyMatch(requestedDeckKey::equals);
+    }
+
+    private List<OwnerlessDefenseDeck> distinctDecksByKey(List<OwnerlessDefenseDeck> decks) {
+        Map<String, OwnerlessDefenseDeck> decksByKey = new LinkedHashMap<>();
+
+        for (OwnerlessDefenseDeck deck : decks) {
+            String deckKey = createDeckKey(deck.getMonsters().stream()
+                    .map(Monster::getCode)
+                    .toList());
+            decksByKey.putIfAbsent(deckKey, deck);
+        }
+
+        return List.copyOf(decksByKey.values());
     }
 
     private String createDeckKey(List<String> monsterCodes) {

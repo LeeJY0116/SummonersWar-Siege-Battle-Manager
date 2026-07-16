@@ -1,6 +1,8 @@
 package com.sbm.siegebackend.domain.guild;
 
 import com.sbm.siegebackend.domain.deck.DefenseDeckService;
+import com.sbm.siegebackend.domain.deck.OwnerlessDefenseDeck;
+import com.sbm.siegebackend.domain.deck.OwnerlessDefenseDeckRepository;
 import com.sbm.siegebackend.domain.deck.dto.DefenseDeckCreateRequest;
 import com.sbm.siegebackend.domain.deck.OwnerlessDefenseDeckService;
 import com.sbm.siegebackend.domain.deck.dto.OwnerlessDefenseDeckCreateRequest;
@@ -48,6 +50,9 @@ class GuildMemberServiceTest {
 
     @Autowired
     private OwnerlessDefenseDeckService ownerlessDefenseDeckService;
+
+    @Autowired
+    private OwnerlessDefenseDeckRepository ownerlessDefenseDeckRepository;
 
     @Autowired
     private GuildRepository guildRepository;
@@ -333,6 +338,25 @@ class GuildMemberServiceTest {
         ownerlessDefenseDeckService.delete(fixture.subMasterUser.getEmail(), deckId);
 
         assertThat(ownerlessDefenseDeckService.getList(fixture.masterUser.getEmail())).isEmpty();
+    }
+
+    @Test
+    void ownerless_defense_deck_list_hides_existing_duplicate_decks() {
+        GuildFixture fixture = createGuildFixture("ownerless-list-duplicate");
+        List<Monster> monsters = createMonsters("ownerless-list-duplicate");
+        ownerlessDefenseDeckRepository.save(new OwnerlessDefenseDeck(
+                fixture.guild,
+                "first",
+                List.of(monsters.get(0), monsters.get(1), monsters.get(2))
+        ));
+        ownerlessDefenseDeckRepository.save(new OwnerlessDefenseDeck(
+                fixture.guild,
+                "duplicate",
+                List.of(monsters.get(0), monsters.get(2), monsters.get(1))
+        ));
+
+        assertThat(ownerlessDefenseDeckService.getList(fixture.masterUser.getEmail()))
+                .hasSize(1);
     }
 
     private GuildFixture createGuildFixture(String prefix) {
