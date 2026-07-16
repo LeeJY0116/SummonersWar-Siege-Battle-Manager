@@ -44,11 +44,11 @@ export default function GuildTab({
   }, [currentGuildRole, guild, members]);
 
   return (
-    <div className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(10,7,4,0.25)]">
+    <div className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-3 text-[#f6deb0] shadow-[0_10px_24px_rgba(10,7,4,0.25)] sm:p-4">
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
           {header ? (
-            <div className="flex flex-wrap items-center gap-2 text-lg font-bold text-[#fff0c8]">
+            <div className="flex flex-wrap items-center gap-2 text-base font-bold text-[#fff0c8] sm:text-lg">
               <span>길드 {header.name}</span>
               <span className="text-[#8f7447]">|</span>
               <span>인원 {header.memberCount}</span>
@@ -62,30 +62,32 @@ export default function GuildTab({
           )}
         </div>
 
-        <div className="inline-flex flex-wrap gap-1 rounded-2xl border border-[#745320] bg-[#211813] p-1">
-          <SubTabButton active={subTab === "inventory"} onClick={() => changeSubTab("inventory")}>
-            인벤토리
-          </SubTabButton>
-          <SubTabButton
-            active={subTab === "battleResearch"}
-            onClick={() => changeSubTab("battleResearch")}
-          >
-            전투 연구
-          </SubTabButton>
-          <SubTabButton
-            active={subTab === "defenseDeck"}
-            onClick={() => changeSubTab("defenseDeck")}
-          >
-            방덱
-          </SubTabButton>
-          <SubTabButton active={subTab === "ownerless"} onClick={() => changeSubTab("ownerless")}>
-            길드 방덱
-          </SubTabButton>
-          {canManageGuild && (
-            <SubTabButton active={subTab === "members"} onClick={() => changeSubTab("members")}>
-              회원 관리
+        <div className="w-full max-w-full overflow-x-auto [scrollbar-width:none] lg:w-auto [&::-webkit-scrollbar]:hidden">
+          <div className="inline-flex min-w-max gap-1 rounded-2xl border border-[#745320] bg-[#211813] p-1">
+            <SubTabButton active={subTab === "inventory"} onClick={() => changeSubTab("inventory")}>
+              인벤토리
             </SubTabButton>
-          )}
+            <SubTabButton
+              active={subTab === "battleResearch"}
+              onClick={() => changeSubTab("battleResearch")}
+            >
+              전투 연구
+            </SubTabButton>
+            <SubTabButton
+              active={subTab === "defenseDeck"}
+              onClick={() => changeSubTab("defenseDeck")}
+            >
+              방덱
+            </SubTabButton>
+            <SubTabButton active={subTab === "ownerless"} onClick={() => changeSubTab("ownerless")}>
+              길드 방덱
+            </SubTabButton>
+            {canManageGuild && (
+              <SubTabButton active={subTab === "members"} onClick={() => changeSubTab("members")}>
+                회원 관리
+              </SubTabButton>
+            )}
+          </div>
         </div>
       </div>
 

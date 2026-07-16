@@ -412,7 +412,7 @@ const filteredMonsters = monsters.filter((m) => {
         className="mb-3 w-full rounded-xl border border-[#8f6732] bg-[#1f1712] px-3 py-2 text-sm font-semibold text-[#fff0c8] placeholder:text-[#bda981] outline-none focus:border-[#f6c44f]"
     />
 
-    <div className="grid max-h-72 grid-cols-4 gap-2 overflow-y-auto rounded-xl border border-[#745320] bg-[#211813] p-3 [scrollbar-color:#9b743a_#2f241b] [scrollbar-width:thin] sm:grid-cols-6 md:grid-cols-8 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#9b743a] [&::-webkit-scrollbar-track]:bg-[#2f241b]">
+    <div className="grid max-h-72 grid-cols-2 gap-2 overflow-y-auto rounded-xl border border-[#745320] bg-[#211813] p-3 [scrollbar-color:#9b743a_#2f241b] [scrollbar-width:thin] sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#9b743a] [&::-webkit-scrollbar-track]:bg-[#2f241b]">
         {filteredMonsters.map((m) => {
         const selected = selectedMonsterCodes.includes(m.id);
 
@@ -463,7 +463,7 @@ const filteredMonsters = monsters.filter((m) => {
       )}
 
       <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
-        <div className="mb-3 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+        <div className="mb-3 flex flex-col gap-2 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-3">
           <h3 className="font-bold text-lg">방덱 목록</h3>
           <button
             type="button"
@@ -479,7 +479,7 @@ const filteredMonsters = monsters.filter((m) => {
           <button
             onClick={loadDecks}
             disabled={loading}
-            className="justify-self-end rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
+            className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f] sm:justify-self-end"
           >
             새로고침
           </button>

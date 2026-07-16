@@ -24,8 +24,8 @@ export default function HeaderBar({
     : TABS.filter((tab) => tab.key !== "review");
 
   return (
-    <header className="mb-6 rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-5 text-[#f6deb0] shadow-[0_10px_24px_rgba(10,7,4,0.25)] md:flex md:items-center md:justify-between">
-      <div>
+    <header className="mb-4 rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(10,7,4,0.25)] sm:p-5 md:mb-6 lg:flex lg:items-center lg:justify-between">
+      <div className="min-w-0">
         <h1 className="text-2xl font-extrabold text-[#fff0c8] md:text-3xl">
           SW 점령전
         </h1>
@@ -34,8 +34,9 @@ export default function HeaderBar({
         </p>
       </div>
 
-      <div className="mt-4 flex flex-col items-start gap-2 md:mt-0 md:items-end">
-        <div className="inline-flex gap-1 rounded-2xl border border-[#745320] bg-[#211813] p-1">
+      <div className="mt-4 flex min-w-0 flex-col items-start gap-2 lg:mt-0 lg:items-end">
+        <div className="w-full max-w-full overflow-x-auto [scrollbar-width:none] lg:w-auto [&::-webkit-scrollbar]:hidden">
+          <div className="inline-flex min-w-max gap-1 rounded-2xl border border-[#745320] bg-[#211813] p-1">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -50,9 +51,10 @@ export default function HeaderBar({
               {tab.label}
             </button>
           ))}
+          </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-start gap-2 md:justify-end">
+        <div className="flex w-full flex-wrap items-center justify-start gap-2 lg:w-auto lg:justify-end">
           {monsterJobStatus?.status === "RUNNING" && (
             <div className="rounded-xl border border-[#9b743a] bg-[#1a120d] px-3 py-2 text-xs font-semibold text-[#f3d37b]">
               {monsterJobStatus.operation === "SWARFARM_SYNC" ? "동기화" : "적용"}{" "}

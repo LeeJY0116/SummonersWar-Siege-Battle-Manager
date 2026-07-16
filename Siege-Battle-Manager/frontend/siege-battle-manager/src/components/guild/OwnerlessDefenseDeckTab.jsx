@@ -293,7 +293,7 @@ export default function OwnerlessDefenseDeckTab({ monsters = [], currentGuildRol
                 variant="dark"
               />
 
-              <div className="grid max-h-72 grid-cols-4 gap-2 overflow-y-auto rounded-xl border border-[#745320] bg-[#211813] p-3 [scrollbar-color:#9b743a_#2f241b] [scrollbar-width:thin] sm:grid-cols-6 md:grid-cols-8 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#9b743a] [&::-webkit-scrollbar-track]:bg-[#2f241b]">
+              <div className="grid max-h-72 grid-cols-2 gap-2 overflow-y-auto rounded-xl border border-[#745320] bg-[#211813] p-3 [scrollbar-color:#9b743a_#2f241b] [scrollbar-width:thin] sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#9b743a] [&::-webkit-scrollbar-track]:bg-[#2f241b]">
               {filteredMonsters.map((m) => {
                 const selected = selectedMonsterCodes.includes(m.id);
 
@@ -343,7 +343,7 @@ export default function OwnerlessDefenseDeckTab({ monsters = [], currentGuildRol
       </div>
 
       <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
-        <div className="mb-3 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+        <div className="mb-3 flex flex-col gap-2 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-3">
           <h3 className="text-lg font-bold">길드 방덱 목록</h3>
           <button
             type="button"
@@ -359,7 +359,7 @@ export default function OwnerlessDefenseDeckTab({ monsters = [], currentGuildRol
           <button
             onClick={loadDecks}
             disabled={loading}
-            className="justify-self-end rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
+            className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f] sm:justify-self-end"
           >
             새로고침
           </button>
