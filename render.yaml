@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: sw-siege-backend
+    name: sw-siege-backend-sg
     runtime: docker
     rootDir: Siege-Battle-Manager/backend/siege-backend
     plan: starter
