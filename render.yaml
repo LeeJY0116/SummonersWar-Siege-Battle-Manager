@@ -20,6 +20,8 @@ services:
         value: 5
       - key: RATE_LIMIT_ADMIN_PER_MINUTE
         value: 60
+      - key: DB_MIN_IDLE
+        value: 1
       - key: DB_URL
         sync: false
       - key: DB_USERNAME
