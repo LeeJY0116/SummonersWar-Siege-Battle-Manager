@@ -258,3 +258,27 @@ Render, Cloudflare Pages, Neon 연결 기준을 Singapore 백엔드 기준으로
 
 - `SMOKE_LOGIN_ID`, `SMOKE_LOGIN_PASSWORD`를 설정한 인증 포함 smoke test는 필요할 때 별도로 실행한다.
 - Cloudflare Bot Fight Mode/WAF는 Security Events를 보며 점진적으로 조정한다.
+
+### 2026-07-16 인증 포함 운영 smoke test
+
+운영 테스트 계정 `asdf`로 로그인한 뒤 인증이 필요한 기본 API와 권한 차단을 확인했다.
+
+확인 결과:
+
+- 운영 프론트: 200 응답
+- 운영 백엔드 health: `UP` 응답
+- 미로그인 API 보호 응답: 정상
+- 몬스터 API: 정상 응답
+- CORS 허용 Origin: `https://sw-siege.pages.dev`
+- 로그인: 토큰 발급 정상
+- `GET /api/users/bootstrap`: 인증 성공
+- `GET /api/users/me`: 인증 성공
+- 일반 계정의 `GET /api/admin/guilds`: 403 응답
+
+명령:
+
+```powershell
+$env:SMOKE_LOGIN_ID="asdf"
+$env:SMOKE_LOGIN_PASSWORD="asdf"
+./scripts/operational-smoke-test.ps1
+```
