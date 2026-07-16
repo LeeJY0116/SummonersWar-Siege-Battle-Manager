@@ -54,7 +54,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> {
                     auth
-                        .requestMatchers("/api/health", "/api/users/signup", "/api/users/login", "/api/monsters/**").permitAll()
+                        .requestMatchers("/api/health", "/api/health/**", "/api/users/signup", "/api/users/login", "/api/monsters/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 
                     if (h2ConsoleEnabled) {
