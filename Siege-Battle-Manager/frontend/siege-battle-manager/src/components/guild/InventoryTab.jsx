@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   fetchMemberInventory,
+  updateMemberInventoryCache,
   upsertMemberInventoryItems,
 } from "../../lib/inventory.js";
 import { fetchDefenseDecks } from "../../lib/defenseDeck.js";
@@ -238,6 +239,7 @@ export default function InventoryTab({
     try {
       setLoading(true);
       await upsertMemberInventoryItems(selectedMemberId, items);
+      updateMemberInventoryCache(selectedMemberId, items);
       setDirty(false);
       alert("저장 완료!");
     } catch (e) {

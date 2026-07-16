@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -118,6 +121,26 @@ public class GuildMemberInventoryService {
                 request.getItems() == null
                         ? List.of()
                         : request.getItems();
+        List<String> monsterCodes = items.stream()
+                .map(GuildMemberInventoryUpdateRequest.Item::getMonsterCode)
+                .filter(code -> code != null && !code.isBlank())
+                .distinct()
+                .toList();
+        Map<String, Monster> monstersByCode = monsterRepository.findAllByCodeIn(monsterCodes)
+                .stream()
+                .collect(Collectors.toMap(Monster::getCode, Function.identity()));
+        Map<Long, Long> usedCountByMonsterId = monstersByCode.isEmpty()
+                ? Map.of()
+                : defenseDeckRepository
+                        .countMonsterUsageByOwnerAndMonsterIds(
+                                target,
+                                monstersByCode.values().stream().map(Monster::getId).toList()
+                        )
+                        .stream()
+                        .collect(Collectors.toMap(
+                                DefenseDeckRepository.MonsterUsageCount::getMonsterId,
+                                DefenseDeckRepository.MonsterUsageCount::getUsageCount
+                        ));
 
         // -----------------------------
         // 1️⃣ 먼저 전체 검증
@@ -133,16 +156,10 @@ public class GuildMemberInventoryService {
                 throw new IllegalArgumentException("몬스터별 보유 수량은 최대 10마리까지 입력할 수 있습니다.");
             }
 
-            Monster monster = monsterRepository.findByCode(item.getMonsterCode())
-                    .orElseThrow(() ->
-                            new NotFoundException(
-                                    "존재하지 않는 몬스터 CODE: " + item.getMonsterCode()
-                            )
-                    );
+            Monster monster = getMonsterByCode(monstersByCode, item.getMonsterCode());
 
             // 현재 방덱에서 사용 중인 개수
-            long usedCount =
-                    defenseDeckRepository.countMonsterUsage(target, monster);
+            long usedCount = usedCountByMonsterId.getOrDefault(monster.getId(), 0L);
 
             // 방덱 사용량보다 적게 줄이려는 경우 막기
             if (item.getQuantity() < usedCount) {
@@ -179,13 +196,7 @@ public class GuildMemberInventoryService {
                 continue;
             }
 
-            Monster monster = monsterRepository.findByCode(item.getMonsterCode())
-                    .orElseThrow(() ->
-                            new NotFoundException(
-                                    "존재하지 않는 몬스터 CODE: "
-                                            + item.getMonsterCode()
-                            )
-                    );
+            Monster monster = getMonsterByCode(monstersByCode, item.getMonsterCode());
 
             GuildMemberInventory inv = new GuildMemberInventory(
                     target,
@@ -200,5 +211,14 @@ public class GuildMemberInventoryService {
     private boolean isGuildManager(GuildMember member) {
         return member.getRole() == GuildMemberRole.MASTER
                 || member.getRole() == GuildMemberRole.SUB_MASTER;
+    }
+
+    private Monster getMonsterByCode(Map<String, Monster> monstersByCode, String monsterCode) {
+        Monster monster = monstersByCode.get(monsterCode);
+        if (monster == null) {
+            throw new NotFoundException("존재하지 않는 몬스터 CODE: " + monsterCode);
+        }
+
+        return monster;
     }
 }

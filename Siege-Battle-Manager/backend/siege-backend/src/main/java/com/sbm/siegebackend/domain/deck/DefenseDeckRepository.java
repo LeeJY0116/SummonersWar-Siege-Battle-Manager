@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface DefenseDeckRepository extends JpaRepository<DefenseDeck, Long> {
@@ -34,8 +35,25 @@ public interface DefenseDeckRepository extends JpaRepository<DefenseDeck, Long> 
             @Param("monster") Monster monster
     );
 
+    @Query("""
+        select m.id as monsterId, count(m) as usageCount
+        from DefenseDeck d
+        join d.monsters m
+        where d.owner = :owner
+          and m.id in :monsterIds
+        group by m.id
+    """)
+    List<MonsterUsageCount> countMonsterUsageByOwnerAndMonsterIds(
+            @Param("owner") GuildMember owner,
+            @Param("monsterIds") Collection<Long> monsterIds
+    );
+
     List<DefenseDeck> findByOwner(GuildMember owner);
 
     List<DefenseDeck> findByOwner_Guild_Id(Long guildId);
 
+    interface MonsterUsageCount {
+        Long getMonsterId();
+        Long getUsageCount();
+    }
 }
