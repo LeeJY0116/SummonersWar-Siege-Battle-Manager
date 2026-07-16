@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbm.siegebackend.domain.monster.Monster;
 import com.sbm.siegebackend.domain.monster.MonsterRepository;
+import com.sbm.siegebackend.domain.monster.MonsterService;
 import com.sbm.siegebackend.domain.monster.sync.MonsterAdminJobService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -31,15 +32,18 @@ public class MonsterLocalizationApplyService {
     private final ObjectMapper objectMapper;
     private final TransactionTemplate transactionTemplate;
     private final MonsterAdminJobService jobService;
+    private final MonsterService monsterService;
 
     public MonsterLocalizationApplyService(MonsterRepository monsterRepository,
                                            ObjectMapper objectMapper,
                                            TransactionTemplate transactionTemplate,
-                                           MonsterAdminJobService jobService) {
+                                           MonsterAdminJobService jobService,
+                                           MonsterService monsterService) {
         this.monsterRepository = monsterRepository;
         this.objectMapper = objectMapper;
         this.transactionTemplate = transactionTemplate;
         this.jobService = jobService;
+        this.monsterService = monsterService;
     }
 
     public int applyLocalization() {
@@ -55,6 +59,7 @@ public class MonsterLocalizationApplyService {
             jobService.updateProgress("몬스터 도감 정보 적용 중입니다.", appliedCount, managedCodes.size());
         }
 
+        monsterService.clearMonsterCaches();
         return appliedCount;
     }
 
@@ -129,6 +134,7 @@ public class MonsterLocalizationApplyService {
         Monster monster = monsterRepository.findByCode(monsterCode).orElse(null);
         if (monster != null) {
             monster.updateLocalization(entry.getKoreanName(), entry.getAliases(), entry.getEnabled());
+            monsterService.clearMonsterCaches();
         }
 
         return toResponse(monsterCode, entry, monster);

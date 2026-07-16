@@ -15,9 +15,47 @@ import java.util.List;
 public class MonsterService {
 
     private final MonsterRepository monsterRepository;
+    private volatile List<MonsterResponse> allMonsterCache;
+    private volatile List<MonsterSelectionResponse> selectionMonsterCache;
 
     @Transactional(readOnly = true)
     public List<MonsterResponse> getAll() {
+        List<MonsterResponse> cached = allMonsterCache;
+        if (cached != null) {
+            return cached;
+        }
+
+        synchronized (this) {
+            if (allMonsterCache == null) {
+                allMonsterCache = loadAllMonsters();
+            }
+
+            return allMonsterCache;
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<MonsterSelectionResponse> getSelectionMonsters() {
+        List<MonsterSelectionResponse> cached = selectionMonsterCache;
+        if (cached != null) {
+            return cached;
+        }
+
+        synchronized (this) {
+            if (selectionMonsterCache == null) {
+                selectionMonsterCache = loadSelectionMonsters();
+            }
+
+            return selectionMonsterCache;
+        }
+    }
+
+    public void clearMonsterCaches() {
+        allMonsterCache = null;
+        selectionMonsterCache = null;
+    }
+
+    private List<MonsterResponse> loadAllMonsters() {
         return monsterRepository.findAll().stream()
                 .filter(m -> Boolean.TRUE.equals(m.getEnabled()))
                 .map(m -> new MonsterResponse(
@@ -40,8 +78,7 @@ public class MonsterService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public List<MonsterSelectionResponse> getSelectionMonsters() {
+    private List<MonsterSelectionResponse> loadSelectionMonsters() {
         return monsterRepository.findAll().stream()
                 .filter(m -> Boolean.TRUE.equals(m.getEnabled()))
                 .map(m -> new MonsterSelectionResponse(
@@ -102,6 +139,7 @@ public class MonsterService {
                         .leaderEffectType(req.leaderEffectType())
                         .build()
         );
+        clearMonsterCaches();
         return saved.getId();
     }
 }

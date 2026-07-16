@@ -3,6 +3,7 @@ package com.sbm.siegebackend.domain.monster.sync;
 import com.sbm.siegebackend.domain.monster.Monster;
 import com.sbm.siegebackend.domain.monster.MonsterAttribute;
 import com.sbm.siegebackend.domain.monster.MonsterRepository;
+import com.sbm.siegebackend.domain.monster.MonsterService;
 import com.sbm.siegebackend.domain.monster.localization.MonsterLocalizationApplyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ public class SwarfarmMonsterSyncService {
 
     private final MonsterRepository monsterRepository;
     private final MonsterLocalizationApplyService localizationApplyService;
+    private final MonsterService monsterService;
     private final MonsterAdminJobService jobService;
     private final TransactionTemplate transactionTemplate;
     private final RestClient restClient;
@@ -48,6 +50,7 @@ public class SwarfarmMonsterSyncService {
     public SwarfarmMonsterSyncService(
             MonsterRepository monsterRepository,
             MonsterLocalizationApplyService localizationApplyService,
+            MonsterService monsterService,
             MonsterAdminJobService jobService,
             TransactionTemplate transactionTemplate,
             @Value("${external.swarfarm.base-url}") String baseUrl,
@@ -59,6 +62,7 @@ public class SwarfarmMonsterSyncService {
     ) {
         this.monsterRepository = monsterRepository;
         this.localizationApplyService = localizationApplyService;
+        this.monsterService = monsterService;
         this.jobService = jobService;
         this.transactionTemplate = transactionTemplate;
         this.restClient = RestClient.builder()
@@ -130,6 +134,7 @@ public class SwarfarmMonsterSyncService {
             localizationApplyService.appendMissingEntries(syncedMonsters);
         }
 
+        monsterService.clearMonsterCaches();
         return savedCount;
     }
 
