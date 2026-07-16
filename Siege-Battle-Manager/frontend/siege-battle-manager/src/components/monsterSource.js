@@ -1,7 +1,7 @@
 import { apiFetch } from "../lib/api.js";
 import { formatLeaderEffectText } from "../lib/monsterLabels.js";
 
-const MONSTER_CACHE_KEY = "sw-siege:monsters:v1";
+const MONSTER_CACHE_KEY = "sw-siege:monsters:selection:v1";
 const MONSTER_CACHE_TTL_MS = 1000 * 60 * 60 * 12;
 
 let monsterMemoryCache = null;
@@ -139,7 +139,7 @@ export function clearMonsterCache() {
 }
 
 async function fetchMonstersFromApi() {
-  const body = await apiFetch("/monsters");
+  const body = await apiFetch("/monsters/selection");
   const loadedMonsters = (body.data ?? [])
     .filter((monster) => monster.enabled !== false)
     .map(normalizeMonster);

@@ -2,6 +2,7 @@ package com.sbm.siegebackend.domain.monster;
 
 import com.sbm.siegebackend.domain.monster.dto.MonsterCreateRequest;
 import com.sbm.siegebackend.domain.monster.dto.MonsterResponse;
+import com.sbm.siegebackend.domain.monster.dto.MonsterSelectionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,26 @@ public class MonsterService {
                         m.getImageUrl(),
                         m.getNaturalStars(),
                         m.getEnabled()
+                ))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<MonsterSelectionResponse> getSelectionMonsters() {
+        return monsterRepository.findAll().stream()
+                .filter(m -> Boolean.TRUE.equals(m.getEnabled()))
+                .map(m -> new MonsterSelectionResponse(
+                        m.getCode(),
+                        m.getName(),
+                        m.getKoreanName(),
+                        m.getAliasList(),
+                        m.getAttribute().name(),
+                        m.getLeaderEffectType(),
+                        m.getLeaderEffectAmount(),
+                        m.getLeaderEffectArea(),
+                        m.getLeaderEffectElement(),
+                        m.getImageUrl(),
+                        m.getNaturalStars()
                 ))
                 .toList();
     }

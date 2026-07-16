@@ -2,6 +2,7 @@ package com.sbm.siegebackend.domain.monster;
 
 import com.sbm.siegebackend.domain.monster.dto.MonsterCreateRequest;
 import com.sbm.siegebackend.domain.monster.dto.MonsterResponse;
+import com.sbm.siegebackend.domain.monster.dto.MonsterSelectionResponse;
 import com.sbm.siegebackend.global.api.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,11 @@ public class MonsterController {
     @GetMapping
     public ApiResponse<List<MonsterResponse>> getAll() {
         return ApiResponse.success(monsterService.getAll());
+    }
+
+    @GetMapping("/selection")
+    public ApiResponse<List<MonsterSelectionResponse>> getSelectionMonsters() {
+        return ApiResponse.success(monsterService.getSelectionMonsters());
     }
 
     // (선택) 사용자 몬스터 추가
