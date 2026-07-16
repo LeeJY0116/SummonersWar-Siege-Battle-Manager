@@ -368,7 +368,7 @@ export default function SiegeBattleManager() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#17100c] text-[#f6deb0]">
+    <div className="min-h-screen w-full min-w-[1024px] bg-[#17100c] text-[#f6deb0]">
       <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-4 p-3 sm:p-4 md:p-8 xl:grid-cols-[280px_minmax(0,72rem)] xl:items-start">
         <div className="xl:sticky xl:top-8">
           <TabGuideCard {...guide} />
