@@ -83,6 +83,8 @@ Cloudflare 보안 설정은 `docs/cloudflare-security-checklist.md`를 기준으
 powershell -ExecutionPolicy Bypass -File .\scripts\operational-smoke-test.ps1
 ```
 
+사용자 흐름 기준 기능 점검은 `docs/functional-release-checklist.md`를 기준으로 진행한다.
+
 ## 5. After First Successful Deploy
 
 첫 배포가 성공하면 저장소 분리를 진행한다.
