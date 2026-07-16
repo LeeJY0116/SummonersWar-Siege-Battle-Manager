@@ -2,6 +2,8 @@ package com.sbm.siegebackend.domain.guild;
 
 import com.sbm.siegebackend.domain.deck.DefenseDeckService;
 import com.sbm.siegebackend.domain.deck.dto.DefenseDeckCreateRequest;
+import com.sbm.siegebackend.domain.deck.OwnerlessDefenseDeckService;
+import com.sbm.siegebackend.domain.deck.dto.OwnerlessDefenseDeckCreateRequest;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberInventoryUpdateRequest;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberRoleUpdateRequest;
 import com.sbm.siegebackend.domain.monster.Monster;
@@ -43,6 +45,9 @@ class GuildMemberServiceTest {
 
     @Autowired
     private DefenseDeckService defenseDeckService;
+
+    @Autowired
+    private OwnerlessDefenseDeckService ownerlessDefenseDeckService;
 
     @Autowired
     private GuildRepository guildRepository;
@@ -294,6 +299,42 @@ class GuildMemberServiceTest {
                 .isInstanceOf(IllegalStateException.class);
     }
 
+    @Test
+    void ownerless_defense_deck_rejects_same_order_duplicate_deck() {
+        GuildFixture fixture = createGuildFixture("ownerless-duplicate");
+        List<Monster> monsters = createMonsters("ownerless-duplicate");
+        OwnerlessDefenseDeckCreateRequest request = ownerlessDeckRequest(monsters);
+
+        ownerlessDefenseDeckService.create(fixture.masterUser.getEmail(), request);
+
+        OwnerlessDefenseDeckCreateRequest sameLeaderSwappedMembers = ownerlessDeckRequest(List.of(
+                monsters.get(0),
+                monsters.get(2),
+                monsters.get(1)
+        ));
+
+        assertThatThrownBy(() -> ownerlessDefenseDeckService.create(
+                fixture.masterUser.getEmail(),
+                sameLeaderSwappedMembers
+        ))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("동일한 길드 방덱");
+    }
+
+    @Test
+    void ownerless_defense_deck_can_be_deleted_by_sub_master() {
+        GuildFixture fixture = createGuildFixture("ownerless-delete");
+        List<Monster> monsters = createMonsters("ownerless-delete");
+        Long deckId = ownerlessDefenseDeckService.create(
+                fixture.masterUser.getEmail(),
+                ownerlessDeckRequest(monsters)
+        );
+
+        ownerlessDefenseDeckService.delete(fixture.subMasterUser.getEmail(), deckId);
+
+        assertThat(ownerlessDefenseDeckService.getList(fixture.masterUser.getEmail())).isEmpty();
+    }
+
     private GuildFixture createGuildFixture(String prefix) {
         User masterUser = createUser(prefix + "-master", prefix + "-master");
         Guild guild = guildRepository.save(new Guild(prefix + "-guild", "", masterUser));
@@ -343,6 +384,13 @@ class GuildMemberServiceTest {
                 createMonster(prefix + "-m2", MonsterAttribute.WATER),
                 createMonster(prefix + "-m3", MonsterAttribute.WIND)
         );
+    }
+
+    private OwnerlessDefenseDeckCreateRequest ownerlessDeckRequest(List<Monster> monsters) {
+        OwnerlessDefenseDeckCreateRequest request = new OwnerlessDefenseDeckCreateRequest();
+        request.setTitle("길드 방덱");
+        request.setMonsterCodes(monsters.stream().map(Monster::getCode).toList());
+        return request;
     }
 
     private Monster createMonster(String code, MonsterAttribute attribute) {

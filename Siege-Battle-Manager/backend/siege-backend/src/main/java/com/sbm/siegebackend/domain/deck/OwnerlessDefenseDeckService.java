@@ -60,6 +60,10 @@ public class OwnerlessDefenseDeckService {
                         .orElseThrow(() -> new NotFoundException("존재하지 않는 몬스터 CODE: " + code)))
                 .toList();
 
+        if (hasSameDeck(actor.getGuild().getId(), request.getMonsterCodes())) {
+            throw new IllegalStateException("이미 동일한 길드 방덱이 등록되어 있습니다.");
+        }
+
         OwnerlessDefenseDeck deck = new OwnerlessDefenseDeck(
                 actor.getGuild(),
                 request.getTitle() == null ? "주인 없는 방덱" : request.getTitle(),
@@ -234,7 +238,6 @@ public class OwnerlessDefenseDeckService {
         GuildMember actor = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
                 .orElseThrow(() -> new NotFoundException("길드에 가입되지 않은 유저입니다."));
 
-        // 권한: 마스터/부마스터만
         if (actor.getRole() == GuildMemberRole.MEMBER) {
             throw new IllegalStateException("마스터/부마스터만 삭제할 수 있습니다.");
         }
@@ -247,6 +250,20 @@ public class OwnerlessDefenseDeckService {
         }
 
         ownerlessRepo.delete(deck);
+    }
+
+    private boolean hasSameDeck(Long guildId, List<String> monsterCodes) {
+        return ownerlessRepo.findByGuildIdWithMonsters(guildId).stream()
+                .map(OwnerlessDefenseDeck::getMonsters)
+                .map(monsters -> monsters.stream().map(Monster::getCode).toList())
+                .anyMatch(existingCodes -> isSameLeaderAndMonsterSet(existingCodes, monsterCodes));
+    }
+
+    private boolean isSameLeaderAndMonsterSet(List<String> existingCodes, List<String> requestedCodes) {
+        return existingCodes.size() == requestedCodes.size()
+                && existingCodes.get(0).equals(requestedCodes.get(0))
+                && existingCodes.containsAll(requestedCodes)
+                && requestedCodes.containsAll(existingCodes);
     }
 
     private String getMonsterDisplayName(Monster monster) {

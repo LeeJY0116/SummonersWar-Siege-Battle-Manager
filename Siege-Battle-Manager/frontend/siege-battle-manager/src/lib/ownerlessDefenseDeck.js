@@ -24,3 +24,9 @@ export async function createOwnerlessDefenseDeck({ title, monsterCodes }) {
 
   return res.data;
 }
+
+export async function deleteOwnerlessDefenseDeck(deckId) {
+  await apiFetch(`/ownerless-defense-decks/${deckId}`, {
+    method: "DELETE",
+  });
+}

@@ -106,7 +106,10 @@ export default function GuildTab({
           currentGuildMemberId={currentGuildMemberId}
         />
       ) : subTab === "ownerless" ? (
-        <OwnerlessDefenseDeckTab monsters={monsters} />
+        <OwnerlessDefenseDeckTab
+          monsters={monsters}
+          currentGuildRole={currentGuildRole}
+        />
       ) : subTab === "battleResearch" ? (
         <BattleResearchTab
           monsters={monsters}

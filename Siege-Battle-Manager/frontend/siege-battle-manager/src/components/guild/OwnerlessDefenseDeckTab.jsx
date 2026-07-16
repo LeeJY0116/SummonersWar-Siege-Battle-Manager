@@ -3,6 +3,7 @@ import {
   fetchOwnerlessDefenseDecks,
   fetchOwnerlessDefenseDeckDetail,
   createOwnerlessDefenseDeck,
+  deleteOwnerlessDefenseDeck,
  } from "../../lib/ownerlessDefenseDeck.js";
 import DeckMonsterSlot from "./DeckMonsterSlot.jsx";
 import DefenseDeckFilterBar from "./DefenseDeckFilterBar.jsx";
@@ -12,10 +13,10 @@ import MonsterFilterControls, {
 } from "../monsters/MonsterFilterControls.jsx";
 import { getElementLabel, getLeaderEffectLabel, isGuildBattleLeaderEffect } from "../../lib/monsterLabels.js";
 
-export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
+export default function OwnerlessDefenseDeckTab({ monsters = [], currentGuildRole = null }) {
   const [decks, setDecks] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [openedDeckId, setOpenedDeckId] = useState(null);
+  const [openedDeckIds, setOpenedDeckIds] = useState(() => new Set());
   const [detailMap, setDetailMap] = useState({});
   const [title, setTitle] = useState("");
   const [selectedMonsterCodes, setSelectedMonsterCodes] = useState(["", "", ""]);
@@ -27,6 +28,8 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
   const [monsterFilterKeyword, setMonsterFilterKeyword] = useState("");
   const [monsterFilterCodes, setMonsterFilterCodes] = useState([]);
   const [fourStarDeckOnly, setFourStarDeckOnly] = useState(false);
+  const canDeleteDeck =
+    currentGuildRole === "MASTER" || currentGuildRole === "SUB_MASTER";
 
 
   const selectedMonsters = selectedMonsterCodes.map((code) =>
@@ -152,12 +155,15 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
   async function handleToggleDetail(deckId) {
 
   // 이미 열려있으면 닫기
-  if (openedDeckId === deckId) {
-    setOpenedDeckId(null);
+  const nextOpenedDeckIds = new Set(openedDeckIds);
+  if (nextOpenedDeckIds.has(deckId)) {
+    nextOpenedDeckIds.delete(deckId);
+    setOpenedDeckIds(nextOpenedDeckIds);
     return;
   }
 
-  setOpenedDeckId(deckId);
+  nextOpenedDeckIds.add(deckId);
+  setOpenedDeckIds(nextOpenedDeckIds);
 
   // 이미 조회했으면 재조회 안 함
   if (detailMap[deckId]) {
@@ -179,6 +185,32 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
     alert(e.message || "상세 조회 실패");
   }
 }
+
+  async function handleDeleteDeck(deckId) {
+    if (!canDeleteDeck) return;
+    if (!window.confirm("길드 방덱을 삭제할까요?")) return;
+
+    try {
+      setLoading(true);
+      await deleteOwnerlessDefenseDeck(deckId);
+      setDecks((prev) => prev.filter((deck) => (deck.deckId ?? deck.id) !== deckId));
+      setOpenedDeckIds((prev) => {
+        const next = new Set(prev);
+        next.delete(deckId);
+        return next;
+      });
+      setDetailMap((prev) => {
+        const next = { ...prev };
+        delete next[deckId];
+        return next;
+      });
+    } catch (e) {
+      console.error(e);
+      alert(e.message || "길드 방덱 삭제 실패");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     loadDecks();
@@ -384,10 +416,20 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
                     }
                     className="rounded-xl border border-[#9b743a] bg-[#221913] px-3 py-1 text-sm font-semibold text-[#f8e0ad] hover:border-[#f6c44f]"
                   >
-                    {openedDeckId === (deck.deckId ?? deck.id)
+                    {openedDeckIds.has(deck.deckId ?? deck.id)
                       ? "상세 닫기"
                       : "상세 보기"}
                   </button>
+                  {canDeleteDeck && (
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteDeck(deck.deckId ?? deck.id)}
+                      disabled={loading}
+                      className="rounded-xl border border-red-300 bg-red-50 px-3 py-1 text-sm font-semibold text-red-600 hover:bg-red-100 disabled:opacity-50"
+                    >
+                      삭제
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -435,7 +477,7 @@ export default function OwnerlessDefenseDeckTab({ monsters = [] }) {
                 })}
               </div>
 
-        {openedDeckId === (deck.deckId ?? deck.id) &&
+        {openedDeckIds.has(deck.deckId ?? deck.id) &&
           detailMap[deck.deckId ?? deck.id] && (
 
           <div className="mt-4 rounded-xl border border-[#745320] bg-[#2f241b] p-4">
