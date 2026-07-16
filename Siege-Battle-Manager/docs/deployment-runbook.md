@@ -21,6 +21,8 @@ Render에서 Web Service를 만든다.
 
 Blueprint로 생성할 경우 저장소 루트의 `render.yaml`을 사용한다. `sync: false`로 선언된 값은 Render 대시보드에서 직접 입력한다.
 
+백엔드와 DB는 같은 리전에 둔다. Neon PostgreSQL을 Singapore 리전으로 만들었다면 Render 백엔드도 Singapore 리전으로 생성한다. Render는 기존 서비스의 리전을 직접 변경할 수 없으므로, 리전 변경이 필요하면 새 Web Service를 원하는 리전에 만들고 `VITE_API_BASE_URL`을 새 백엔드 주소로 전환한다.
+
 | Field | Value |
 | --- | --- |
 | Root Directory | `Siege-Battle-Manager/backend/siege-backend` |
@@ -143,3 +145,36 @@ $env:SMOKE_LOGIN_IS_ADMIN="true"
 ```json
 {"success":false,"data":null,"message":"로그인이 필요합니다."}
 ```
+
+### 2026-07-16 백엔드 리전 재배치
+
+Neon PostgreSQL이 Singapore 리전인데 기존 Render 백엔드가 Oregon 리전에 있어 인증과 DB 조회가 들어가는 API가 1초 이상 지연됐다. Render 백엔드를 Singapore 리전에 새로 생성하고 Cloudflare Pages의 `VITE_API_BASE_URL`을 새 백엔드로 변경했다.
+
+이전 구성:
+
+```text
+Cloudflare Pages -> Render Oregon -> Neon Singapore
+```
+
+변경 구성:
+
+```text
+Cloudflare Pages -> Render Singapore -> Neon Singapore
+```
+
+측정 결과:
+
+| API | Oregon 평균 | Singapore 평균 |
+| --- | ---: | ---: |
+| `POST /api/users/login` | 1135ms | 702ms |
+| `GET /api/users/bootstrap` | 1234ms | 228ms |
+| `GET /api/guild-members/{id}/inventory` | 1082ms | 274ms |
+| `GET /api/defense-decks` | 1082ms | 163ms |
+| `GET /api/ownerless-defense-decks` | 1428ms | 175ms |
+| `GET /api/research/posts?page=0` | 1502ms | 213ms |
+
+운영 기준:
+
+- Render 백엔드와 Neon DB 리전은 동일하게 맞춘다.
+- 리전 변경 후 Cloudflare Pages 환경변수 `VITE_API_BASE_URL`을 새 백엔드 주소로 변경하고 재배포한다.
+- 새 백엔드 동작 확인 후 기존 리전의 Render 서비스는 삭제해 중복 과금을 막는다.
