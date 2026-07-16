@@ -1,6 +1,7 @@
 package com.sbm.siegebackend.domain.guild;
 
 import com.sbm.siegebackend.domain.guild.dto.GuildCreateRequest;
+import com.sbm.siegebackend.domain.guild.dto.GuildBootstrapResponse;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberHistoryResponse;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberResponse;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberRoleUpdateRequest;
@@ -358,11 +359,36 @@ public class GuildService {
 
         Guild guild = myMember.getGuild();
 
-        return guildMemberRepository.findAllByGuild(guild)
+        return guildMemberRepository.findAllByGuildAndStatusWithUser(guild, GuildMemberStatus.APPROVED)
                 .stream()
-                .filter(m -> m.getStatus() == GuildMemberStatus.APPROVED)
                 .map(this::toMemberResponse)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public GuildBootstrapResponse getMyGuildBootstrap(User user) {
+        GuildMember myMember = guildMemberRepository.findFirstByUserAndStatusOrderByIdDesc(user, GuildMemberStatus.APPROVED)
+                .orElseThrow(() -> new NotFoundException("가입된 길드가 없습니다."));
+
+        Guild guild = myMember.getGuild();
+        if (guild == null) {
+            throw new IllegalStateException("가입된 길드가 없습니다.");
+        }
+
+        List<GuildMember> approvedMembers =
+                guildMemberRepository.findAllByGuildAndStatusWithUser(guild, GuildMemberStatus.APPROVED);
+        GuildResponse guildResponse = new GuildResponse(
+                guild.getId(),
+                guild.getName(),
+                guild.getDescription(),
+                resolveMasterNickname(guild, approvedMembers),
+                approvedMembers.size()
+        );
+        List<GuildMemberResponse> memberResponses = approvedMembers.stream()
+                .map(this::toMemberResponse)
+                .toList();
+
+        return new GuildBootstrapResponse(guildResponse, memberResponses);
     }
 
     public void leaveMyGuild(String email) {
@@ -521,6 +547,14 @@ public class GuildService {
                         GuildMemberRole.MASTER,
                         GuildMemberStatus.APPROVED
                 )
+                .map(GuildMember::getDisplayName)
+                .orElseGet(() -> guild.getMaster().getNickname());
+    }
+
+    private String resolveMasterNickname(Guild guild, List<GuildMember> approvedMembers) {
+        return approvedMembers.stream()
+                .filter(member -> member.getRole() == GuildMemberRole.MASTER)
+                .findFirst()
                 .map(GuildMember::getDisplayName)
                 .orElseGet(() -> guild.getMaster().getNickname());
     }

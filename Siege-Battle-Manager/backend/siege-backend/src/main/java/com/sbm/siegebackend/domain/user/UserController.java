@@ -1,6 +1,7 @@
 package com.sbm.siegebackend.domain.user;
 
 import com.sbm.siegebackend.domain.guild.GuildService;
+import com.sbm.siegebackend.domain.guild.dto.GuildBootstrapResponse;
 import com.sbm.siegebackend.domain.guild.dto.GuildMemberResponse;
 import com.sbm.siegebackend.domain.guild.dto.GuildResponse;
 import com.sbm.siegebackend.domain.user.dto.UserBootstrapResponse;
@@ -115,8 +116,9 @@ public class UserController {
         List<GuildMemberResponse> members = List.of();
 
         try {
-            guild = guildService.getMyGuild(loginId);
-            members = guildService.getMyGuildMembers(loginId);
+            GuildBootstrapResponse guildBootstrap = guildService.getMyGuildBootstrap(user);
+            guild = guildBootstrap.guild();
+            members = guildBootstrap.members();
         } catch (NotFoundException ignored) {
             // 길드가 없는 사용자는 내 정보만 내려준다.
         }

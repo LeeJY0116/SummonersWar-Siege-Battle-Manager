@@ -2,6 +2,8 @@ package com.sbm.siegebackend.domain.guild;
 
 import com.sbm.siegebackend.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,6 +47,18 @@ public interface GuildMemberRepository extends JpaRepository<GuildMember, Long> 
     Optional<GuildMember> findFirstByUserAndStatusOrderByIdDesc(User user, GuildMemberStatus status);
 
     List<GuildMember> findAllByGuild(Guild guild);
+
+    @Query("""
+            select m
+              from GuildMember m
+              left join fetch m.user
+             where m.guild = :guild
+               and m.status = :status
+            """)
+    List<GuildMember> findAllByGuildAndStatusWithUser(
+            @Param("guild") Guild guild,
+            @Param("status") GuildMemberStatus status
+    );
 
     List<GuildMember> findAllByUserOrderByIdDesc(User user);
 
