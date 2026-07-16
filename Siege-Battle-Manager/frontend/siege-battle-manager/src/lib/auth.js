@@ -39,3 +39,8 @@ export async function fetchMe() {
   const res = await apiFetch("/users/me");
   return res.data;
 }
+
+export async function fetchBootstrap() {
+  const res = await apiFetch("/users/bootstrap");
+  return res.data;
+}

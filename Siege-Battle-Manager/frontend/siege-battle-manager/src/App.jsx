@@ -8,7 +8,7 @@ import MonsterReviewTab from "./components/monsters/MonsterReviewTab.jsx";
 import SiegeBattleTab from "./components/siege/SiegeBattleTab.jsx";
 import { fetchMyGuild, fetchMyGuildMembers, leaveMyGuild } from "./lib/guild.js";
 import LoginPage from "./components/auth/LoginPage.jsx";
-import { fetchMe } from "./lib/auth.js";
+import { fetchBootstrap } from "./lib/auth.js";
 import GuildTab from "./components/guild/GuildTab.jsx";
 import MyInfoTab from "./components/guild/MyInfoTab.jsx";
 import GuildJoinRequestPage from "./components/guild/GuildJoinRequestPage.jsx";
@@ -94,14 +94,18 @@ export default function SiegeBattleManager() {
   useEffect(() => {
     if (!token) return;
 
-    fetchMe()
-      .then(setMe)
-      .catch(() => setMe(null));
-
     setGuildLoaded(false);
-    fetchMyGuild()
-      .then(setGuild)
-      .catch(() => setGuild(null))
+    fetchBootstrap()
+      .then((data) => {
+        setMe(data?.me ?? null);
+        setGuild(data?.guild ?? null);
+        setMembers(data?.members ?? []);
+      })
+      .catch(() => {
+        setMe(null);
+        setGuild(null);
+        setMembers([]);
+      })
       .finally(() => setGuildLoaded(true));
   }, [token]);
 
@@ -109,12 +113,16 @@ export default function SiegeBattleManager() {
   // 길드 멤버 로드
 
   useEffect(() => {
-  if (!guild) return;
+  if (!guild) {
+    setMembers([]);
+    return;
+  }
+  if (members.length > 0) return;
 
   fetchMyGuildMembers()
   .then(setMembers)
   .catch(() => setMembers([]));
-}, [guild]);
+}, [guild, members.length]);
 
   async function refreshMyGuildMembers() {
     if (!guild) return;

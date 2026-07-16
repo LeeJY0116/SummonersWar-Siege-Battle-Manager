@@ -1,5 +1,9 @@
 package com.sbm.siegebackend.domain.user;
 
+import com.sbm.siegebackend.domain.guild.GuildService;
+import com.sbm.siegebackend.domain.guild.dto.GuildMemberResponse;
+import com.sbm.siegebackend.domain.guild.dto.GuildResponse;
+import com.sbm.siegebackend.domain.user.dto.UserBootstrapResponse;
 import com.sbm.siegebackend.domain.user.dto.UserLoginRequest;
 import com.sbm.siegebackend.domain.user.dto.UserLoginResponse;
 import com.sbm.siegebackend.domain.user.dto.UserNicknameChangeRequestCreateRequest;
@@ -12,6 +16,7 @@ import com.sbm.siegebackend.domain.user.dto.UserMeResponse;
 import org.springframework.security.core.Authentication;
 import com.sbm.siegebackend.global.api.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import com.sbm.siegebackend.global.exception.NotFoundException;
 
 import java.util.List;
 
@@ -24,10 +29,12 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final GuildService guildService;
 
     // 생성자 주입
-    public UserController(UserService userService) {
+    public UserController(UserService userService, GuildService guildService) {
         this.userService = userService;
+        this.guildService = guildService;
     }
 
     /**
@@ -93,15 +100,38 @@ public class UserController {
 
         User user = userService.findByLoginIdOrThrow(loginId);
 
-        UserMeResponse response = new UserMeResponse(
+        UserMeResponse response = toMeResponse(user);
+
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @GetMapping("/bootstrap")
+    public ResponseEntity<ApiResponse<UserBootstrapResponse>> bootstrap(Authentication authentication) {
+        String loginId = (String) authentication.getPrincipal();
+        User user = userService.findByLoginIdOrThrow(loginId);
+        GuildResponse guild = null;
+        List<GuildMemberResponse> members = List.of();
+
+        try {
+            guild = guildService.getMyGuild(loginId);
+            members = guildService.getMyGuildMembers(loginId);
+        } catch (NotFoundException ignored) {
+            // 길드가 없는 사용자는 내 정보만 내려준다.
+        }
+
+        return ResponseEntity.ok(ApiResponse.success(
+                new UserBootstrapResponse(toMeResponse(user), guild, members)
+        ));
+    }
+
+    private UserMeResponse toMeResponse(User user) {
+        return new UserMeResponse(
                 user.getId(),
                 user.getLoginId(),
                 user.getEmail(),
                 user.getNickname(),
                 user.getRole().name()
         );
-
-        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @PostMapping("/me/nickname-change-requests")
