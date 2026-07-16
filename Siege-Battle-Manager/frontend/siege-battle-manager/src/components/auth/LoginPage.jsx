@@ -15,7 +15,7 @@ const ROLE_OPTIONS = {
 };
 
 export default function LoginPage() {
-  const [view, setView] = useState("start");
+  const [view, setView] = useState("login");
   const [signupType, setSignupType] = useState("member");
   const [loginId, setLoginId] = useState("");
   const [pw, setPw] = useState("");
@@ -136,46 +136,19 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 px-4 py-8 text-slate-950">
+    <div
+      className={`bg-[#120c09] px-3 py-3 text-slate-950 ${
+        view === "login" ? "h-dvh overflow-hidden" : "min-h-dvh overflow-auto"
+      }`}
+    >
       {notice && <Toast notice={notice} onClose={() => setNotice(null)} />}
 
-      <div className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-6xl items-center gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <section className="flex min-h-[560px] flex-col justify-between rounded-lg border border-slate-800 bg-slate-950 p-8 text-white shadow-sm">
-          <div className="space-y-6">
-            <div className="inline-flex rounded-full border border-white/20 px-3 py-1 text-xs font-semibold text-slate-200">
-              SW 점령전
-            </div>
-            <div className="space-y-3">
-              <p className="text-sm font-semibold text-sky-200">서머너즈워</p>
-              <h1 className="text-4xl font-bold leading-tight md:text-5xl">
-                점령전
-                <br />
-                도우미
-              </h1>
-              <p className="max-w-md text-sm leading-6 text-slate-300">
-                서머너즈워 점령전 전투 관리 도구
-                <br />
-                길드원 인벤토리, 방덱 구성, 리더 효과 필터,
-                <br />
-                전투 연구 기록을 한 곳에서 관리합니다.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid gap-3 text-sm text-slate-200">
-            <div className="rounded-md border border-white/10 bg-white/5 px-4 py-3">
-              길드원 보유 몬스터 기반 방덱 관리
-            </div>
-            <div className="rounded-md border border-white/10 bg-white/5 px-4 py-3">
-              리더 효과와 포함 몬스터 필터
-            </div>
-            <div className="rounded-md border border-white/10 bg-white/5 px-4 py-3">
-              전투 연구 게시글과 댓글 기록
-            </div>
-          </div>
-        </section>
-
-        <div className="rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
+      <div
+        className={`mx-auto flex w-full max-w-md ${
+          view === "login" ? "h-full items-center" : "min-h-[calc(100dvh-1.5rem)] items-start py-4"
+        }`}
+      >
+        <div className="w-full rounded-2xl border border-[#8b6a2e] bg-[#f8f7f5] p-6 shadow-[0_18px_40px_rgba(0,0,0,0.35)] sm:p-8">
           {view === "start" && (
             <div className="space-y-6">
               <div className="space-y-2">
@@ -226,7 +199,7 @@ export default function LoginPage() {
           {view === "login" && (
             <AuthFormFrame
               title="로그인"
-              description="기존 계정으로 점령전 관리 도구에 접속합니다."
+              description="SW 점령전 관리 도구에 접속합니다."
               onSubmit={handleLogin}
             >
               <TextField
@@ -242,7 +215,7 @@ export default function LoginPage() {
               </p>
 
               <button
-                className="rounded-md bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                className="rounded-xl bg-[#4359f5] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#3147e0] disabled:cursor-not-allowed disabled:bg-slate-400"
                 disabled={loading}
                 type="submit"
               >
@@ -254,7 +227,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={showStart}
-                  className="font-semibold text-slate-950 underline underline-offset-4"
+                  className="font-semibold text-[#4359f5] underline underline-offset-4"
                 >
                   가입
                 </button>
@@ -319,7 +292,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="rounded-md bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                className="rounded-xl bg-[#4359f5] px-4 py-3 text-base font-semibold text-white transition hover:bg-[#3147e0] disabled:cursor-not-allowed disabled:bg-slate-400"
               >
                 {loading ? "가입 중..." : "회원가입"}
               </button>
@@ -344,10 +317,10 @@ export default function LoginPage() {
 
 function AuthFormFrame({ title, description, onSubmit, children }) {
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
-      <div className="space-y-2">
+    <form onSubmit={onSubmit} className="space-y-4">
+      <div className="space-y-2 text-center">
         <p className="text-sm font-semibold text-slate-500">계정</p>
-        <h2 className="text-2xl font-bold">{title}</h2>
+        <h2 className="text-2xl font-bold text-slate-950">{title}</h2>
         <p className="text-sm leading-6 text-slate-500">{description}</p>
       </div>
       <div className="flex flex-col gap-4">{children}</div>
@@ -357,10 +330,10 @@ function AuthFormFrame({ title, description, onSubmit, children }) {
 
 function TextField({ label, value, onChange, placeholder, type = "text" }) {
   return (
-    <label className="space-y-1 text-sm font-medium text-slate-700">
+    <label className="space-y-1 text-base font-semibold text-slate-700">
       {label}
       <input
-        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-slate-900"
+        className="w-full rounded-xl border border-slate-300 px-4 py-3 text-base outline-none transition focus:border-slate-900"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -372,10 +345,10 @@ function TextField({ label, value, onChange, placeholder, type = "text" }) {
 
 function PasswordField({ label, value, onChange }) {
   return (
-    <label className="space-y-1 text-sm font-medium text-slate-700">
+    <label className="space-y-1 text-base font-semibold text-slate-700">
       {label}
       <input
-        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-slate-900"
+        className="w-full rounded-xl border border-slate-300 px-4 py-3 text-base outline-none transition focus:border-slate-900"
         type="password"
         value={value}
         onChange={(e) => onChange(e.target.value)}
