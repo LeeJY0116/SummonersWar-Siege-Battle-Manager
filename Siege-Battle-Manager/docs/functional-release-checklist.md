@@ -96,3 +96,26 @@ powershell -ExecutionPolicy Bypass -File .\scripts\operational-smoke-test.ps1
 - admin API 미로그인 401 JSON 응답
 - `/api/monsters` 200 응답
 - 운영 CORS 허용 Origin
+
+## QA Log
+
+### 2026-07-16 운영 실사용 플로우 1차
+
+자동/운영 API 기준으로 다음 항목을 확인했다.
+
+- 운영 smoke test: 통과
+- `asdf/asdf` 인증 포함 smoke test: 통과
+- 백엔드 테스트: 통과
+- 프론트 프로덕션 빌드: 통과
+- 로그인 후 `bootstrap`, `me`, `guilds/me`, `guilds/me/members` 조회: 통과
+- 본인 인벤토리 조회: 통과
+- 방덱 목록 조회: 통과
+- 길드 방덱 목록 조회: 통과
+- 전투 연구 목록 조회: 통과
+- 전투 연구 게시글 생성, 상세 조회, 삭제: 통과
+- 일반 계정의 admin API 접근 차단: 403 확인
+
+메모:
+
+- 운영 QA에서 생성한 전투 연구 테스트 글은 즉시 삭제했다.
+- 실제 다른 길드 계정 2개를 준비하면 교차 길드 접근 차단을 추가로 확인한다.
