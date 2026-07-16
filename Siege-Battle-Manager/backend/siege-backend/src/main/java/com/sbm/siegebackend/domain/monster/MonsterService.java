@@ -27,7 +27,7 @@ public class MonsterService {
                         m.getName(),
                         m.getKoreanName(),
                         m.getAliasList(),
-                        m.getAttribute().name(),
+                        getAttributeName(m),
                         m.getLeaderEffectType(),
                         m.getLeaderEffectAmount(),
                         m.getLeaderEffectArea(),
@@ -49,7 +49,7 @@ public class MonsterService {
                         m.getName(),
                         m.getKoreanName(),
                         m.getAliasList(),
-                        m.getAttribute().name(),
+                        getAttributeName(m),
                         m.getLeaderEffectType(),
                         m.getLeaderEffectAmount(),
                         m.getLeaderEffectArea(),
@@ -58,6 +58,10 @@ public class MonsterService {
                         m.getNaturalStars()
                 ))
                 .toList();
+    }
+
+    private String getAttributeName(Monster monster) {
+        return monster.getAttribute() == null ? null : monster.getAttribute().name();
     }
 
     private String buildLeaderEffectText(Monster monster) {
