@@ -73,10 +73,7 @@ public class GuildMemberInventoryService {
 
         return list.stream()
                 .map(inv -> new GuildMemberInventoryItemResponse(
-                        inv.getMonster().getId(),
                         inv.getMonster().getCode(),
-                        inv.getMonster().getName(),
-                        inv.getMonster().getAttribute().name(),
                         inv.getQuantity()
                 ))
                 .toList();
