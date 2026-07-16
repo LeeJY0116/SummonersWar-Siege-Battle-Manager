@@ -7,7 +7,7 @@ if ([string]::IsNullOrWhiteSpace($frontendUrl)) {
 
 $backendUrl = $env:SMOKE_BACKEND_URL
 if ([string]::IsNullOrWhiteSpace($backendUrl)) {
-    $backendUrl = "https://sw-siege-backend.onrender.com"
+    $backendUrl = "https://sw-siege-backend-sg.onrender.com"
 }
 
 $origin = $env:SMOKE_ORIGIN

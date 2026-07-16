@@ -178,3 +178,32 @@ Cloudflare Pages -> Render Singapore -> Neon Singapore
 - Render 백엔드와 Neon DB 리전은 동일하게 맞춘다.
 - 리전 변경 후 Cloudflare Pages 환경변수 `VITE_API_BASE_URL`을 새 백엔드 주소로 변경하고 재배포한다.
 - 새 백엔드 동작 확인 후 기존 리전의 Render 서비스는 삭제해 중복 과금을 막는다.
+
+### 2026-07-16 리전 전환 후 최종 smoke test
+
+기존 Oregon Render 서비스를 삭제한 뒤 운영 프론트가 Singapore 백엔드만 바라보는지 확인했다.
+
+- Frontend: `https://sw-siege.pages.dev` 200 응답 확인
+- Frontend bundle: `https://sw-siege-backend-sg.onrender.com/api` 포함 확인
+- Backend: `https://sw-siege-backend-sg.onrender.com/api/health` 응답 확인
+- CORS: `Origin: https://sw-siege.pages.dev` 요청 정상 응답 확인
+- Login: `asdf` 테스트 계정 로그인 정상 확인
+- Guild: `asdf` 테스트 계정이 `asdf` 길드의 `MASTER`로 조회되는 것 확인
+
+최종 측정:
+
+| API | 응답 시간 |
+| --- | ---: |
+| Frontend 200 | 503ms |
+| `GET /api/health` | 431ms |
+| `GET /api/monsters/selection` | 864ms |
+| `GET /api/guild-members/{id}/inventory` | 162ms |
+| `GET /api/defense-decks` | 166ms |
+| `GET /api/ownerless-defense-decks` | 306ms |
+| `GET /api/research/posts?page=0` | 172ms |
+
+운영 기본 백엔드 URL:
+
+```text
+https://sw-siege-backend-sg.onrender.com
+```
