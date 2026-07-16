@@ -341,10 +341,11 @@ ApiResponse<T> 구조 도입
 ---
 
 ### 인프라
-- MySQL 전환
-- Redis 적용
-- AWS 배포
-- Docker 적용
+- 운영 DB PostgreSQL/Neon 기준 안정화
+- Render 백엔드 운영 설정 점검
+- Cloudflare Pages 프론트 배포 안정화
+- Cloudflare WAF/rate limit 운영 기준 조정
+- Docker 기반 백엔드 배포 유지
 
 ---
 
@@ -448,13 +449,11 @@ ApiResponse<T> 구조 도입
 
 ## 예정
 
-- dev/prod 환경 분리
-- DB 전환
-  - H2 → MySQL/PostgreSQL
-- 환경변수 정리
-- Docker 여부 결정
-- 배포 스크립트
-- CI/CD 여부 결정
+- dev/prod 환경 분리 유지
+- H2(dev) / PostgreSQL(prod) 운영 기준 점검
+- 환경변수와 시크릿 관리 점검
+- Render / Cloudflare Pages 자동 배포 흐름 점검
+- 운영 smoke test와 지연 측정 스크립트 유지
 
 ---
 

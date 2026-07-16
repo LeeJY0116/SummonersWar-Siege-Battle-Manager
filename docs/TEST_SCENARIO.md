@@ -114,8 +114,8 @@ http://localhost:5173
 
 ## 4) 몬스터 데이터
 
-1. 관리자 기능에서 `Sync Swarfarm`을 실행합니다.
-2. 이어서 `Apply Names`를 실행합니다.
+1. 관리자 기능에서 `몬스터 동기화`를 실행합니다.
+2. 이어서 `도감 정보 적용`을 실행합니다.
 3. 도감 또는 몬스터 선택 UI에서 한글명과 별칭 검색이 동작하는지 확인합니다.
 4. 신규 몬스터는 Swarfarm 동기화로 DB에 추가되지만, 사용자 노출은 `monster-localization.json`의 `koreanName`, `enabled`, `awakeningLevel` 기준을 따르는지 확인합니다.
 
