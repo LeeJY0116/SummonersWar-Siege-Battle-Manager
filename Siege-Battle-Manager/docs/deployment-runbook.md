@@ -83,6 +83,20 @@ Cloudflare 보안 설정은 `docs/cloudflare-security-checklist.md`를 기준으
 powershell -ExecutionPolicy Bypass -File .\scripts\operational-smoke-test.ps1
 ```
 
+로그인 이후 API까지 확인하려면 운영 비밀번호를 파일에 쓰지 말고 현재 터미널 환경변수로만 넣는다.
+
+```powershell
+$env:SMOKE_LOGIN_ID="일반계정ID"
+$env:SMOKE_LOGIN_PASSWORD="일반계정비밀번호"
+powershell -ExecutionPolicy Bypass -File .\scripts\operational-smoke-test.ps1
+```
+
+admin 계정으로 admin API 접근 가능 여부를 확인할 때만 아래 값을 추가한다.
+
+```powershell
+$env:SMOKE_LOGIN_IS_ADMIN="true"
+```
+
 사용자 흐름 기준 기능 점검은 `docs/functional-release-checklist.md`를 기준으로 진행한다.
 
 ## 5. After First Successful Deploy
