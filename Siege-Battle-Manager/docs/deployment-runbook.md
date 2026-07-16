@@ -207,3 +207,33 @@ Cloudflare Pages -> Render Singapore -> Neon Singapore
 ```text
 https://sw-siege-backend-sg.onrender.com
 ```
+
+### 2026-07-16 운영 보안 1차 점검
+
+Singapore 백엔드 전환 후 운영 URL 기준 기본 보안 응답과 설정을 확인했다.
+
+실행 확인:
+
+- 미로그인 `GET /api/admin/guilds`: 401 응답
+- 미로그인 `GET /api/guilds`: 401 응답
+- 미로그인 `GET /api/users/admin/nickname-change-requests`: 401 응답
+- 일반 계정 `asdf` 로그인 후 admin API 접근: 403 응답
+- 허용 Origin `https://sw-siege.pages.dev`: CORS 허용 확인
+- 비허용 Origin `https://evil.example`: CORS 허용 헤더 없이 차단 확인
+- 운영 smoke test: 통과
+- 일반 계정 인증 포함 smoke test: 통과
+
+코드/설정 확인:
+
+- `prod` 프로필에서 H2 console 비활성화 확인
+- `server.error.include-*` 설정으로 운영 에러 상세 노출 차단 확인
+- `JWT_SECRET`은 환경변수 `security.jwt.secret: ${JWT_SECRET}`로만 주입 확인
+- `/api/admin/**`, `/api/users/admin/**`는 `ROLE_ADMIN` 필요
+- 인벤토리, 방덱, 길드 방덱, 전투 연구 조회/수정 경로는 현재 로그인 유저의 승인된 길드 멤버와 대상 리소스의 길드가 일치하는지 검증
+- 길드 방덱 생성/삭제는 마스터 또는 부마스터만 가능
+- 전투 연구 게시글/댓글 삭제는 작성자 또는 길드장만 가능
+
+잔여 확인:
+
+- 실제 다른 길드 계정 2개를 준비하면 교차 길드 접근 차단을 운영 API로 한 번 더 확인한다.
+- `ADMIN_ALLOWED_IPS`는 현재 비워두는 운영 방식이므로 Cloudflare WAF, rate limit, 강한 admin 비밀번호, admin API 권한 검수로 보완한다.
