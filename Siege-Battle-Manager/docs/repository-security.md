@@ -73,6 +73,16 @@ trufflehog git file://D:/Codes/SummonersWar --only-verified
 
 ## Scan History
 
+### 2026-07-16
+
+- 현재 Git 추적 파일 기준 민감값 패턴 점검
+  - `.env`, `.env.*`: Git 추적 대상 아님
+  - 운영 DB URL, DB 비밀번호, JWT secret 원문: 발견 안 됨
+  - `render.yaml`: 민감 환경변수는 `sync: false`로 관리
+  - `application.yml`: `security.jwt.secret: ${JWT_SECRET}` 환경변수 참조 확인
+  - `application-prod.yml`: `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` 환경변수 참조 확인
+  - `docs/TEST_SCENARIO.md`의 `test/test`는 로컬 테스트용 예시 계정으로 운영 비밀값이 아님
+
 ### 2026-07-15
 
 - `docker run --rm -v D:/Codes/SummonersWar:/repo:ro zricethezav/gitleaks:latest detect --source=/repo --verbose --redact`
