@@ -481,12 +481,12 @@ join fetch d.monsters
 ---
 
 # 🚧 향후 개선 예정
-- MySQL 전환
-- Redis 캐싱
+- PostgreSQL 운영 안정화
+- 캐싱 적용 여부 검토
 - QueryDSL 적용
-- Docker 적용
-- AWS 배포
-- CI/CD 구축
+- Docker 기반 배포 유지
+- Render / Cloudflare Pages / Neon 운영 점검
+- CI/CD와 smoke test 자동화 검토
 - 운영 환경용 파일/이미지 스토리지 정책 정리
 
 ---

@@ -114,13 +114,13 @@ $env:SMOKE_LOGIN_IS_ADMIN="true"
 
 ### 2026-07-15
 
-배포 저장소 분리 이후 기본 연결 상태를 확인했다.
+배포 저장소 분리 이후 기본 연결 상태를 확인했다. 이 시점에는 이전 Oregon 백엔드 주소를 사용하고 있었다.
 
 - Frontend: `https://sw-siege.pages.dev` 200 응답 확인
-- Backend: `https://sw-siege-backend.onrender.com/api/monsters` 200 응답 확인
+- Backend(이전 Oregon): `https://sw-siege-backend.onrender.com/api/monsters` 200 응답 확인
 - Database: `/api/monsters`에서 Neon PostgreSQL 데이터 조회 확인
 - CORS: `Origin: https://sw-siege.pages.dev` 요청에 `access-control-allow-origin: https://sw-siege.pages.dev` 확인
-- Frontend bundle: 배포된 JS 번들에 `https://sw-siege-backend.onrender.com/api` 포함 확인
+- Frontend bundle: 배포된 JS 번들에 이전 Oregon 백엔드 `https://sw-siege-backend.onrender.com/api` 포함 확인
 
 대시보드에서 확인해야 할 항목:
 
