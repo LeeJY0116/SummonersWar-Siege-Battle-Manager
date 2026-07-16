@@ -1,6 +1,12 @@
 import { apiFetch } from "../lib/api.js";
 import { formatLeaderEffectText } from "../lib/monsterLabels.js";
 
+const MONSTER_CACHE_KEY = "sw-siege:monsters:v1";
+const MONSTER_CACHE_TTL_MS = 1000 * 60 * 60 * 12;
+
+let monsterMemoryCache = null;
+let monsterCachePromise = null;
+
 function normalizeMonster(monster) {
   const monsterCode = monster.code ?? monster.monsterCode ?? monster.id;
   const imageUrl = resolveMonsterImageUrl(monster);
@@ -81,16 +87,95 @@ function resolveMonsterImageUrl(monster) {
   return imageUrl;
 }
 
-export async function getMonsters() {
-  try {
-    const body = await apiFetch("/monsters");
-    const loadedMonsters = (body.data ?? [])
-      .filter((monster) => monster.enabled !== false)
-      .map(normalizeMonster);
+function readCachedMonsters() {
+  if (monsterMemoryCache?.items?.length > 0) {
+    return monsterMemoryCache.items;
+  }
 
-    return sortMonstersForSelection(loadedMonsters);
+  try {
+    const raw = localStorage.getItem(MONSTER_CACHE_KEY);
+    if (!raw) return null;
+
+    const cached = JSON.parse(raw);
+    const isFresh =
+      Array.isArray(cached.items) &&
+      Number.isFinite(cached.savedAt) &&
+      Date.now() - cached.savedAt < MONSTER_CACHE_TTL_MS;
+
+    if (!isFresh) return null;
+
+    monsterMemoryCache = cached;
+    return cached.items;
+  } catch (e) {
+    console.warn("Failed to read monster cache", e);
+    return null;
+  }
+}
+
+function writeCachedMonsters(items) {
+  const cached = {
+    savedAt: Date.now(),
+    items,
+  };
+
+  monsterMemoryCache = cached;
+
+  try {
+    localStorage.setItem(MONSTER_CACHE_KEY, JSON.stringify(cached));
+  } catch (e) {
+    console.warn("Failed to write monster cache", e);
+  }
+}
+
+export function clearMonsterCache() {
+  monsterMemoryCache = null;
+  monsterCachePromise = null;
+
+  try {
+    localStorage.removeItem(MONSTER_CACHE_KEY);
+  } catch (e) {
+    console.warn("Failed to clear monster cache", e);
+  }
+}
+
+async function fetchMonstersFromApi() {
+  const body = await apiFetch("/monsters");
+  const loadedMonsters = (body.data ?? [])
+    .filter((monster) => monster.enabled !== false)
+    .map(normalizeMonster);
+
+  return sortMonstersForSelection(loadedMonsters);
+}
+
+export async function getMonsters(options = {}) {
+  const forceRefresh = options.forceRefresh === true;
+
+  if (!forceRefresh) {
+    const cachedMonsters = readCachedMonsters();
+    if (cachedMonsters) return cachedMonsters;
+  } else {
+    clearMonsterCache();
+  }
+
+  if (!monsterCachePromise) {
+    monsterCachePromise = fetchMonstersFromApi()
+      .then((loadedMonsters) => {
+        writeCachedMonsters(loadedMonsters);
+        return loadedMonsters;
+      })
+      .finally(() => {
+        monsterCachePromise = null;
+      });
+  }
+
+  try {
+    return await monsterCachePromise;
   } catch (e) {
     console.warn("Failed to load monsters from API", e);
+
+    const cachedMonsters = readCachedMonsters();
+    if (cachedMonsters) return cachedMonsters;
+
     return [];
   }
 }
