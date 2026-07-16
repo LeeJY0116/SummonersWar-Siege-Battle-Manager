@@ -28,7 +28,7 @@ export default function OwnerlessDefenseDeckTab({ monsters = [], currentGuildRol
   const [monsterFilterKeyword, setMonsterFilterKeyword] = useState("");
   const [monsterFilterCodes, setMonsterFilterCodes] = useState([]);
   const [fourStarDeckOnly, setFourStarDeckOnly] = useState(false);
-  const canDeleteDeck =
+  const canManageOwnerlessDeck =
     currentGuildRole === "MASTER" || currentGuildRole === "SUB_MASTER";
 
 
@@ -121,6 +121,11 @@ export default function OwnerlessDefenseDeckTab({ monsters = [], currentGuildRol
 
   // 생성 함수
   async function handleCreateDeck() {
+    if (!canManageOwnerlessDeck) {
+      alert("마스터/부마스터만 길드 방덱을 등록할 수 있습니다.");
+      return;
+    }
+
     if (selectedMonsterCodes.some((code) => !code)) {
       alert("몬스터 3마리를 모두 선택해주세요.");
       return;
@@ -184,10 +189,10 @@ export default function OwnerlessDefenseDeckTab({ monsters = [], currentGuildRol
     console.error(e);
     alert(e.message || "상세 조회 실패");
   }
-}
+  }
 
   async function handleDeleteDeck(deckId) {
-    if (!canDeleteDeck) return;
+    if (!canManageOwnerlessDeck) return;
     if (!window.confirm("길드 방덱을 삭제할까요?")) return;
 
     try {
@@ -248,6 +253,7 @@ export default function OwnerlessDefenseDeckTab({ monsters = [], currentGuildRol
       <div className="space-y-3">
         <h3 className="text-lg font-bold">길드 방덱</h3>
 
+          {canManageOwnerlessDeck && (
           <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
             <h3 className="mb-3 text-lg font-bold">길드 방덱 등록</h3>
 
@@ -333,6 +339,7 @@ export default function OwnerlessDefenseDeckTab({ monsters = [], currentGuildRol
               길드 방덱 등록
             </button>
           </section>
+          )}
       </div>
 
       <section className="rounded-2xl border border-[#8b6a2e] bg-[#2f241b] p-4 text-[#f6deb0] shadow-[0_10px_24px_rgba(31,20,10,0.18)]">
@@ -420,7 +427,7 @@ export default function OwnerlessDefenseDeckTab({ monsters = [], currentGuildRol
                       ? "상세 닫기"
                       : "상세 보기"}
                   </button>
-                  {canDeleteDeck && (
+                  {canManageOwnerlessDeck && (
                     <button
                       type="button"
                       onClick={() => handleDeleteDeck(deck.deckId ?? deck.id)}
