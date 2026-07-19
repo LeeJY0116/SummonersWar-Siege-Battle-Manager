@@ -2,6 +2,8 @@
 
 Siege-Battle-Manager API 문서
 
+> Last Updated: 2026-07-19
+
 ---
 
 # 📌 공통 정보
@@ -725,7 +727,9 @@ Authorization: Bearer {JWT}
 
 ---
 
-# 🔬 Battle Research API
+# 🔬 Legacy Battle Research API
+
+기존 게시글·댓글 구조다. 백엔드 호환을 위해 남아 있지만 현재 사용자 화면은 Battle Research V2를 사용한다.
 
 API prefix:
 
@@ -848,9 +852,100 @@ Authorization: Bearer {JWT}
 
 ---
 
+# 🔬 Battle Research V2 API
+
+API prefix:
+
+```text
+/api/research/v2
+```
+
+모든 요청은 로그인 사용자의 승인된 길드를 기준으로 처리하며 요청 파라미터로 다른 `guildId`를 받지 않는다.
+
+## 조합 생성·조회·삭제
+
+| Method | Path | 설명 |
+|---|---|---|
+| `POST` | `/api/research/v2/defense-decks` | 방덱 조합 생성 |
+| `GET` | `/api/research/v2/defense-decks?page=0&size=10&search=&fourStarOnly=false` | 방덱 조합 목록 |
+| `DELETE` | `/api/research/v2/defense-decks/{defenseDeckId}` | 방덱 조합 삭제 |
+| `POST` | `/api/research/v2/attack-decks` | 공덱 조합 생성 |
+| `GET` | `/api/research/v2/attack-decks?page=0&size=10&search=&fourStarOnly=false` | 공덱 조합 목록 |
+| `DELETE` | `/api/research/v2/attack-decks/{attackDeckId}` | 공덱 조합 삭제 |
+
+조합 생성 요청:
+
+```json
+{
+  "monsterCodes": ["sw_1001", "sw_1002", "sw_1003"]
+}
+```
+
+`search`는 한글명과 별칭을 포함해 서버에서 필터링한다. 조합 삭제는 연결된 매치업을 정리하지만 반대편 조합까지 삭제하지 않는다.
+
+## 매치업과 공략
+
+| Method | Path | 설명 |
+|---|---|---|
+| `POST` | `/api/research/v2/matchups` | 방덱·공덱 연결 |
+| `GET` | `/api/research/v2/matchups?view=DEFENSE&deckId={deckId}&page=0` | 선택 조합의 매치업 목록 |
+| `GET` | `/api/research/v2/matchups/{matchupId}` | 매치업 상세 |
+| `DELETE` | `/api/research/v2/matchups/{matchupId}` | 조합 연결 삭제 |
+| `POST` | `/api/research/v2/matchups/{matchupId}/guides` | 공략 작성 |
+| `DELETE` | `/api/research/v2/guides/{guideId}` | 공략 삭제 |
+
+매치업 생성 요청:
+
+```json
+{
+  "defenseDeckId": 1,
+  "attackDeckId": 2
+}
+```
+
+## 실제 사용 통계 연동
+
+| Method | Path | 설명 |
+|---|---|---|
+| `GET` | `/api/research/v2/matchups/{matchupId}/usage-summary` | 전투 수, 승·패, 승률 |
+| `GET` | `/api/research/v2/matchups/{matchupId}/usage-logs?page=0&size=10` | 실제 사용 로그 |
+
+통계값은 전투 연구 엔티티에 저장하지 않고 해당 길드의 점령전 원본 로그에서 계산한다.
+
+---
+
+# 📊 Siege Log & Statistics API
+
+## 로그 관리
+
+| Method | Path | 권한 | 설명 |
+|---|---|---|---|
+| `POST` | `/api/siege/log-imports` | `MASTER`, `SUB_MASTER` | `multipart/form-data`의 `file`로 JSON 업로드 |
+| `GET` | `/api/siege/log-imports` | `MASTER`, `SUB_MASTER` | 업로드 로그 목록 |
+| `DELETE` | `/api/siege/log-imports/{importId}` | `MASTER`, `SUB_MASTER` | 선택 로그와 연관 전투 삭제 |
+
+파일 해시 중복과 전투 고유키 중복을 별도로 검사한다. 삭제 후 영향받은 통계 캐시를 무효화한다.
+
+## 통계 조회
+
+| Method | Path | 설명 |
+|---|---|---|
+| `GET` | `/api/statistics/summary` | 길드 전체 공격·방어 요약 |
+| `GET` | `/api/statistics/matches/attack-decks?fourStarOnly=false&monsterSearch=` | 공덱 조합 통계 |
+| `GET` | `/api/statistics/matches/attack-decks/{attackDeckKey}` | 공덱 상세 전적 |
+| `GET` | `/api/statistics/matches/defense-decks?page=0&size=50&ownerKey=all&fourStarOnly=false&monsterSearch=` | 방덱 조합 통계 |
+| `GET` | `/api/statistics/matches/defense-decks/owners` | 방덱 소유 길드 탭 |
+| `GET` | `/api/statistics/matches/defense-decks/{defenseDeckKey}` | 방덱 상세 전적 |
+| `GET` | `/api/statistics/matches/defense-decks/{defenseDeckKey}/guild-detail?guildName=` | 선택 길드 상세 전적 |
+
+통계의 닉네임과 길드명은 사이트 회원 정보가 아니라 JSON 스냅샷을 사용한다. 모든 조회 범위는 인증 사용자의 현재 사이트 길드로 제한한다.
+
+---
+
 # 🔒 공개 저장소 정책
 
 - `.env`, 로컬 H2 DB, 실행 로그는 GitHub에 포함하지 않습니다.
 - 게임 몬스터 이미지 원본 파일은 저장소에 포함하지 않습니다.
+- 실제 점령전 원본 JSON과 사용자 통계 데이터는 공개 저장소에 포함하지 않습니다.
 - 몬스터 이미지는 외부 API의 이미지 URL을 DB에 저장해 사용합니다.
 - 사용자 화면 노출 이름은 `monster-localization.json`의 `koreanName`, `aliases`, `enabled`, `awakeningLevel` 기준을 따릅니다.

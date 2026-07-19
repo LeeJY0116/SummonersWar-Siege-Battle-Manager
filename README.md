@@ -10,6 +10,8 @@
 
 # SW 점령전
 
+> Last Updated: 2026-07-19
+
 길드 점령전 방덱/공덱 관리 & 길드 운영 플랫폼
 
 📌 소개
@@ -23,6 +25,8 @@ SW 점령전은 게임의 점령전(공성/점령 콘텐츠) 운영을 위해
 - 실제 보유 수량 기반 방덱 생성
 - 권한 기반 길드 운영
 - 방덱 연구 및 공덱 공유
+- SWEX JSON 기반 점령전 전적 통계
+- 실제 사용 로그와 연동된 공·방덱 매치업 연구
 - 특정 방덱 세트 구성 가능 여부 분석
 
 등 실제 길드 운영에서 필요한 기능들을 서비스 형태로 구현하는 것을 목표로 개발하고 있습니다.
@@ -35,6 +39,7 @@ SW 점령전은 게임의 점령전(공성/점령 콘텐츠) 운영을 위해
 ## Screenshots
 
 > 공개 저장소에는 게임 몬스터 원본 이미지 파일을 포함하지 않습니다. 아래 이미지는 포트폴리오 설명용 화면 캡처입니다.
+> 화면은 기능 개발 시점에 따라 현재 운영 UI와 일부 다를 수 있습니다.
 
 ### 메인 / 인증
 
@@ -157,12 +162,29 @@ SW 점령전은 게임의 점령전(공성/점령 콘텐츠) 운영을 위해
 
 ---
 
-### 📚 방덱 연구 시스템
+### 📚 전투 연구 V2
 
-- 연구용 방덱 등록
-- 공덱 댓글 공유
-- 전략 메모
-- 길드 내 전술 공유
+- 방덱과 공덱 조합을 독립적으로 등록
+- 방덱·공덱 N:N 매치업 연결
+- 매치업별 공략 작성과 삭제
+- 몬스터 이름·별칭 검색과 4성 조합 필터
+- 실제 점령전 로그의 사용 전적과 승률 연동
+- 조합, 매치업, 사용 로그의 백엔드 페이지네이션
+
+---
+
+### 📊 점령전 로그 통계
+
+- SWEX 플러그인 가공 JSON 업로드
+- 파일·전투 단위 중복 방지
+- 공덱·방덱 조합별 승률과 전적
+- 공격자, 방어자, 소유자 및 길드별 상세 통계
+- 전체·우리 길드·상대 길드 방덱 구분
+- 포함 몬스터 검색과 4성 조합 필터
+- 콜라보·오리지널 몬스터 통합 집계
+- 업로드 로그 목록과 선택 삭제
+
+통계의 게임 닉네임과 길드명은 사이트 회원 정보와 결합하지 않고 업로드 JSON의 스냅샷을 기준으로 집계합니다. 사이트 길드는 각 통계 데이터에 접근할 수 있는 보안 경계로만 사용합니다.
 
 ---
 
@@ -184,6 +206,8 @@ SW 점령전은 게임의 점령전(공성/점령 콘텐츠) 운영을 위해
 - Spring Security
 - JPA (Hibernate)
 - JWT Authentication
+- Flyway
+- Caffeine Cache
 - Gradle
 
 ---
@@ -192,6 +216,19 @@ SW 점령전은 게임의 점령전(공성/점령 콘텐츠) 운영을 위해
 
 - H2 Database (dev)
 - PostgreSQL / Neon (prod)
+
+---
+
+### Deployment
+
+- Cloudflare Pages (Frontend)
+- Render Singapore (Backend)
+- Neon PostgreSQL Singapore (Database)
+- Docker
+
+```text
+Cloudflare Pages -> Render Singapore -> Neon PostgreSQL Singapore
+```
 
 ---
 
@@ -258,34 +295,25 @@ SW 점령전은 게임의 점령전(공성/점령 콘텐츠) 운영을 위해
 
 ---
 
-## Battle Research (전투 연구)
+## Battle Research V2 (전투 연구)
 
-길드 내 전투 연구 게시판입니다.
+길드 내에서 방덱과 공덱 조합을 중복 없이 관리하고, 두 조합의 매치업에 여러 공략을 기록합니다.
 
-- 게시글(Post) = “방덱 연구 글”
-- 댓글(Comment) = “공덱/운용 코멘트”
-- 게시글 작성 시:
-  - 보유 여부와 관계 없이 “전체 몬스터”에서 3마리 방덱 업로드 가능
-  - 짧은 제목 설정 가능
-- 게시글 상세에서:
-  - 공덱(0~3마리) + 코멘트를 댓글로 등록 가능
+- `BattleResearchDefenseDeck`: 연구할 방덱 조합
+- `BattleResearchAttackDeck`: 사용할 공덱 조합
+- `BattleResearchMatchup`: 방덱과 공덱의 N:N 연결
+- `BattleResearchGuide`: 특정 매치업의 공략
 
-### 권한 정책
-- 게시글 삭제: **작성자 / 마스터 / 부마스터**
-- 게시글 수정: **작성자만**
-- 댓글 삭제: **작성자 / 마스터 / 부마스터**
-- 댓글 수정: **작성자만**
-- 작성자가 게시글 삭제 시: 해당 게시글의 댓글도 함께 삭제됩니다.
+0번 몬스터는 리더 슬롯으로 보존하고 나머지 두 슬롯만 내부 중복 비교용으로 정렬합니다. 사용자 화면에는 입력한 몬스터 순서를 그대로 표시합니다.
 
-### 데이터 유지 정책
-전투 연구 탭은 길드 운영 기록 보존을 위해 다음 정책을 가집니다.
+점령전 로그에 동일한 공·방덱 조합이 존재하면 매치업 카드에서 실제 전적과 승률을 자동 조회합니다. 통계값은 연구 엔티티에 복사해 저장하지 않고 원본 로그를 기준으로 계산합니다.
 
-- 길드원이 탈퇴하거나 VIRTUAL 길드원이 삭제되어도:
-  - 전투 연구의 게시글/댓글은 **절대 삭제되거나 변경되지 않습니다.**
-- 이를 위해 전투 연구 도메인은 작성자 정보를 FK로 묶지 않고,
-  - `authorName`(스냅샷 문자열)
-  - `authorUserId`(실유저인 경우만 저장)
-  형태로 저장합니다.
+### 삭제 정책
+
+- 공략 삭제: 작성자 또는 길드장
+- 조합 연결 삭제: 매치업과 공략만 삭제하고 공덱·방덱 조합은 보존
+- 공덱 삭제: 연결된 매치업을 정리하되 방덱 조합은 보존
+- 방덱 삭제: 연결된 매치업을 정리하되 공덱 조합은 보존
 
 ---
 
@@ -388,7 +416,8 @@ Siege-Battle-Manager/backend/siege-backend/src/main/resources/data/monster-local
 2. 길드 생성
 3. 관리자 메뉴에서 몬스터 동기화 및 도감 정보 적용
 4. 길드원 인벤토리 입력
-5. 방덱 생성, 전투 연구 게시글/댓글 작성 확인
+5. 방덱 생성, 전투 연구 V2 조합·매치업·공략 작성 확인
+6. SWEX JSON 업로드 후 통계 조회 확인
 
 ---
 
@@ -471,23 +500,37 @@ Siege-Battle-Manager/backend/siege-backend/src/main/resources/data/monster-local
 
 - DELETE /api/ownerless-defense-decks/{deckId}
 
-- Battle Research
+- Battle Research V2
 
-- POST /api/research/posts
+- POST /api/research/v2/defense-decks
 
-- GET /api/research/posts
+- GET /api/research/v2/defense-decks
 
-- GET /api/research/posts/{postId}
+- POST /api/research/v2/attack-decks
 
-- PUT /api/research/posts/{postId}
+- GET /api/research/v2/attack-decks
 
-- DELETE /api/research/posts/{postId}
+- POST /api/research/v2/matchups
 
-- POST /api/research/posts/{postId}/comments
+- GET /api/research/v2/matchups
 
-- PUT /api/research/comments/{commentId}
+- POST /api/research/v2/matchups/{matchupId}/guides
 
-- DELETE /api/research/comments/{commentId}
+- GET /api/research/v2/matchups/{matchupId}/usage-logs
+
+- Siege Statistics
+
+- POST /api/siege/log-imports
+
+- GET /api/siege/log-imports
+
+- DELETE /api/siege/log-imports/{importId}
+
+- GET /api/statistics/summary
+
+- GET /api/statistics/matches/attack-decks
+
+- GET /api/statistics/matches/defense-decks
 
 ---
 
@@ -503,7 +546,9 @@ Siege-Battle-Manager/backend/siege-backend/src/main/resources/data/monster-local
 
 - 주인 없는 방덱(템플릿) + 가능 인원 자동 계산
 
-- 전투 연구(게시글/댓글) + 데이터 유지 정책
+- 전투 연구 V2(방덱·공덱·매치업·공략) + 실제 사용 통계 연동
+
+- SWEX JSON 기반 점령전 로그 통계와 로그 관리
 
 - 성능 최적화(N+1 개선, count 쿼리 최적화)
 
@@ -511,6 +556,10 @@ Siege-Battle-Manager/backend/siege-backend/src/main/resources/data/monster-local
 
 - 운영 배포 안정화(Render, Cloudflare Pages, Neon PostgreSQL)
 - 저장소 분리와 보안 점검
+
+- 베타 테스트와 운영 데이터 초기화
+
+- 가입 알림·비밀번호 재설정 이메일 기능
 
 ---
 

@@ -2,6 +2,8 @@
 
 Siege-Battle-Manager 데이터베이스 구조 문서
 
+> Last Updated: 2026-07-19
+
 ---
 
 # 📌 ERD 설계 목표
@@ -30,6 +32,15 @@ User
 GuildMember
  └─ GuildMemberInventory
       └─ Monster
+
+Guild
+ ├─ BattleResearchDefenseDeck
+ ├─ BattleResearchAttackDeck
+ ├─ BattleResearchMatchup
+ │    └─ BattleResearchGuide
+ ├─ SiegeLogImport
+ ├─ SiegeMatch
+ └─ SiegeBattleLog
 ```
 ---
 
@@ -393,24 +404,62 @@ VIRTUAL
 
 ---
 
-# 🚧 향후 추가 예정 구조
-## Battle Research
+# 🔬 Battle Research V2
 
-예정 기능:
+기존 게시글·댓글 구조와 분리된 공·방덱 매치업 연구 도메인이다.
 
-- 연구용 방덱 게시글
-- 공덱 댓글
-- 전략 공유
+```text
+Guild
+ ├─ BattleResearchDefenseDeck
+ │    └─ BattleResearchDefenseDeckMonster(position 0..2)
+ ├─ BattleResearchAttackDeck
+ │    └─ BattleResearchAttackDeckMonster(position 0..2)
+ └─ BattleResearchMatchup
+      └─ BattleResearchGuide
+```
+
+주요 제약:
+
+- `unique(guild_id, deck_key)`: 길드 내 동일 공덱·방덱 중복 방지
+- `unique(guild_id, defense_deck_id, attack_deck_id)`: 동일 매치업 중복 방지
+- `unique(deck_id, position)`: 조합 슬롯 중복 방지
+- 조합 슬롯 0번은 리더이며 사용자 입력 순서를 유지
+- 매치업 삭제 시 공략은 삭제하지만 공덱·방덱 조합은 보존
+- 공덱 삭제 시 연결된 매치업만 정리하고 방덱은 보존하며 반대 방향도 동일
 
 ---
 
-## Statistics
+# 📊 Siege Log & Statistics
 
-예정 기능:
+점령전 JSON 원본과 파싱된 전투 기록을 길드 접근 경계 안에 저장한다.
 
-- 사용률 통계
-- 길드별 분석
-- 방덱 카운트
+```text
+Guild
+ ├─ SiegeLogImport
+ ├─ SiegeMatch
+ │    └─ SiegeBattleLog
+ │         └─ SiegeBattleLogMonster(position 0..2, side ATTACK/DEFENSE)
+ └─ SiegeOpponentGuild
+```
+
+중복 방지:
+
+- 파일 단위: `unique(guild_id, source_hash)`
+- 매치 단위: `unique(guild_id, external_match_key)`
+- 전투 단위: `unique(guild_id, external_match_key, external_battle_key)`
+- 슬롯 단위: `unique(battle_log_id, side, position)`
+
+`SiegeBattleLog`는 `perspective(ATTACK/DEFENSE)`와 길드 관점의 `our_result(WIN/LOSE/UNKNOWN)`를 저장한다. 닉네임과 길드명은 JSON 스냅샷을 사용하고 사이트 `User`·`GuildMember`와 연결하지 않는다.
+
+통계값은 별도 엔티티에 영구 저장하지 않는다. 원본 전투 로그를 조회해 계산하고 애플리케이션 캐시로 반복 계산을 줄인다.
+
+---
+
+# 🚧 향후 검토 구조
+
+## Statistics Aggregate
+
+로그 누적 후 캐시 미스 조회가 운영 기준을 초과할 때만 매치별 또는 일별 집계 테이블을 검토한다.
 
 ---
 
