@@ -71,9 +71,6 @@ SW 점령전은 게임의 점령전(공성/점령 콘텐츠) 운영을 위해
 
 ![도움말](./docs/screenshots/help-modal.png)
 
-### 관리자
-
-![몬스터 검수](./docs/screenshots/monster-review.png)
 
 ---
 
