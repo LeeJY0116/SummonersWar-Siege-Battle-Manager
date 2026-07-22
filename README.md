@@ -34,11 +34,41 @@ SW 점령전은 게임의 점령전(공성/점령 콘텐츠) 운영을 위해
 
 ## Screenshots
 
-### 주요 화면
+> 공개 저장소에는 게임 몬스터 원본 이미지 파일을 포함하지 않습니다. 아래 이미지는 포트폴리오 설명용 화면 캡처입니다.
 
-![주요 화면](./docs/screenshots/main-manager.png)
+### 메인 / 인증
 
-> 공개 저장소에는 게임 몬스터 이미지가 포함된 화면 캡처를 올리지 않고, 자체 UI와 운영 흐름을 보여주는 화면만 포함합니다.
+![메인 페이지](./docs/screenshots/main-page.png)
+
+![로그인](./docs/screenshots/login.png)
+
+![길드장 가입](./docs/screenshots/signup-master.png)
+
+![길드원 가입](./docs/screenshots/signup-member.png)
+
+### 길드 운영
+
+![내 정보](./docs/screenshots/my-page.png)
+
+![인벤토리](./docs/screenshots/inventory.png)
+
+![방덱](./docs/screenshots/defense-decks.png)
+
+![길드 방덱](./docs/screenshots/guild-decks.png)
+
+![회원 관리](./docs/screenshots/member-management.png)
+
+### 전투 연구 / 도움말
+
+![전투 연구 게시글](./docs/screenshots/research-posts.png)
+
+![전투 연구 댓글](./docs/screenshots/research-comments.png)
+
+![도움말](./docs/screenshots/help-modal.png)
+
+### 관리자
+
+![몬스터 검수](./docs/screenshots/monster-review.png)
 
 ---
 
